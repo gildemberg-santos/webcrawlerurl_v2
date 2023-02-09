@@ -7,7 +7,7 @@ O objetivo deste projeto é fornecer uma ferramenta automatizada para coletar in
 Para instalar o projeto, você precisa clonar o repositório do Github:
 
 ``` shell
-$ git clone git@github.com:gildemberg-santos/webscrapingo.git
+$ git clone git@github.com:gildemberg-santos/webcrawlerurl_v2.git
 ```
 
 ### Iniciando o conteiner
