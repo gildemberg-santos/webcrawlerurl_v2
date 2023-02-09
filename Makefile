@@ -15,3 +15,9 @@ run:
 	@go build -o ./bin/app ./cmd/main.go
 	@./bin/app
 	@echo "Fim da execução!"
+
+dev:
+	@clear
+	@echo "Executando ..."
+	@go run ./cmd/main.go
+	@echo "Fim da execução!"
