@@ -29,6 +29,7 @@ func (e *ExtractInformation) Call() {
 	e.extractMainTitle()
 	e.extractMainParagraph()
 	e.extractMetaDescription()
+	e.normalize()
 }
 
 func (e *ExtractInformation) extractMainTitle() {
@@ -76,26 +77,17 @@ func (e *ExtractInformation) extractMetaDescription() {
 		name, _ := s.Attr("name")
 		if name == "description" {
 			content, _ := s.Attr("content")
-			words := strings.Split(content, " ")
-			if len(words) >= e.MetaDescriptionMin {
-				e.MetaDescription = content
-			}
+			e.MetaDescription = content
 		}
 
 		if name == "og:description" && e.MetaDescription == "" {
 			content, _ := s.Attr("content")
-			words := strings.Split(content, " ")
-			if len(words) >= e.MetaDescriptionMin {
-				e.MetaDescription = content
-			}
+			e.MetaDescription = content
 		}
 
 		if name == "twitter:description" && e.MetaDescription == "" {
 			content, _ := s.Attr("content")
-			words := strings.Split(content, " ")
-			if len(words) >= e.MetaDescriptionMin {
-				e.MetaDescription = content
-			}
+			e.MetaDescription = content
 		}
 
 	})
@@ -126,5 +118,20 @@ func (e *ExtractInformation) filterTitle(tag string) {
 
 	if e.MainTitle == "" {
 		e.MainTitle = first
+	}
+}
+
+func (e *ExtractInformation) normalize() {
+	remove := []string{"\n", "\t", "\r"}
+
+	for _, r := range remove {
+		e.MainTitle = strings.Replace(e.MainTitle, r, " ", -1)
+		e.MainTitle = strings.TrimSpace(e.MainTitle)
+
+		e.MainParagraph = strings.Replace(e.MainParagraph, r, " ", -1)
+		e.MainParagraph = strings.TrimSpace(e.MainParagraph)
+
+		e.MetaDescription = strings.Replace(e.MetaDescription, r, " ", -1)
+		e.MetaDescription = strings.TrimSpace(e.MetaDescription)
 	}
 }

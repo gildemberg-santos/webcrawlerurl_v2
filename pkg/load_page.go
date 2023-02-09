@@ -1,32 +1,46 @@
 package pkg
 
 import (
+	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 type LoadPage struct {
-	Url    string
-	Source *goquery.Document
+	Url        string
+	Source     *goquery.Document
+	StatusCode int
 }
 
-func (l *LoadPage) Load() error {
+func (l *LoadPage) Load() (err error) {
+	l.normalizeUrl()
+
 	res, err := http.Get(l.Url)
 	if err != nil {
-		return err
+		l.StatusCode = res.StatusCode
+		return
 	}
 	defer res.Body.Close()
 
+	if res.StatusCode != 200 {
+		l.StatusCode = res.StatusCode
+		err = errors.New("Found error in the page")
+		return
+	}
+
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		return err
+		l.StatusCode = 500
+		return
 	}
 
 	l.Source = doc
 
 	l.RemoverElementos()
-	return nil
+	l.StatusCode = res.StatusCode
+	return
 }
 
 func (l *LoadPage) RemoverElementos() {
@@ -47,4 +61,12 @@ func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
 			s.Remove()
 		}
 	})
+}
+
+func (l *LoadPage) normalizeUrl() {
+	if !strings.HasPrefix(l.Url, "https://") && !strings.HasPrefix(l.Url, "http://") {
+		l.Url = "https://" + l.Url
+	} else if strings.HasPrefix(l.Url, "http://") {
+		l.Url = strings.Replace(l.Url, "http://", "https://", 1)
+	}
 }
