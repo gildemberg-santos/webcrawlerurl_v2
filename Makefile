@@ -12,6 +12,6 @@ stop:
 run:
 	@clear
 	@echo "Executando ..."
-	@go build -o ./cmd/main ./cmd/main.go
-	@go run ./cmd/main.go
+	@go build -o ./bin/app ./cmd/main.go
+	@./bin/app
 	@echo "Fim da execução!"
