@@ -2,10 +2,7 @@ package pkg
 
 import (
 	"errors"
-	"net"
 	"net/http"
-	"net/url"
-	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -17,11 +14,11 @@ type LoadPage struct {
 }
 
 func (l *LoadPage) Load() (err error) {
-	l.normalizeUrl()
+	uri := NormalizeUrl{Url: l.Url}
+	_, err = uri.GetUrl()
 
-	if !l.isUrl() {
+	if err != nil {
 		l.StatusCode = 500
-		err = errors.New("Url is invalid")
 		return
 	}
 
@@ -69,26 +66,4 @@ func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
 			s.Remove()
 		}
 	})
-}
-
-func (l *LoadPage) normalizeUrl() {
-	if !strings.HasPrefix(l.Url, "https://") && !strings.HasPrefix(l.Url, "http://") {
-		l.Url = "https://" + l.Url
-	} else if strings.HasPrefix(l.Url, "http://") {
-		l.Url = strings.Replace(l.Url, "http://", "https://", 1)
-	}
-}
-
-func (l *LoadPage) isUrl() bool {
-	url, err := url.ParseRequestURI(l.Url)
-	if err != nil {
-		return false
-	}
-
-	address := net.ParseIP(url.Host)
-	if address == nil {
-		return strings.Contains(url.Host, ".")
-	}
-
-	return true
 }

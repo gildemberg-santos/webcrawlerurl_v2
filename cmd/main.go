@@ -14,12 +14,14 @@ func main() {
 
 func RouteChatGpt3(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	uri := pkg.NormalizeUrl{Url: r.URL.Query().Get("url")}
+	url, _ := uri.GetUrl()
 
 	chatgpt3 := pkg.ChatGpt3{
-		Url: r.URL.Query().Get("url"),
+		Url: url,
 	}
 
-	response, err := chatgpt3.Call("teste")
+	response, err := chatgpt3.Call()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)

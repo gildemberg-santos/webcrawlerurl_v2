@@ -7,7 +7,6 @@ import (
 )
 
 type ExtractInformation struct {
-	Url                string
 	MainTitle          string
 	MainParagraph      string
 	MetaDescription    string
@@ -17,9 +16,8 @@ type ExtractInformation struct {
 	Source             *goquery.Document
 }
 
-func (e *ExtractInformation) Init(source *goquery.Document, url string, titleMin, paragraphMin, descriptionMin int) {
+func (e *ExtractInformation) Init(source *goquery.Document, titleMin, paragraphMin, descriptionMin int) {
 	e.Source = source
-	e.Url = url
 	e.MainTitleMin = titleMin
 	e.MainParagraphMin = paragraphMin
 	e.MetaDescriptionMin = descriptionMin

@@ -3,7 +3,6 @@ package pkg
 import "strings"
 
 type Score struct {
-	Url         string
 	Information *ExtractInformation
 	Rules       struct {
 		MainTitle       float32
@@ -12,8 +11,7 @@ type Score struct {
 	}
 }
 
-func (s *Score) Init(url string, information *ExtractInformation) {
-	s.Url = url
+func (s *Score) Init(information *ExtractInformation) {
 	s.Information = information
 }
 

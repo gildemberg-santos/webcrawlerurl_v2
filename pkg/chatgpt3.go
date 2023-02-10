@@ -22,11 +22,12 @@ type responseSuccess struct {
 
 type responseErro struct {
 	Erro       string  `json:"erro"`
+	Url        string  `json:"url"`
 	Timestamp  float64 `json:"ts"`
 	StatusCode int     `json:"status_code"`
 }
 
-func (c *ChatGpt3) Call(message string) (interface{}, error) {
+func (c *ChatGpt3) Call() (interface{}, error) {
 	ts := Timestamp{}
 	ts.Start()
 
@@ -35,6 +36,7 @@ func (c *ChatGpt3) Call(message string) (interface{}, error) {
 		ts.End()
 		responseErro := responseErro{
 			Erro:       err.Error(),
+			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
 			StatusCode: 500,
 		}
@@ -50,6 +52,7 @@ func (c *ChatGpt3) Call(message string) (interface{}, error) {
 		ts.End()
 		responseErro := responseErro{
 			Erro:       err.Error(),
+			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
 			StatusCode: pagina.StatusCode,
 		}
@@ -57,16 +60,16 @@ func (c *ChatGpt3) Call(message string) (interface{}, error) {
 	}
 
 	informatin := ExtractInformation{}
-	informatin.Init(pagina.Source, pagina.Url, 3, 5, 30)
+	informatin.Init(pagina.Source, 3, 5, 30)
 	informatin.Call()
 
 	score := Score{}
-	score.Init(pagina.Url, &informatin)
+	score.Init(&informatin)
 	score.Call()
 
 	ts.End()
 	responseSuccess := responseSuccess{
-		Url:        informatin.Url,
+		Url:        c.Url,
 		Timestamp:  ts.GetTime(),
 		Scone:      score.GetScore(),
 		StatusCode: pagina.StatusCode,
