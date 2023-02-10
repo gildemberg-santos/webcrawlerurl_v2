@@ -2,9 +2,12 @@ package pkg
 
 import (
 	"strings"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+var doneExtractInformation sync.WaitGroup
 
 type ExtractInformation struct {
 	MainTitle          string
@@ -24,9 +27,12 @@ func (e *ExtractInformation) Init(source *goquery.Document, titleMin, paragraphM
 }
 
 func (e *ExtractInformation) Call() {
-	e.extractMainTitle()
-	e.extractMainParagraph()
-	e.extractMetaDescription()
+	doneExtractInformation.Add(3)
+	go e.extractMainTitle()
+	go e.extractMainParagraph()
+	go e.extractMetaDescription()
+	doneExtractInformation.Wait()
+
 	e.normalize()
 }
 
@@ -34,10 +40,12 @@ func (e *ExtractInformation) extractMainTitle() {
 	e.filterTitle("h1")
 
 	if e.MainTitle != "" {
+		defer doneExtractInformation.Done()
 		return
 	}
 
 	e.filterTitle("h2")
+	defer doneExtractInformation.Done()
 }
 
 func (e *ExtractInformation) extractMainParagraph() {
@@ -68,6 +76,8 @@ func (e *ExtractInformation) extractMainParagraph() {
 	if e.MainParagraph == "" {
 		e.MainParagraph = first
 	}
+
+	defer doneExtractInformation.Done()
 }
 
 func (e *ExtractInformation) extractMetaDescription() {
@@ -89,6 +99,8 @@ func (e *ExtractInformation) extractMetaDescription() {
 		}
 
 	})
+
+	defer doneExtractInformation.Done()
 }
 
 func (e *ExtractInformation) filterTitle(tag string) {

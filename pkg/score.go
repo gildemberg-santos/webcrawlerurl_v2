@@ -1,6 +1,11 @@
 package pkg
 
-import "strings"
+import (
+	"strings"
+	"sync"
+)
+
+var doneScore sync.WaitGroup
 
 type Score struct {
 	Information *ExtractInformation
@@ -16,9 +21,11 @@ func (s *Score) Init(information *ExtractInformation) {
 }
 
 func (s *Score) Call() {
-	s.scoreMainTitle()
-	s.scoreMainParagraph()
-	s.scoreMetaDescription()
+	doneScore.Add(3)
+	go s.scoreMainTitle()
+	go s.scoreMainParagraph()
+	go s.scoreMetaDescription()
+	doneScore.Wait()
 }
 
 func (s *Score) scoreMainTitle() {
@@ -26,18 +33,21 @@ func (s *Score) scoreMainTitle() {
 	if s.Information.MainTitle != "" {
 		s.Rules.MainTitle = scoreNumberWords(s.Information.MainTitle, s.Information.MainTitleMin, 10)
 	}
+	doneScore.Done()
 }
 
 func (s *Score) scoreMainParagraph() {
 	if s.Information.MainParagraph != "" {
 		s.Rules.MainParagraph = scoreNumberWords(s.Information.MainParagraph, s.Information.MainParagraphMin, 10)
 	}
+	doneScore.Done()
 }
 
 func (s *Score) scoreMetaDescription() {
 	if s.Information.MetaDescription != "" {
 		s.Rules.MetaDescription = scoreNumberWords(s.Information.MetaDescription, s.Information.MetaDescriptionMin, 10)
 	}
+	doneScore.Done()
 }
 
 func (s *Score) GetScore() float32 {

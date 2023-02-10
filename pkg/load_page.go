@@ -3,9 +3,12 @@ package pkg
 import (
 	"errors"
 	"net/http"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+var doneLoadPage sync.WaitGroup
 
 type LoadPage struct {
 	Url        string
@@ -49,15 +52,17 @@ func (l *LoadPage) Load() (err error) {
 }
 
 func (l *LoadPage) RemoverElementos() {
-	l.removeElementsDisplayNone("div", "d-none")
-	l.removeElementsDisplayNone("h1", "d-none")
-	l.removeElementsDisplayNone("h2", "d-none")
-	l.removeElementsDisplayNone("h3", "d-none")
-	l.removeElementsDisplayNone("h4", "d-none")
-	l.removeElementsDisplayNone("h5", "d-none")
-	l.removeElementsDisplayNone("p", "d-none")
-	l.removeElementsDisplayNone("span", "d-none")
-	l.removeElementsDisplayNone("a", "d-none")
+	doneLoadPage.Add(9)
+	go l.removeElementsDisplayNone("div", "d-none")
+	go l.removeElementsDisplayNone("h1", "d-none")
+	go l.removeElementsDisplayNone("h2", "d-none")
+	go l.removeElementsDisplayNone("h3", "d-none")
+	go l.removeElementsDisplayNone("h4", "d-none")
+	go l.removeElementsDisplayNone("h5", "d-none")
+	go l.removeElementsDisplayNone("p", "d-none")
+	go l.removeElementsDisplayNone("span", "d-none")
+	go l.removeElementsDisplayNone("a", "d-none")
+	doneLoadPage.Wait()
 }
 
 func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
@@ -66,4 +71,5 @@ func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
 			s.Remove()
 		}
 	})
+	defer doneLoadPage.Done()
 }
