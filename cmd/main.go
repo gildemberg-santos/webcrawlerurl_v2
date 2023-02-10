@@ -14,13 +14,15 @@ func main() {
 }
 
 type ResponseChatGpt3 struct {
-	Title       string  `json:"title"`
-	Paragraph   string  `json:"paragraph"`
-	Description string  `json:"description"`
-	Url         string  `json:"url"`
-	Timestamp   float64 `json:"ts"`
-	Scone       float32 `json:"scone"`
-	StatusCode  int     `json:"status_code"`
+	ChatGpt struct {
+		Title       string `json:"main_header"`
+		Paragraph   string `json:"main_paragraph"`
+		Description string `json:"meta_description"`
+	} `json:"chatgpt"`
+	Url        string  `json:"url"`
+	Timestamp  float64 `json:"ts"`
+	Scone      float32 `json:"scone"`
+	StatusCode int     `json:"status_code"`
 }
 
 type ResponseUrls struct {
@@ -41,6 +43,19 @@ func ChatGpt3(w http.ResponseWriter, r *http.Request) {
 	time.Start()
 	w.Header().Set("Content-Type", "application/json")
 
+	url := r.URL.Query().Get("url")
+	if url == "" {
+		time.End()
+		erroResponse := ResponseErro{
+			Erro:       "url is empty",
+			Timestamp:  time.GetTime(),
+			StatusCode: 500,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(erroResponse)
+		return
+	}
+
 	pagina := pkg.LoadPage{
 		Url: r.URL.Query().Get("url"),
 	}
@@ -53,6 +68,7 @@ func ChatGpt3(w http.ResponseWriter, r *http.Request) {
 			Timestamp:  time.GetTime(),
 			StatusCode: pagina.StatusCode,
 		}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(erroResponse)
 		return
 	}
@@ -67,14 +83,15 @@ func ChatGpt3(w http.ResponseWriter, r *http.Request) {
 	score.Call()
 
 	informatinResponse := ResponseChatGpt3{
-		Title:       informatin.MainTitle,
-		Paragraph:   informatin.MainParagraph,
-		Description: informatin.MetaDescription,
-		Url:         informatin.Url,
-		Timestamp:   time.GetTime(),
-		Scone:       score.GetScore(),
-		StatusCode:  pagina.StatusCode,
+		Url:        informatin.Url,
+		Timestamp:  time.GetTime(),
+		Scone:      score.GetScore(),
+		StatusCode: pagina.StatusCode,
 	}
+
+	informatinResponse.ChatGpt.Title = informatin.MainTitle
+	informatinResponse.ChatGpt.Paragraph = informatin.MainParagraph
+	informatinResponse.ChatGpt.Description = informatin.MetaDescription
 
 	json.NewEncoder(w).Encode(informatinResponse)
 }
