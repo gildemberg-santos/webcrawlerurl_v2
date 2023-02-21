@@ -1,17 +1,24 @@
 start:
-	@echo "Executando o conteiner..."
+	@clear
+	@echo "\n Start Docker ... \n"
 	@docker-compose up -d
-	@echo "Fim da execução do conteiner!"
-	@make run
+	@clear
+	@echo "\n Done! \n"
 
 stop:
-	@echo "Parando o conteiner..."
+	@clear
+	@echo "\n Stop Docker ... \n"
 	@docker-compose down
-	@echo "Fim da execução do conteiner!"
+	@clear
+	@echo "\n Done! \n"
 
 run:
 	@clear
-	@echo "Executando ..."
-	@go build -o ./cmd/main ./cmd/main.go
+	@echo "\n  Service Online <Prod> ... \n"
+	@go build -o ./bin/app ./cmd/main.go
+	@./bin/app
+
+dev:
+	@clear
+	@echo "\n  Service Online <Dev> ...  \n"
 	@go run ./cmd/main.go
-	@echo "Fim da execução!"
