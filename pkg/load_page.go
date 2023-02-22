@@ -66,7 +66,7 @@ func (l *LoadPage) RemoverElementos() {
 }
 
 func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
-	l.Source.Find(tag).Each(func(i int, s *goquery.Selection) {
+	l.Source.Find(tag).Each(func(_ int, s *goquery.Selection) {
 		if s.HasClass(css) {
 			s.Remove()
 		}

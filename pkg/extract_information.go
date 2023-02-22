@@ -52,7 +52,7 @@ func (e *ExtractInformation) extractMainParagraph() {
 	var paragraph = make([]string, 0)
 	var first string = ""
 
-	e.Source.Find("p").Each(func(i int, s *goquery.Selection) {
+	e.Source.Find("p").Each(func(_ int, s *goquery.Selection) {
 		text := s.Text()
 
 		text = strings.TrimSpace(text)
@@ -81,7 +81,7 @@ func (e *ExtractInformation) extractMainParagraph() {
 }
 
 func (e *ExtractInformation) extractMetaDescription() {
-	e.Source.Find("meta").Each(func(i int, s *goquery.Selection) {
+	e.Source.Find("meta").Each(func(_ int, s *goquery.Selection) {
 		name, _ := s.Attr("name")
 		if name == "description" {
 			content, _ := s.Attr("content")
@@ -107,7 +107,7 @@ func (e *ExtractInformation) filterTitle(tag string) {
 	var title = make([]string, 0)
 	var first string = ""
 
-	e.Source.Find(tag).Each(func(i int, s *goquery.Selection) {
+	e.Source.Find(tag).Each(func(_ int, s *goquery.Selection) {
 		text := s.Text()
 		text = strings.TrimSpace(text)
 
