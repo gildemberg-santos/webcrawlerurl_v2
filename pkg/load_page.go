@@ -46,12 +46,12 @@ func (l *LoadPage) Load() (err error) {
 
 	l.Source = doc
 
-	l.RemoverElementos()
+	l.removerElementos()
 	l.StatusCode = res.StatusCode
 	return
 }
 
-func (l *LoadPage) RemoverElementos() {
+func (l *LoadPage) removerElementos() {
 	doneLoadPage.Add(9)
 	go l.removeElementsDisplayNone("div", "d-none")
 	go l.removeElementsDisplayNone("h1", "d-none")
