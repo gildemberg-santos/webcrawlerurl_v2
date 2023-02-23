@@ -22,3 +22,15 @@ dev:
 	@clear
 	@echo "\n  Service Online <Dev> ...  \n"
 	@go run ./cmd/main.go
+
+test:
+	@clear
+	@echo "\n  Testing ...  \n"
+	@go test -v ./...
+
+
+build:
+	@clear
+	@echo "\n  Building ...  \n"
+	@rm -rf ./bin
+	@go build -o ./bin/cmd ./cmd/main.go
