@@ -34,4 +34,26 @@ Para executar o serviço, basta executar o seguinte comando:
 $ make run
 ```
 
+ou
+
+``` dev
+$ make dev
+```
+
+### Executando os testes
+
+Para executar todos os testes, basta executar o seguinte comando:
+
+``` test
+$ make test
+```
+
+### Executando o build do projeto
+
+Para executar o build, basta executar o seguinte comando:
+
+``` build
+$ make build
+```
+
 Com estes comandos, você pode facilmente instalar, iniciar e executar o nosso web crawler para extração de dados. Divirta-se coletando informações úteis da web!
