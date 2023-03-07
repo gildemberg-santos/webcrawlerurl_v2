@@ -27,7 +27,7 @@ func (l *LoadPage) Load() (err error) {
 
 	res, err := http.Get(l.Url)
 	if err != nil {
-		l.StatusCode = res.StatusCode
+		l.StatusCode = 404
 		return
 	}
 	defer res.Body.Close()

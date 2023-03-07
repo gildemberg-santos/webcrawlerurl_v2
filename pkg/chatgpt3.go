@@ -8,7 +8,7 @@ type ChatGpt3 struct {
 	Url string
 }
 
-type responseSuccess struct {
+type responseSuccessGpt struct {
 	ChatGpt struct {
 		Title       string `json:"main_header"`
 		Paragraph   string `json:"main_paragraph"`
@@ -20,7 +20,7 @@ type responseSuccess struct {
 	StatusCode int     `json:"status_code"`
 }
 
-type responseErro struct {
+type responseErroGpt struct {
 	Erro       string  `json:"erro"`
 	Url        string  `json:"url"`
 	Timestamp  float64 `json:"ts"`
@@ -34,7 +34,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 	if c.Url == "" {
 		err := errors.New("url is empty")
 		ts.End()
-		responseErro := responseErro{
+		responseErro := responseErroGpt{
 			Erro:       err.Error(),
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
@@ -50,7 +50,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 	err := pagina.Load()
 	if err != nil {
 		ts.End()
-		responseErro := responseErro{
+		responseErro := responseErroGpt{
 			Erro:       err.Error(),
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
@@ -68,7 +68,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 	score.Call()
 
 	ts.End()
-	responseSuccess := responseSuccess{
+	responseSuccess := responseSuccessGpt{
 		Url:        c.Url,
 		Timestamp:  ts.GetTime(),
 		Scone:      score.GetScore(),

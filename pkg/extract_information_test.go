@@ -28,9 +28,9 @@ func TestExtractInformation_Call(t *testing.T) {
 	chatgpt := ChatGpt3{Url: "http://www.teste.com"}
 	response, _ := chatgpt.Call()
 
-	titule := response.(responseSuccess).ChatGpt.Title
-	pargraph := response.(responseSuccess).ChatGpt.Paragraph
-	description := response.(responseSuccess).ChatGpt.Description
+	titule := response.(responseSuccessGpt).ChatGpt.Title
+	pargraph := response.(responseSuccessGpt).ChatGpt.Paragraph
+	description := response.(responseSuccessGpt).ChatGpt.Description
 
 	assert.Equal(t, "Titulo", titule)
 	assert.Equal(t, "Paragrafo", pargraph)

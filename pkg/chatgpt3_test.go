@@ -11,7 +11,7 @@ func TestChatGpt3_Call(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "http://www.teste.com",
+	httpmock.RegisterResponder("GET", "https://www.teste.com",
 		httpmock.NewStringResponder(200, `
 	<!DOCTYPE html>
 	<head>
@@ -25,14 +25,11 @@ func TestChatGpt3_Call(t *testing.T) {
 	<html>
 	`))
 
-	LoadPage := LoadPage{Url: "http://www.teste.com"}
-	LoadPage.Load()
+	chatgpt3 := ChatGpt3{Url: "https://www.teste.com"}
+	response, err := chatgpt3.Call()
 
-	extractInformation := ExtractInformation{}
-	extractInformation.Init(LoadPage.Source, 2, 5, 30)
-	extractInformation.Call()
-
-	assert.Equal(t, "Titulo", extractInformation.MainTitle)
-	assert.Equal(t, "Paragrafo", extractInformation.MainParagraph)
-	assert.Equal(t, "Meta Description", extractInformation.MetaDescription)
+	assert.Nil(t, err)
+	assert.Equal(t, "Titulo", response.(responseSuccessGpt).ChatGpt.Title)
+	assert.Equal(t, "Paragrafo", response.(responseSuccessGpt).ChatGpt.Paragraph)
+	assert.Equal(t, "Meta Description", response.(responseSuccessGpt).ChatGpt.Description)
 }

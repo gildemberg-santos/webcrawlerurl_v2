@@ -15,8 +15,8 @@ stop:
 run:
 	@clear
 	@echo "\n  Service Online <Prod> ... \n"
-	@go build -o ./bin/app ./cmd/main.go
-	@./bin/app
+	@go build -o ./bin/cmd ./cmd/main.go
+	@./bin/cmd
 
 dev:
 	@clear
