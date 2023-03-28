@@ -21,10 +21,12 @@ type responseSuccessGpt struct {
 }
 
 type responseErroGpt struct {
-	Erro       string  `json:"erro"`
-	Url        string  `json:"url"`
-	Timestamp  float64 `json:"ts"`
-	StatusCode int     `json:"status_code"`
+	Erro       string      `json:"erro"`
+	ChatGpt3   interface{} `json:"chatgpt"`
+	Url        string      `json:"url"`
+	Timestamp  float64     `json:"ts"`
+	Scone      float32     `json:"scone"`
+	StatusCode int         `json:"status_code"`
 }
 
 func (c *ChatGpt3) Call() (interface{}, error) {
@@ -36,8 +38,10 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		ts.End()
 		responseErro := responseErroGpt{
 			Erro:       err.Error(),
+			ChatGpt3:   nil,
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
+			Scone:      0,
 			StatusCode: 500,
 		}
 		return responseErro, err
@@ -52,8 +56,10 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		ts.End()
 		responseErro := responseErroGpt{
 			Erro:       err.Error(),
+			ChatGpt3:   nil,
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
+			Scone:      0,
 			StatusCode: pagina.StatusCode,
 		}
 		return responseErro, err
