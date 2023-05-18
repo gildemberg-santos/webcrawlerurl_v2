@@ -29,7 +29,7 @@ func TestChatGpt3_Call(t *testing.T) {
 	response, err := chatgpt3.Call()
 
 	assert.Nil(t, err)
-	assert.Equal(t, "Titulo", response.(responseSuccessGpt).ChatGpt.Title)
-	assert.Equal(t, "Paragrafo", response.(responseSuccessGpt).ChatGpt.Paragraph)
+	assert.Equal(t, "Titulo do site", response.(responseSuccessGpt).ChatGpt.Title)
+	assert.Equal(t, "Titulo", response.(responseSuccessGpt).ChatGpt.Paragraph)
 	assert.Equal(t, "Meta Description", response.(responseSuccessGpt).ChatGpt.Description)
 }

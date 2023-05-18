@@ -32,7 +32,7 @@ func TestExtractInformation_Call(t *testing.T) {
 	pargraph := response.(responseSuccessGpt).ChatGpt.Paragraph
 	description := response.(responseSuccessGpt).ChatGpt.Description
 
-	assert.Equal(t, "Titulo", titule)
-	assert.Equal(t, "Paragrafo", pargraph)
+	assert.Equal(t, "Titulo do site", titule)
+	assert.Equal(t, "Titulo", pargraph)
 	assert.Equal(t, "Meta Description", description)
 }
