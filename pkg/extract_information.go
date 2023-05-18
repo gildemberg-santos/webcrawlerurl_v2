@@ -37,14 +37,11 @@ func (e *ExtractInformation) Call() {
 }
 
 func (e *ExtractInformation) extractMainTitle() {
-	e.filterTitle("h1")
-
-	if e.MainTitle != "" {
-		defer doneExtractInformation.Done()
-		return
-	}
-
-	e.filterTitle("h2")
+	e.Source.Find("title").Each(func(_ int, s *goquery.Selection) {
+		text := s.Text()
+		text = strings.TrimSpace(text)
+		e.MainTitle = text
+	})
 	defer doneExtractInformation.Done()
 }
 
@@ -103,33 +100,6 @@ func (e *ExtractInformation) extractMetaDescription() {
 	defer doneExtractInformation.Done()
 }
 
-func (e *ExtractInformation) filterTitle(tag string) {
-	var title = make([]string, 0)
-	var first string = ""
-
-	e.Source.Find(tag).Each(func(_ int, s *goquery.Selection) {
-		text := s.Text()
-		text = strings.TrimSpace(text)
-
-		if text != "" {
-			if first == "" {
-				first = text
-			}
-			title = append(title, text)
-		}
-	})
-
-	for _, t := range title {
-		words := strings.Split(t, " ")
-		if len(words) >= e.MainTitleMin && e.MainTitle == "" {
-			e.MainTitle = t
-		}
-	}
-
-	if e.MainTitle == "" {
-		e.MainTitle = first
-	}
-}
 
 func (e *ExtractInformation) normalize() {
 	remove := []string{"\n", "\t", "\r"}
