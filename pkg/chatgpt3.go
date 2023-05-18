@@ -66,7 +66,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 	}
 
 	informatin := ExtractInformation{}
-	informatin.Init(pagina.Source, 3, 5, 30)
+	informatin.Init(pagina.Source, 5, 5, 30)
 	informatin.Call()
 
 	score := Score{}
@@ -80,8 +80,8 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		Scone:      score.GetScore(),
 		StatusCode: pagina.StatusCode,
 	}
-	responseSuccess.ChatGpt.Title = informatin.MainTitle
-	responseSuccess.ChatGpt.Paragraph = informatin.MainParagraph
+	responseSuccess.ChatGpt.Title = informatin.TitleWebSite
+	responseSuccess.ChatGpt.Paragraph = informatin.MostRelevantText
 	responseSuccess.ChatGpt.Description = informatin.MetaDescription
 
 	return responseSuccess, nil
