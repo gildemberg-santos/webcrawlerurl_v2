@@ -45,8 +45,22 @@ func (e *ExtractInformation) extractTitleWebSite() {
 		})
 	})
 
+	if e.TitleWebSite == "" {
+		e.Source.Find("title").Each(func(_ int, s *goquery.Selection) {
+			text := s.Text()
+			text = strings.TrimSpace(text)
+			e.TitleWebSite = text
+		})
+	}
+
 	e.Source.Find("meta").Each(func(_ int, s *goquery.Selection) {
 		name, _ := s.Attr("property")
+		if name == "title" && e.TitleWebSite == "" {
+			content, _ := s.Attr("content")
+			content = strings.TrimSpace(content)
+			e.TitleWebSite = content
+		}
+
 		if name == "og:title" && e.TitleWebSite == "" {
 			content, _ := s.Attr("content")
 			content = strings.TrimSpace(content)
