@@ -34,6 +34,12 @@ func (l *LoadPage) Load() (err error) {
 		log.Fatal("Erro ao criar a requisição -> ", err)
 		return
 	}
+
+	userAgentRandom := UserAgentRandom{}
+	userAgentRandom.Call()
+	log.Default().Println("User-Agent -> ", userAgentRandom.UserAgent)
+	req.Header.Set("User-Agent", userAgentRandom.UserAgent)
+
 	resp, err := client.Do(req)
 	if err != nil {
 		err = errors.New("error to send request -> " + err.Error())
