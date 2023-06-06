@@ -18,7 +18,7 @@ func (l *NormalizeUrl) GetUrl() (url string, err error) {
 	l.normalizeHttp()
 
 	if !l.isUrl() {
-		err = errors.New("Url is invalid")
+		err = errors.New("url is invalid")
 	}
 
 	url = l.Url
