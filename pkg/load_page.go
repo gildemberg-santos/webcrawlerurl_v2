@@ -31,7 +31,7 @@ func (l *LoadPage) Load() (err error) {
 	req, err := http.NewRequest("GET", l.Url, nil)
 	if err != nil {
 		l.StatusCode = 404
-		log.Fatal("Erro ao criar a requisição -> ", err)
+		log.Default().Println("Error to create request -> ", err.Error())
 		return
 	}
 
@@ -42,9 +42,9 @@ func (l *LoadPage) Load() (err error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
+		l.StatusCode = 404
 		err = errors.New("error to send request -> " + err.Error())
-		log.Fatal(err)
-		l.StatusCode = resp.StatusCode
+		log.Default().Println(err.Error())
 		return
 	}
 	defer resp.Body.Close()
@@ -52,7 +52,7 @@ func (l *LoadPage) Load() (err error) {
 	if resp.StatusCode != 200 {
 		l.StatusCode = resp.StatusCode
 		err = errors.New("found error in the page")
-		log.Fatal(err)
+		log.Default().Println("Error to load page -> ", err.Error())
 		return
 	}
 
@@ -60,7 +60,7 @@ func (l *LoadPage) Load() (err error) {
 	if err != nil {
 		l.StatusCode = 500
 		err = errors.New("error to read body request -> " + err.Error())
-		log.Fatal(err)
+		log.Default().Println(err.Error())
 		return
 	}
 
