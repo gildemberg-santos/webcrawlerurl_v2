@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"sync"
 
@@ -25,29 +26,42 @@ func (l *LoadPage) Load() (err error) {
 		return
 	}
 
-	res, err := http.Get(l.Url)
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", l.Url, nil)
 	if err != nil {
 		l.StatusCode = 404
+		log.Fatal("Erro ao criar a requisição -> ", err)
 		return
 	}
-	defer res.Body.Close()
+	resp, err := client.Do(req)
+	if err != nil {
+		err = errors.New("error to send request -> " + err.Error())
+		log.Fatal(err)
+		l.StatusCode = resp.StatusCode
+		return
+	}
+	defer resp.Body.Close()
 
-	if res.StatusCode != 200 {
-		l.StatusCode = res.StatusCode
-		err = errors.New("Found error in the page")
+	if resp.StatusCode != 200 {
+		l.StatusCode = resp.StatusCode
+		err = errors.New("found error in the page")
+		log.Fatal(err)
 		return
 	}
 
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		l.StatusCode = 500
+		err = errors.New("error to read body request -> " + err.Error())
+		log.Fatal(err)
 		return
 	}
 
 	l.Source = doc
 
 	l.removerElementos()
-	l.StatusCode = res.StatusCode
+	l.StatusCode = resp.StatusCode
 	return
 }
 
