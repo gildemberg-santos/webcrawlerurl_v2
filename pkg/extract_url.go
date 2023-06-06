@@ -40,7 +40,7 @@ func (e *ExtractUrl) removeDuplicationUrl() {
 		if e.Limit > 0 && len(result) >= e.Limit {
 			break
 		}
-		if occurred[e.OutUrls[i]] != true {
+		if !occurred[e.OutUrls[i]] {
 			occurred[e.OutUrls[i]] = true
 			result = append(result, e.OutUrls[i])
 		}
