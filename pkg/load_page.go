@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -26,7 +27,9 @@ func (l *LoadPage) Load() (err error) {
 		return
 	}
 
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
 
 	req, err := http.NewRequest("GET", l.Url, nil)
 	if err != nil {
