@@ -1,5 +1,7 @@
 # Web Crawler para extração de dados
 
+![example workflow](https://github.com/gildemberg-santos/webcrawlerurl_v2/actions/workflows/go.yml/badge.svg)
+
 O objetivo deste projeto é fornecer uma ferramenta automatizada para coletar informações específicas de uma página da web. Nós utilizamos técnicas de mapeamento e extração de dados para analisar a estrutura da página e identificar padrões na apresentação de dados, permitindo que os dados sejam extraídos e organizados em uma estrutura de dados útil.
 
 ### Instalação
