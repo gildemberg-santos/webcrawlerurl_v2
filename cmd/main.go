@@ -14,6 +14,7 @@ func main() {
 	log.Println("Starting server...")
 	http.HandleFunc("/chatgpt3", RouteChatGpt3)
 	http.HandleFunc("/mappingurl", RouteMappingUrl)
+	http.HandleFunc("/readtext", RouteReadText)
 
 	log.Println("Listening on port " + GetPort())
 	err := http.ListenAndServe(GetPort(), nil)
@@ -58,6 +59,29 @@ func RouteMappingUrl(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response, err := mapping.Call()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	log.Println("Success")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func RouteReadText(w http.ResponseWriter, r *http.Request) {
+	log.Println("RouteReadText")
+	w.Header().Set("Content-Type", "application/json")
+	uri := pkg.NormalizeUrl{Url: r.URL.Query().Get("url")}
+
+	url, _ := uri.GetUrl()
+
+	readtext := pkg.ReadText{
+		Url: url,
+	}
+
+	response, err := readtext.Call()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)

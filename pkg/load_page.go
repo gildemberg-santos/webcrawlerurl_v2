@@ -70,6 +70,7 @@ func (l *LoadPage) Load() (err error) {
 	l.Source = doc
 
 	l.removerElementos()
+	l.removeElementsScript()
 	l.StatusCode = resp.StatusCode
 	return
 }
@@ -95,4 +96,13 @@ func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
 		}
 	})
 	defer doneLoadPage.Done()
+}
+
+func (l *LoadPage) removeElementsScript() {
+	l.Source.Find("script").Each(func(_ int, s *goquery.Selection) {
+		s.Remove()
+	})
+	l.Source.Find("noscript").Each(func(_ int, s *goquery.Selection) {
+		s.Remove()
+	})
 }
