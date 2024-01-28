@@ -70,13 +70,12 @@ func (l *LoadPage) Load() (err error) {
 	l.Source = doc
 
 	l.removerElementos()
-	l.removeElementsScript()
 	l.StatusCode = resp.StatusCode
 	return
 }
 
 func (l *LoadPage) removerElementos() {
-	doneLoadPage.Add(9)
+	doneLoadPage.Add(11)
 	go l.removeElementsDisplayNone("div", "d-none")
 	go l.removeElementsDisplayNone("h1", "d-none")
 	go l.removeElementsDisplayNone("h2", "d-none")
@@ -86,23 +85,16 @@ func (l *LoadPage) removerElementos() {
 	go l.removeElementsDisplayNone("p", "d-none")
 	go l.removeElementsDisplayNone("span", "d-none")
 	go l.removeElementsDisplayNone("a", "d-none")
+	go l.removeElementsDisplayNone("script", "")
+	go l.removeElementsDisplayNone("noscript", "")
 	doneLoadPage.Wait()
 }
 
 func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
 	l.Source.Find(tag).Each(func(_ int, s *goquery.Selection) {
-		if s.HasClass(css) {
+		if s.HasClass(css) || (tag == "script" || tag == "noscript") {
 			s.Remove()
 		}
 	})
 	defer doneLoadPage.Done()
-}
-
-func (l *LoadPage) removeElementsScript() {
-	l.Source.Find("script").Each(func(_ int, s *goquery.Selection) {
-		s.Remove()
-	})
-	l.Source.Find("noscript").Each(func(_ int, s *goquery.Selection) {
-		s.Remove()
-	})
 }
