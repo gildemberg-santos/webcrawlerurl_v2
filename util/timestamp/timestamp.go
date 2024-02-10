@@ -1,4 +1,4 @@
-package pkg
+package timestamp
 
 import (
 	"time"
@@ -9,12 +9,18 @@ type Timestamp struct {
 	TimeEnd   int64
 }
 
-func (t *Timestamp) Start() {
-	t.TimeStart = time.Now().UnixNano()
+func NewTimestamp() *Timestamp {
+	return &Timestamp{}
 }
 
-func (t *Timestamp) End() {
+func (t *Timestamp) Start() *Timestamp {
+	t.TimeStart = time.Now().UnixNano()
+	return t
+}
+
+func (t *Timestamp) End() *Timestamp {
 	t.TimeEnd = time.Now().UnixNano()
+	return t
 }
 
 func (t *Timestamp) GetTime() float64 {

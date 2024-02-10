@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
+	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
 )
 
 var doneLoadPage sync.WaitGroup
@@ -19,8 +21,7 @@ type LoadPage struct {
 }
 
 func (l *LoadPage) Load() (err error) {
-	uri := NormalizeUrl{Url: l.Url}
-	_, err = uri.GetUrl()
+	_, err = normalize.NewNormalizeUrl(l.Url).GetUrl()
 
 	if err != nil {
 		l.StatusCode = 500
@@ -38,10 +39,7 @@ func (l *LoadPage) Load() (err error) {
 		return
 	}
 
-	userAgentRandom := UserAgentRandom{}
-	userAgentRandom.Call()
-	log.Default().Println("User-Agent -> ", userAgentRandom.UserAgent)
-	req.Header.Set("User-Agent", userAgentRandom.UserAgent)
+	req.Header.Set("User-Agent", useragent.NewUserAgentRandom().Call().UserAgent)
 
 	resp, err := client.Do(req)
 	if err != nil {

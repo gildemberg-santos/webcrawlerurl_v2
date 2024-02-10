@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/pkg"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 )
 
 func main() {
@@ -26,8 +27,7 @@ func main() {
 func RouteChatGpt3(w http.ResponseWriter, r *http.Request) {
 	log.Println("RouteChatGpt3")
 	w.Header().Set("Content-Type", "application/json")
-	uri := pkg.NormalizeUrl{Url: r.URL.Query().Get("url")}
-	url, _ := uri.GetUrl()
+	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
 	chatgpt3 := pkg.ChatGpt3{
 		Url: url,
@@ -48,10 +48,9 @@ func RouteChatGpt3(w http.ResponseWriter, r *http.Request) {
 func RouteMappingUrl(w http.ResponseWriter, r *http.Request) {
 	log.Println("RouteMappingUrl")
 	w.Header().Set("Content-Type", "application/json")
-	uri := pkg.NormalizeUrl{Url: r.URL.Query().Get("url")}
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 
-	url, _ := uri.GetUrl()
+	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
 	mapping := pkg.MappingUrl{
 		Url:   url,
@@ -73,9 +72,8 @@ func RouteMappingUrl(w http.ResponseWriter, r *http.Request) {
 func RouteReadText(w http.ResponseWriter, r *http.Request) {
 	log.Println("RouteReadText")
 	w.Header().Set("Content-Type", "application/json")
-	uri := pkg.NormalizeUrl{Url: r.URL.Query().Get("url")}
 
-	url, _ := uri.GetUrl()
+	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
 	readtext := pkg.ReadText{
 		Url: url,

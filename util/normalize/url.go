@@ -1,4 +1,4 @@
-package pkg
+package normalize
 
 import (
 	"errors"
@@ -11,6 +11,10 @@ import (
 type NormalizeUrl struct {
 	Url     string
 	BaseUrl string
+}
+
+func NewNormalizeUrl(url string) *NormalizeUrl {
+	return &NormalizeUrl{Url: url}
 }
 
 func (l *NormalizeUrl) GetUrl() (url string, err error) {
@@ -96,34 +100,11 @@ func (l *NormalizeUrl) isExtension(linkHost, linkPath string) bool {
 			return strings.HasSuffix(path, valid)
 		}
 
-		// validationWord := func(path string, valid string) bool {
-		// 	return strings.LastIndex(path, valid) != -1
-		// }
-
-		// validationEmail := func(path string) bool {
-		// 	matched, _ := regexp.MatchString(`^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$`, path)
-		// 	return matched
-		// }
-
 		for _, extension := range []string{".pdf", ".jpg", ".gif", ".png"} {
 			if validationExtension(linkPath, extension) {
 				return true
 			}
 		}
-
-		// for _, word := range []string{"mailto:", "tel:", "javascript:", "window.", ":void"} {
-		// 	if validationWord(linkPath, word) {
-		// 		return false
-		// 	}
-		// }
-
-		// if validationWord(linkPath, linkHost) {
-		// 	return false
-		// }
-
-		// if validationEmail(linkPath) {
-		// 	return false
-		// }
 	}
 
 	return false

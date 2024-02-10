@@ -2,6 +2,8 @@ package pkg
 
 import (
 	"errors"
+
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
 type ChatGpt3 struct {
@@ -30,8 +32,7 @@ type responseErroGpt struct {
 }
 
 func (c *ChatGpt3) Call() (interface{}, error) {
-	ts := Timestamp{}
-	ts.Start()
+	ts := timestamp.NewTimestamp().Start()
 
 	if c.Url == "" {
 		err := errors.New("url is empty")

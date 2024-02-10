@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 )
 
 type ExtractUrl struct {
@@ -23,7 +24,8 @@ func (e *ExtractUrl) Call() {
 func (e *ExtractUrl) extractUrls() {
 	e.Source.Find("a").Each(func(_ int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
-		uri := NormalizeUrl{Url: href, BaseUrl: e.Url}
+		uri := normalize.NewNormalizeUrl(href)
+		uri.BaseUrl = e.Url
 		url, err := uri.GetUrl()
 		if err != nil {
 			return

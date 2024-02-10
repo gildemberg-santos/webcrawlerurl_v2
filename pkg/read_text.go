@@ -2,6 +2,8 @@ package pkg
 
 import (
 	"errors"
+
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
 type ReadText struct {
@@ -26,8 +28,7 @@ type responseErroReadtext struct {
 }
 
 func (c *ReadText) Call() (interface{}, error) {
-	ts := Timestamp{}
-	ts.Start()
+	ts := timestamp.NewTimestamp().Start()
 
 	if c.Url == "" {
 		err := errors.New("url is empty")

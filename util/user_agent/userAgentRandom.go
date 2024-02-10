@@ -1,4 +1,4 @@
-package pkg
+package useragent
 
 import (
 	"math/rand"
@@ -9,8 +9,14 @@ type UserAgentRandom struct {
 	UserAgent string
 }
 
-func (t *UserAgentRandom) Call() {
+func NewUserAgentRandom() *UserAgentRandom {
+	userAgentRandom := &UserAgentRandom{}
+	return userAgentRandom
+}
+
+func (t *UserAgentRandom) Call() *UserAgentRandom {
 	t.random()
+	return t
 }
 
 func (t *UserAgentRandom) random() {
