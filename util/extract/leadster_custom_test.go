@@ -27,10 +27,10 @@ func TestLeadsterCustom_Call(t *testing.T) {
 		<html>
 	`))
 
-	pagina := pkg.LoadPage{Url: "http://www.teste.com"}
-	pagina.Load()
+	page := pkg.NewLoadPage("http://www.teste.com")
+	page.Call()
 
-	leadsterCustom := extract.NewLeadsterCustom(pagina.Source, 5, 5, 30)
+	leadsterCustom := extract.NewLeadsterCustom(page.Source, 5, 5, 30)
 	response := leadsterCustom.Call()
 
 	titule := response.TitleWebSite

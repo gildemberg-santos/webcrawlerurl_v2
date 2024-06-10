@@ -28,6 +28,12 @@ type responseErroReadtext struct {
 	StatusCode int         `json:"status_code"`
 }
 
+func NewReadText(url string) ReadText {
+	return ReadText{
+		Url: url,
+	}
+}
+
 func (c *ReadText) Call() (interface{}, error) {
 	ts := timestamp.NewTimestamp().Start()
 
@@ -44,11 +50,9 @@ func (c *ReadText) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	pagina := LoadPage{
-		Url: c.Url,
-	}
+	page := NewLoadPage(c.Url)
 
-	err := pagina.Load()
+	err := page.Call()
 	if err != nil {
 		ts.End()
 		responseErro := responseErroReadtext{
@@ -56,19 +60,19 @@ func (c *ReadText) Call() (interface{}, error) {
 			ReadText:   nil,
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
-			StatusCode: pagina.StatusCode,
+			StatusCode: page.StatusCode,
 		}
 		return responseErro, err
 	}
 
-	informatin := extract.NewText(pagina.Source)
+	informatin := extract.NewText(page.Source)
 	extractext := informatin.Call()
 
 	ts.End()
 	responseSuccess := responseSuccessReadText{
 		Url:        c.Url,
 		Timestamp:  ts.GetTime(),
-		StatusCode: pagina.StatusCode,
+		StatusCode: page.StatusCode,
 	}
 	responseSuccess.ReadText.Text = extractext.Text
 

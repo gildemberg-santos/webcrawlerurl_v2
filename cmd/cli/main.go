@@ -11,10 +11,7 @@ func main() {
 	limit := 28
 	url, _ := normalize.NewNormalizeUrl("https://leadster.com.br/").GetUrl()
 
-	mapping := pkg.MappingUrl{
-		Url:   url,
-		Limit: limit,
-	}
+	mapping := pkg.NewMappingUrl(url, limit)
 
 	response, err := mapping.Call()
 	if err != nil {

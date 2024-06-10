@@ -29,9 +29,7 @@ func RouteChatGpt3(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
-	chatgpt3 := pkg.ChatGpt3{
-		Url: url,
-	}
+	chatgpt3 := pkg.NewChatGpt3(url)
 
 	response, err := chatgpt3.Call()
 	if err != nil {
@@ -52,10 +50,7 @@ func RouteMappingUrl(w http.ResponseWriter, r *http.Request) {
 
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
-	mapping := pkg.MappingUrl{
-		Url:   url,
-		Limit: int(limit),
-	}
+	mapping := pkg.NewMappingUrl(url, int(limit))
 
 	response, err := mapping.Call()
 	if err != nil {
@@ -75,9 +70,7 @@ func RouteReadText(w http.ResponseWriter, r *http.Request) {
 
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
-	readtext := pkg.ReadText{
-		Url: url,
-	}
+	readtext := pkg.NewReadText(url)
 
 	response, err := readtext.Call()
 	if err != nil {

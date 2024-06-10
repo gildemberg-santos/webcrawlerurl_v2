@@ -28,10 +28,10 @@ func TestLink_Call(t *testing.T) {
 		<html>
 	`))
 
-	pagina := pkg.LoadPage{Url: "http://www.teste.com"}
-	pagina.Load()
+	page := pkg.NewLoadPage("http://www.teste.com")
+	page.Call()
 
-	readtext := extract.NewLink(pagina.Source, "http://www.teste.com", 2)
+	readtext := extract.NewLink(page.Source, "http://www.teste.com", 2)
 	response := readtext.Call()
 
 	url01 := response.OutUrls[0]

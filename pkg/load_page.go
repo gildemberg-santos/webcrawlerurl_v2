@@ -20,7 +20,13 @@ type LoadPage struct {
 	StatusCode int
 }
 
-func (l *LoadPage) Load() (err error) {
+func NewLoadPage(url string) LoadPage {
+	return LoadPage{
+		Url: url,
+	}
+}
+
+func (l *LoadPage) Call() (err error) {
 	_, err = normalize.NewNormalizeUrl(l.Url).GetUrl()
 
 	if err != nil {

@@ -32,6 +32,12 @@ type responseErroGpt struct {
 	StatusCode int         `json:"status_code"`
 }
 
+func NewChatGpt3(url string) ChatGpt3 {
+	return ChatGpt3{
+		Url: url,
+	}
+}
+
 func (c *ChatGpt3) Call() (interface{}, error) {
 	ts := timestamp.NewTimestamp().Start()
 
@@ -49,11 +55,9 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	pagina := LoadPage{
-		Url: c.Url,
-	}
+	page := NewLoadPage(c.Url)
 
-	err := pagina.Load()
+	err := page.Call()
 	if err != nil {
 		ts.End()
 		responseErro := responseErroGpt{
@@ -62,12 +66,12 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
 			Scone:      0,
-			StatusCode: pagina.StatusCode,
+			StatusCode: page.StatusCode,
 		}
 		return responseErro, err
 	}
 
-	informatin := extract.NewLeadsterCustom(pagina.Source, 5, 5, 30)
+	informatin := extract.NewLeadsterCustom(page.Source, 5, 5, 30)
 	informatin.Call()
 
 	score := Score{}
@@ -79,7 +83,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		Url:        c.Url,
 		Timestamp:  ts.GetTime(),
 		Scone:      score.GetScore(),
-		StatusCode: pagina.StatusCode,
+		StatusCode: page.StatusCode,
 	}
 	responseSuccess.ChatGpt.Title = informatin.TitleWebSite
 	responseSuccess.ChatGpt.Paragraph = informatin.MostRelevantText

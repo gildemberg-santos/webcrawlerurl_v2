@@ -27,10 +27,10 @@ func TestText_Call(t *testing.T) {
 		<html>
 	`))
 
-	pagina := pkg.LoadPage{Url: "http://www.teste.com"}
-	pagina.Load()
+	page := pkg.NewLoadPage("http://www.teste.com")
+	page.Call()
 
-	readtext := extract.NewText(pagina.Source)
+	readtext := extract.NewText(page.Source)
 	response := readtext.Call()
 
 	text := response.Text

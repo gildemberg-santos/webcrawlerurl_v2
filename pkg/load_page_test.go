@@ -13,19 +13,19 @@ func TestLoadPage_Load(t *testing.T) {
 
 	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(200, ``))
 
-	LoadPage := LoadPage{Url: "http://www.teste.com"}
-	err := LoadPage.Load()
+	loadPage := NewLoadPage("http://www.teste.com")
+	err := loadPage.Call()
 	assert.Nil(t, err)
-	assert.Equal(t, 200, LoadPage.StatusCode)
+	assert.Equal(t, 200, loadPage.StatusCode)
 }
 
 func TestLoadPage_LoadError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(200, ``))
+	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(404, ``))
 
-	LoadPage := LoadPage{Url: "http://www.teste.com.br"}
-	LoadPage.Load()
-	assert.Equal(t, 404, LoadPage.StatusCode)
+	loadPage := NewLoadPage("http://www.teste.com")
+	loadPage.Call()
+	assert.Equal(t, 404, loadPage.StatusCode)
 }

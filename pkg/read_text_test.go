@@ -25,7 +25,7 @@ func TestReadText_Call(t *testing.T) {
 		<html>
 	`))
 
-	readtext := ReadText{Url: "http://www.teste.com"}
+	readtext := NewReadText("http://www.teste.com")
 	response, _ := readtext.Call()
 
 	text := response.(responseSuccessReadText).ReadText.Text

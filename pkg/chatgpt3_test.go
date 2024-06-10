@@ -25,7 +25,7 @@ func TestChatGpt3_Call(t *testing.T) {
 	<html>
 	`))
 
-	chatgpt3 := ChatGpt3{Url: "https://www.teste.com"}
+	chatgpt3 := NewChatGpt3("https://www.teste.com")
 	response, err := chatgpt3.Call()
 
 	assert.Nil(t, err)

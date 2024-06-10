@@ -28,6 +28,13 @@ type responseErroUrls struct {
 	StatusCode int     `json:"status_code"`
 }
 
+func NewMappingUrl(url string, limit int) MappingUrl {
+	return MappingUrl{
+		Url:   url,
+		Limit: limit,
+	}
+}
+
 func (m *MappingUrl) Call() (interface{}, error) {
 	ts := timestamp.NewTimestamp().Start()
 
@@ -43,30 +50,28 @@ func (m *MappingUrl) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	pagina := LoadPage{
-		Url: m.Url,
-	}
+	page := NewLoadPage(m.Url)
 
-	err := pagina.Load()
+	err := page.Call()
 	if err != nil {
 		ts.End()
 		responseErro := responseErroUrls{
 			Erro:       err.Error(),
 			Url:        m.Url,
 			Timestamp:  ts.GetTime(),
-			StatusCode: pagina.StatusCode,
+			StatusCode: page.StatusCode,
 		}
 		return responseErro, err
 	}
 
-	extract_url := extract.NewLink(pagina.Source, m.Url, m.Limit)
+	extract_url := extract.NewLink(page.Source, m.Url, m.Limit)
 	extract_url.Call()
 	ts.End()
 
 	responseSuccess := responseSuccessUrls{
 		Url:        m.Url,
 		Timestamp:  ts.GetTime(),
-		StatusCode: pagina.StatusCode,
+		StatusCode: page.StatusCode,
 	}
 	responseSuccess.MappingUrl.Urls = extract_url.OutUrls
 
