@@ -3,6 +3,7 @@ package pkg
 import (
 	"errors"
 
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -58,11 +59,7 @@ func (m *MappingUrl) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	extract_url := ExtractUrl{
-		Url:   m.Url,
-		Limit: m.Limit,
-	}
-	extract_url.Init(pagina.Source)
+	extract_url := extract.NewLink(pagina.Source, m.Url, m.Limit)
 	extract_url.Call()
 	ts.End()
 

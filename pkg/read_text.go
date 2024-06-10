@@ -3,6 +3,7 @@ package pkg
 import (
 	"errors"
 
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -60,9 +61,8 @@ func (c *ReadText) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	informatin := ExtractText{}
-	informatin.Init(pagina.Source)
-	extractext, _ := informatin.Call()
+	informatin := extract.NewText(pagina.Source)
+	extractext := informatin.Call()
 
 	ts.End()
 	responseSuccess := responseSuccessReadText{
@@ -70,7 +70,7 @@ func (c *ReadText) Call() (interface{}, error) {
 		Timestamp:  ts.GetTime(),
 		StatusCode: pagina.StatusCode,
 	}
-	responseSuccess.ReadText.Text = extractext.(ExtractText).Text
+	responseSuccess.ReadText.Text = extractext.Text
 
 	return responseSuccess, nil
 }

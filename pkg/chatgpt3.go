@@ -3,6 +3,7 @@ package pkg
 import (
 	"errors"
 
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -66,8 +67,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	informatin := ExtractInformation{}
-	informatin.Init(pagina.Source, 5, 5, 30)
+	informatin := extract.NewLeadsterCustom(pagina.Source, 5, 5, 30)
 	informatin.Call()
 
 	score := Score{}

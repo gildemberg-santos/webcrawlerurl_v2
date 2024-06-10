@@ -3,12 +3,14 @@ package pkg
 import (
 	"strings"
 	"sync"
+
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 )
 
 var doneScore sync.WaitGroup
 
 type Score struct {
-	Information *ExtractInformation
+	Information *extract.LeadsterCustom
 	Rules       struct {
 		TitleWebSite     float32
 		MostRelevantText float32
@@ -16,7 +18,7 @@ type Score struct {
 	}
 }
 
-func (s *Score) Init(information *ExtractInformation) {
+func (s *Score) Init(information *extract.LeadsterCustom) {
 	s.Information = information
 }
 
