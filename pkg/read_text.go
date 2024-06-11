@@ -14,21 +14,20 @@ type ReadText struct {
 	Url   string
 	Limit int64
 }
-
-type responseSuccessReadText struct {
+type DataReadText struct {
 	Text        string   `json:"text"`
 	CountChunck int64    `json:"count_chunck"`
 	Chuncks     []string `json:"chuncks"`
 	Url         string   `json:"url"`
-	Timestamp   float64  `json:"ts"`
-	StatusCode  int      `json:"status_code"`
 }
 
-type responseErroReadtext struct {
-	Erro       string  `json:"erro"`
-	Url        string  `json:"url"`
-	Timestamp  float64 `json:"ts"`
-	StatusCode int     `json:"status_code"`
+type responseReadtext struct {
+	Failure    bool           `json:"failure"`
+	Success    bool           `json:"success"`
+	Message    string         `json:"message"`
+	Data       []DataReadText `json:"data"`
+	Timestamp  float64        `json:"ts"`
+	StatusCode int            `json:"status_code"`
 }
 
 func NewReadText(url string, limit int64) ReadText {
@@ -39,15 +38,16 @@ func NewReadText(url string, limit int64) ReadText {
 	}
 }
 
-func (c *ReadText) Call() (interface{}, error) {
+func (c *ReadText) Call() (responseReadtext, error) {
 	ts := timestamp.NewTimestamp().Start()
 
 	if c.Url == "" {
 		err := errors.New("url is empty")
 		ts.End()
-		responseErro := responseErroReadtext{
-			Erro:       err.Error(),
-			Url:        c.Url,
+		responseErro := responseReadtext{
+			Failure:    true,
+			Success:    false,
+			Message:    err.Error(),
 			Timestamp:  ts.GetTime(),
 			StatusCode: 500,
 		}
@@ -59,9 +59,10 @@ func (c *ReadText) Call() (interface{}, error) {
 	err := page.Call()
 	if err != nil {
 		ts.End()
-		responseErro := responseErroReadtext{
-			Erro:       err.Error(),
-			Url:        c.Url,
+		responseErro := responseReadtext{
+			Failure:    true,
+			Success:    false,
+			Message:    err.Error(),
 			Timestamp:  ts.GetTime(),
 			StatusCode: page.StatusCode,
 		}
@@ -74,13 +75,22 @@ func (c *ReadText) Call() (interface{}, error) {
 	chuncks.Call()
 
 	ts.End()
-	responseSuccess := responseSuccessReadText{
+
+	data := DataReadText{
 		Text:        extractext.Text,
 		CountChunck: chuncks.CountChunck,
 		Chuncks:     chuncks.ListChuncks,
 		Url:         c.Url,
-		Timestamp:   ts.GetTime(),
-		StatusCode:  page.StatusCode,
+	}
+	datas := []DataReadText{data}
+
+	responseSuccess := responseReadtext{
+		Failure:    false,
+		Success:    true,
+		Message:    "Success",
+		Data:       datas,
+		Timestamp:  ts.GetTime(),
+		StatusCode: page.StatusCode,
 	}
 
 	return responseSuccess, nil

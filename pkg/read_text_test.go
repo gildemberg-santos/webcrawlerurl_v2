@@ -27,8 +27,7 @@ func TestReadText_Call(t *testing.T) {
 
 	readtext := NewReadText("http://www.teste.com", 2000)
 	response, _ := readtext.Call()
+	first := response.Data[0]
 
-	text := response.(responseSuccessReadText).Text
-
-	assert.Equal(t, "Titulo Paragrafo", text)
+	assert.Equal(t, "Titulo Paragrafo", first.Text)
 }
