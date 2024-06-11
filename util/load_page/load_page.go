@@ -79,7 +79,7 @@ func (l *LoadPage) Call() (err error) {
 }
 
 func (l *LoadPage) removerElementos() {
-	doneLoadPage.Add(11)
+	doneLoadPage.Add(12)
 	go l.removeElementsDisplayNone("div", "d-none")
 	go l.removeElementsDisplayNone("h1", "d-none")
 	go l.removeElementsDisplayNone("h2", "d-none")
@@ -91,12 +91,13 @@ func (l *LoadPage) removerElementos() {
 	go l.removeElementsDisplayNone("a", "d-none")
 	go l.removeElementsDisplayNone("script", "")
 	go l.removeElementsDisplayNone("noscript", "")
+	go l.removeElementsDisplayNone("style", "")
 	doneLoadPage.Wait()
 }
 
 func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
 	l.Source.Find(tag).Each(func(_ int, s *goquery.Selection) {
-		if s.HasClass(css) || (tag == "script" || tag == "noscript") {
+		if s.HasClass(css) || (tag == "script" || tag == "noscript" || tag == "style") {
 			s.Remove()
 		}
 	})

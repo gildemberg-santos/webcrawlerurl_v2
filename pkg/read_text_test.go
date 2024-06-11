@@ -25,10 +25,10 @@ func TestReadText_Call(t *testing.T) {
 		<html>
 	`))
 
-	readtext := NewReadText("http://www.teste.com")
+	readtext := NewReadText("http://www.teste.com", 2000)
 	response, _ := readtext.Call()
 
-	text := response.(responseSuccessReadText).ReadText.Text
+	text := response.(responseSuccessReadText).Text
 
 	assert.Equal(t, "Titulo Paragrafo", text)
 }

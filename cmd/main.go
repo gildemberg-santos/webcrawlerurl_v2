@@ -1,4 +1,4 @@
-package serve
+package main
 
 import (
 	"encoding/json"
@@ -69,8 +69,10 @@ func RouteReadText(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
+	limitchunck, _ := strconv.Atoi(r.URL.Query().Get("limitchunck"))
+	log.Default().Println("limitchunck -> ", limitchunck)
 
-	readtext := pkg.NewReadText(url)
+	readtext := pkg.NewReadText(url, int64(limitchunck))
 
 	response, err := readtext.Call()
 	if err != nil {

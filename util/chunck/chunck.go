@@ -3,25 +3,62 @@ package chunck
 import "strings"
 
 type Chunck struct {
-	Limit       int
-	ListChuncks []string
 	Text        string
+	Limit       int64
+	ListChuncks []string
+	CountChunck int64
 }
 
-func NewChunck(limit int, text string) Chunck {
+func NewChunck(text string, limit int64) Chunck {
 	return Chunck{
-		Limit: limit,
 		Text:  text,
+		Limit: limit,
 	}
 }
 
 func (c *Chunck) Call() *Chunck {
-	if len(c.ListChuncks) < c.Limit {
+	if int64(len(c.ListChuncks)) < c.Limit {
 		c.getListChuncks()
+		c.removeDuplicateChuncks()
 	}
+	c.CountChunck = int64(len(c.ListChuncks))
 	return c
 }
 
 func (c *Chunck) getListChuncks() {
-	c.ListChuncks = append(strings.Split(c.Text, " "), c.ListChuncks...)[0:c.Limit]
+	text := c.Text
+	for len(text) > 0 {
+		if int64(len(c.ListChuncks)) == c.Limit {
+			break
+		}
+		if len(text) <= 100 {
+			c.ListChuncks = append(c.ListChuncks, text)
+			break
+		}
+		i := strings.LastIndex(text[:100], " ")
+		if i == -1 && len(text) >= 100 {
+			i = 100
+		}
+		c.ListChuncks = append(c.ListChuncks, text[:i])
+		text = text[i+1:]
+	}
+}
+
+func (c *Chunck) removeDuplicateChuncks() {
+	var listChuncks []string
+	for _, chunck := range c.ListChuncks {
+		if !contains(listChuncks, chunck) {
+			listChuncks = append(listChuncks, chunck)
+		}
+	}
+	c.ListChuncks = listChuncks
+}
+
+func contains(list []string, chunck string) bool {
+	for _, item := range list {
+		if item == chunck {
+			return true
+		}
+	}
+	return false
 }

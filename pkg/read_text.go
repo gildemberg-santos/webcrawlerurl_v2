@@ -2,36 +2,40 @@ package pkg
 
 import (
 	"errors"
+	"log"
 
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/chunck"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
 type ReadText struct {
-	Url string
+	Url   string
+	Limit int64
 }
 
 type responseSuccessReadText struct {
-	ReadText struct {
-		Text string `json:"text"`
-	} `json:"readtext"`
+	Text        string   `json:"text"`
+	CountChunck int64    `json:"count_chunck"`
+	Chuncks     []string `json:"chuncks"`
+	Url         string   `json:"url"`
+	Timestamp   float64  `json:"ts"`
+	StatusCode  int      `json:"status_code"`
+}
+
+type responseErroReadtext struct {
+	Erro       string  `json:"erro"`
 	Url        string  `json:"url"`
 	Timestamp  float64 `json:"ts"`
 	StatusCode int     `json:"status_code"`
 }
 
-type responseErroReadtext struct {
-	Erro       string      `json:"erro"`
-	ReadText   interface{} `json:"readtext"`
-	Url        string      `json:"url"`
-	Timestamp  float64     `json:"ts"`
-	StatusCode int         `json:"status_code"`
-}
-
-func NewReadText(url string) ReadText {
+func NewReadText(url string, limit int64) ReadText {
+	log.Println("NewReadText", url, limit)
 	return ReadText{
-		Url: url,
+		Url:   url,
+		Limit: limit,
 	}
 }
 
@@ -43,7 +47,6 @@ func (c *ReadText) Call() (interface{}, error) {
 		ts.End()
 		responseErro := responseErroReadtext{
 			Erro:       err.Error(),
-			ReadText:   nil,
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
 			StatusCode: 500,
@@ -58,7 +61,6 @@ func (c *ReadText) Call() (interface{}, error) {
 		ts.End()
 		responseErro := responseErroReadtext{
 			Erro:       err.Error(),
-			ReadText:   nil,
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
 			StatusCode: page.StatusCode,
@@ -68,14 +70,18 @@ func (c *ReadText) Call() (interface{}, error) {
 
 	informatin := extract.NewText(page.Source)
 	extractext := informatin.Call()
+	chuncks := chunck.NewChunck(extractext.Text, c.Limit)
+	chuncks.Call()
 
 	ts.End()
 	responseSuccess := responseSuccessReadText{
-		Url:        c.Url,
-		Timestamp:  ts.GetTime(),
-		StatusCode: page.StatusCode,
+		Text:        extractext.Text,
+		CountChunck: chuncks.CountChunck,
+		Chuncks:     chuncks.ListChuncks,
+		Url:         c.Url,
+		Timestamp:   ts.GetTime(),
+		StatusCode:  page.StatusCode,
 	}
-	responseSuccess.ReadText.Text = extractext.Text
 
 	return responseSuccess, nil
 }
