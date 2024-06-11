@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -50,7 +51,7 @@ func (m *MappingUrl) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	page := NewLoadPage(m.Url)
+	page := load_page.NewLoadPage(m.Url)
 
 	err := page.Call()
 	if err != nil {

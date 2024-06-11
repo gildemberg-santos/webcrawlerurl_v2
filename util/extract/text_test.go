@@ -3,8 +3,8 @@ package extract_test
 import (
 	"testing"
 
-	"github.com/gildemberg-santos/webcrawlerurl_v2/pkg"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -26,8 +26,7 @@ func TestText_Call(t *testing.T) {
 		</body>
 		<html>
 	`))
-
-	page := pkg.NewLoadPage("http://www.teste.com")
+	page := load_page.NewLoadPage("http://www.teste.com")
 	page.Call()
 
 	readtext := extract.NewText(page.Source)

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -55,7 +56,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	page := NewLoadPage(c.Url)
+	page := load_page.NewLoadPage(c.Url)
 
 	err := page.Call()
 	if err != nil {

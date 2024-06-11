@@ -1,4 +1,4 @@
-package pkg
+package load_page
 
 import (
 	"errors"
