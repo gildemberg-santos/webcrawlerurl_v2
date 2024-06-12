@@ -2,8 +2,8 @@ package pkg
 
 import (
 	"errors"
-	"log"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/chunck"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
@@ -11,8 +11,10 @@ import (
 )
 
 type ReadText struct {
-	Url   string
-	Limit int64
+	Url     string
+	Limit   int64
+	Sources *goquery.Document
+	Data    DataReadText
 }
 type DataReadText struct {
 	Text        string   `json:"text"`
@@ -21,50 +23,58 @@ type DataReadText struct {
 	Url         string   `json:"url"`
 }
 
-type responseReadtext struct {
-	Failure    bool           `json:"failure"`
-	Success    bool           `json:"success"`
-	Message    string         `json:"message"`
-	Data       []DataReadText `json:"data"`
-	Timestamp  float64        `json:"ts"`
-	StatusCode int            `json:"status_code"`
+type ResponseReadtext struct {
+	Failure   bool           `json:"failure"`
+	Success   bool           `json:"success"`
+	Message   string         `json:"message"`
+	Data      []DataReadText `json:"data"`
+	Timestamp float64        `json:"ts"`
 }
 
-func NewReadText(url string, limit int64) ReadText {
-	log.Println("NewReadText", url, limit)
+func NewReadText(url string, limit int64, source *goquery.Document) ReadText {
 	return ReadText{
-		Url:   url,
-		Limit: limit,
+		Url:     url,
+		Limit:   limit,
+		Sources: source,
 	}
 }
 
-func (c *ReadText) Call() (responseReadtext, error) {
+func (c *ReadText) Call() (ResponseReadtext, error) {
 	ts := timestamp.NewTimestamp().Start()
 
 	if c.Url == "" {
 		err := errors.New("url is empty")
 		ts.End()
-		responseErro := responseReadtext{
-			Failure:    true,
-			Success:    false,
-			Message:    err.Error(),
-			Timestamp:  ts.GetTime(),
-			StatusCode: 500,
+		responseErro := ResponseReadtext{
+			Failure:   true,
+			Success:   false,
+			Message:   err.Error(),
+			Timestamp: ts.GetTime(),
 		}
 		return responseErro, err
 	}
 
-	page := load_page.NewLoadPage(c.Url)
+	var page load_page.LoadPage
+	var err error
 
-	err := page.Call()
+	if c.Sources == nil {
+		page = load_page.NewLoadPage(c.Url)
+		err = page.Call()
+	} else {
+		page = load_page.LoadPage{
+			Url:    c.Url,
+			Source: c.Sources,
+		}
+		err = nil
+	}
+
 	if err != nil {
 		ts.End()
-		responseErro := responseReadtext{
-			Failure:    true,
-			Success:    false,
-			Message:    err.Error(),
-			Timestamp:  ts.GetTime(),
-			StatusCode: page.StatusCode,
+		responseErro := ResponseReadtext{
+			Failure:   true,
+			Success:   false,
+			Message:   err.Error(),
+			Timestamp: ts.GetTime(),
 		}
 		return responseErro, err
 	}
@@ -82,15 +92,15 @@ func (c *ReadText) Call() (responseReadtext, error) {
 		Chuncks:     chuncks.ListChuncks,
 		Url:         c.Url,
 	}
+	c.Data = data
 	datas := []DataReadText{data}
 
-	responseSuccess := responseReadtext{
-		Failure:    false,
-		Success:    true,
-		Message:    "Success",
-		Data:       datas,
-		Timestamp:  ts.GetTime(),
-		StatusCode: page.StatusCode,
+	responseSuccess := ResponseReadtext{
+		Failure:   false,
+		Success:   true,
+		Message:   "Success",
+		Data:      datas,
+		Timestamp: ts.GetTime(),
 	}
 
 	return responseSuccess, nil

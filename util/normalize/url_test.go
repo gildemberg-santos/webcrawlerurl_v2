@@ -8,13 +8,13 @@ import (
 )
 
 func TestUrl_GetUrl(t *testing.T) {
-	url, err := normalize.NewNormalizeUrl("www.google.com").GetUrl()
+	url, err := normalize.NewNormalizeUrl("https://www.google.com/").GetUrl()
 	assert.Nil(t, err)
 	assert.Equal(t, "https://www.google.com", url)
 }
 
 func TestUrl_GetUrl_Incomplete(t *testing.T) {
-	url, err := normalize.NewNormalizeUrl("www.google.com").GetUrl()
+	url, err := normalize.NewNormalizeUrl("www.google.com/").GetUrl()
 	assert.Nil(t, err)
 	assert.Equal(t, "https://www.google.com", url)
 }

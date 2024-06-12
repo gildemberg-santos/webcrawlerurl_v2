@@ -16,13 +16,15 @@ var doneLoadPage sync.WaitGroup
 
 type LoadPage struct {
 	Url        string
+	Timeout    time.Duration
 	Source     *goquery.Document
 	StatusCode int
 }
 
 func NewLoadPage(url string) LoadPage {
 	return LoadPage{
-		Url: url,
+		Url:     url,
+		Timeout: 10,
 	}
 }
 
@@ -35,7 +37,7 @@ func (l *LoadPage) Call() (err error) {
 	}
 
 	client := &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: l.Timeout * time.Second,
 	}
 
 	req, err := http.NewRequest("GET", l.Url, nil)
@@ -50,7 +52,7 @@ func (l *LoadPage) Call() (err error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		l.StatusCode = 404
-		err = errors.New("error to send request -> " + err.Error())
+		err = errors.New("Error to send request -> " + err.Error())
 		log.Default().Println(err.Error())
 		return
 	}
@@ -58,7 +60,7 @@ func (l *LoadPage) Call() (err error) {
 
 	if resp.StatusCode != 200 {
 		l.StatusCode = resp.StatusCode
-		err = errors.New("found error in the page")
+		err = errors.New("found error in the page status code -> " + string(resp.StatusCode))
 		log.Default().Println("Error to load page -> ", err.Error())
 		return
 	}
@@ -66,7 +68,7 @@ func (l *LoadPage) Call() (err error) {
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		l.StatusCode = 500
-		err = errors.New("error to read body request -> " + err.Error())
+		err = errors.New("Error to read body request -> " + err.Error())
 		log.Default().Println(err.Error())
 		return
 	}

@@ -25,7 +25,7 @@ func TestReadText_Call(t *testing.T) {
 		<html>
 	`))
 
-	readtext := NewReadText("http://www.teste.com", 2000)
+	readtext := NewReadText("http://www.teste.com", 2000, nil)
 	response, _ := readtext.Call()
 	first := response.Data[0]
 

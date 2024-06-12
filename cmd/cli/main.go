@@ -1,25 +1,22 @@
-package cli
+package main
 
 import (
 	"log"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/pkg"
-	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/file"
 )
 
 func main() {
-	limit := 28
-	url, _ := normalize.NewNormalizeUrl("https://leadster.com.br/").GetUrl()
+	var url_base string = "https://leadster.com.br/"
+	var maxUrlLimit int64 = 2_000_000
+	var maxChunckLimit int64 = 2_000_000
 
-	mapping := pkg.NewMappingUrl(url, limit)
+	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit)
+	leadsterAI.Call()
 
-	response, err := mapping.Call()
-	if err != nil {
-		log.Println("Error")
-		log.Println(response)
-		return
-	}
+	log.Println(len(leadsterAI.Data))
 
-	log.Println("Success")
-	log.Println(response)
+	fileJson := file.NewFileJson("data.json", leadsterAI)
+	fileJson.Save()
 }

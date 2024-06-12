@@ -32,14 +32,15 @@ func TestMappingUrl_Call(t *testing.T) {
 		<html>
 	`))
 
-	mapping_url := NewMappingUrl("http://www.teste.com", 5)
+	mapping_url := NewMappingUrl("http://www.teste.com", 5, nil)
 	response, err := mapping_url.Call()
 
 	assert.Nil(t, err)
-	assert.Equal(t, 200, response.(responseSuccessUrls).StatusCode)
-	assert.Equal(t, "https://www.teste.com/teste01", response.(responseSuccessUrls).MappingUrl.Urls[0])
-	assert.Equal(t, "https://www.teste.com/teste02", response.(responseSuccessUrls).MappingUrl.Urls[1])
-	assert.Equal(t, "https://www.teste.com/teste03", response.(responseSuccessUrls).MappingUrl.Urls[2])
-	assert.Equal(t, "https://www.teste.com", response.(responseSuccessUrls).MappingUrl.Urls[3])
-	assert.Equal(t, "https://www.teste.com/teste05.pdf", response.(responseSuccessUrls).MappingUrl.Urls[4])
+	assert.Equal(t, true, response.Success)
+	assert.Equal(t, false, response.Failure)
+	assert.Equal(t, "https://www.teste.com/teste01", response.Data[0])
+	assert.Equal(t, "https://www.teste.com/teste02", response.Data[1])
+	assert.Equal(t, "https://www.teste.com/teste03", response.Data[2])
+	assert.Equal(t, "https://www.teste.com", response.Data[3])
+	assert.Equal(t, "https://www.teste.com/teste05.pdf", response.Data[4])
 }

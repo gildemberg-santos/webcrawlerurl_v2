@@ -8,16 +8,16 @@ import (
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
-type ChatGpt3 struct {
+type SmartCall struct {
 	Url string
 }
 
 type responseSuccessGpt struct {
-	ChatGpt struct {
+	SmartCall struct {
 		Title       string `json:"main_header"`
 		Paragraph   string `json:"main_paragraph"`
 		Description string `json:"meta_description"`
-	} `json:"chatgpt"`
+	} `json:"smart_call"`
 	Url        string  `json:"url"`
 	Timestamp  float64 `json:"ts"`
 	Scone      float32 `json:"scone"`
@@ -26,20 +26,20 @@ type responseSuccessGpt struct {
 
 type responseErroGpt struct {
 	Erro       string      `json:"erro"`
-	ChatGpt3   interface{} `json:"chatgpt"`
+	SmartCall  interface{} `json:"smart_call"`
 	Url        string      `json:"url"`
 	Timestamp  float64     `json:"ts"`
 	Scone      float32     `json:"scone"`
 	StatusCode int         `json:"status_code"`
 }
 
-func NewChatGpt3(url string) ChatGpt3 {
-	return ChatGpt3{
+func NewSmartCall(url string) SmartCall {
+	return SmartCall{
 		Url: url,
 	}
 }
 
-func (c *ChatGpt3) Call() (interface{}, error) {
+func (c *SmartCall) Call() (interface{}, error) {
 	ts := timestamp.NewTimestamp().Start()
 
 	if c.Url == "" {
@@ -47,7 +47,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		ts.End()
 		responseErro := responseErroGpt{
 			Erro:       err.Error(),
-			ChatGpt3:   nil,
+			SmartCall:  nil,
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
 			Scone:      0,
@@ -63,7 +63,7 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		ts.End()
 		responseErro := responseErroGpt{
 			Erro:       err.Error(),
-			ChatGpt3:   nil,
+			SmartCall:  nil,
 			Url:        c.Url,
 			Timestamp:  ts.GetTime(),
 			Scone:      0,
@@ -86,9 +86,9 @@ func (c *ChatGpt3) Call() (interface{}, error) {
 		Scone:      score.GetScore(),
 		StatusCode: page.StatusCode,
 	}
-	responseSuccess.ChatGpt.Title = informatin.TitleWebSite
-	responseSuccess.ChatGpt.Paragraph = informatin.MostRelevantText
-	responseSuccess.ChatGpt.Description = informatin.MetaDescription
+	responseSuccess.SmartCall.Title = informatin.TitleWebSite
+	responseSuccess.SmartCall.Paragraph = informatin.MostRelevantText
+	responseSuccess.SmartCall.Description = informatin.MetaDescription
 
 	return responseSuccess, nil
 }

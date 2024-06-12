@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestChatGpt3_Call(t *testing.T) {
+func TestSmartCall_Call(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
@@ -25,11 +25,11 @@ func TestChatGpt3_Call(t *testing.T) {
 	<html>
 	`))
 
-	chatgpt3 := NewChatGpt3("https://www.teste.com")
-	response, err := chatgpt3.Call()
+	smartCall := NewSmartCall("https://www.teste.com")
+	response, err := smartCall.Call()
 
 	assert.Nil(t, err)
-	assert.Equal(t, "Titulo do site", response.(responseSuccessGpt).ChatGpt.Title)
-	assert.Equal(t, "Titulo", response.(responseSuccessGpt).ChatGpt.Paragraph)
-	assert.Equal(t, "Meta Description", response.(responseSuccessGpt).ChatGpt.Description)
+	assert.Equal(t, "Titulo do site", response.(responseSuccessGpt).SmartCall.Title)
+	assert.Equal(t, "Titulo", response.(responseSuccessGpt).SmartCall.Paragraph)
+	assert.Equal(t, "Meta Description", response.(responseSuccessGpt).SmartCall.Description)
 }

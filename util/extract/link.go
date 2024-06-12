@@ -9,10 +9,10 @@ type Link struct {
 	Url     string
 	OutUrls []string
 	Sources *goquery.Document
-	Limit   int
+	Limit   int64
 }
 
-func NewLink(source *goquery.Document, baseUrl string, limit int) Link {
+func NewLink(source *goquery.Document, baseUrl string, limit int64) Link {
 	return Link{
 		Sources: source,
 		Url:     baseUrl,
@@ -44,7 +44,7 @@ func (l *Link) removeDuplicationUrl() {
 	result := []string{}
 
 	for i := range l.OutUrls {
-		if l.Limit > 0 && len(result) >= l.Limit {
+		if l.Limit > 0 && int64(len(result)) >= l.Limit {
 			break
 		}
 		if !occurred[l.OutUrls[i]] {
