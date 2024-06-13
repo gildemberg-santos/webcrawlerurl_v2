@@ -84,34 +84,15 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 	informatin := extract.NewText(page.Source)
 	extractext := informatin.Call()
 
-	// var text string
-	// if c.MaxCaracter > 0 {
-	// 	runas := []rune(extractext.Text)
-	// 	corte := c.MaxCaracter
-
-	// 	if c.MaxCaracter > int64(len(runas)) {
-	// 		corte = int64(len(runas))
-	// 	}
-
-	// 	text = string(runas[:corte])
-	// } else {
-	// 	text = extractext.Text
-	// }
-
-	// chuncks := chunck.NewChunck(text, c.MaxChunck)
-	// chuncks.Call()
-
-	ts.End()
-
 	data := DataReadText{
 		Text:           extractext.Text,
 		TotalCaracters: int64(len(extractext.Text)),
-		// CountChunck:    chuncks.CountChunck,
-		// Chuncks:        chuncks.ListChuncks,
-		Url: c.Url,
+		Url:            c.Url,
 	}
 	c.Data = data
 	datas := []DataReadText{data}
+
+	ts.End()
 
 	responseSuccess := ResponseReadtext{
 		Failure:   false,

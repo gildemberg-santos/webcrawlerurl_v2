@@ -53,14 +53,6 @@ func (l *LeadsterAI) crawler(url string) {
 		return
 	}
 
-	// if l.CountChunck >= l.MaxChunckLimit {
-	// 	return
-	// }
-
-	// if l.TotalCaracters >= l.MaxCaracterLimit {
-	// 	return
-	// }
-
 	l.Visited[url] = true
 
 	page := load_page.NewLoadPage(url)
@@ -75,7 +67,6 @@ func (l *LeadsterAI) crawler(url string) {
 	readText := NewReadText(url, l.MaxChunckLimit, l.MaxCaracterLimit, page.Source)
 	readText.Call()
 
-	l.CountChunck += readText.Data.CountChunck
 	l.TotalCaracters += readText.Data.TotalCaracters
 	l.Data = append(l.Data, readText.Data)
 
