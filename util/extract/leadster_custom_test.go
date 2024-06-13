@@ -9,6 +9,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestLeadsterCustom_Call is a test function for the Call method of the LeadsterCustom struct.
+//
+// This function tests the functionality of the Call method by mocking an HTTP GET request to "http://www.teste.com"
+// and asserting the response content. It creates a new instance of the LeadsterCustom struct with the URL "http://www.teste.com"
+// and calls the Call method. It then asserts that the TitleWebSite, MostRelevantText, and MetaDescription fields of the response
+// match the expected values.
+//
+// Parameters:
+// - t: The testing.T object used for running the test and reporting the results.
+//
+// Return type: None.
 func TestLeadsterCustom_Call(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()

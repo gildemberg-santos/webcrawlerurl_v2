@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -13,13 +14,24 @@ type NormalizeUrl struct {
 	BaseUrl string
 }
 
+// NewNormalizeUrl creates a new instance of NormalizeUrl with the provided URL and sets the BaseUrl to the same value.
+//
+// Parameters:
+// - url: The URL string to initialize the NormalizeUrl instance with.
+//
+// Returns:
+// - *NormalizeUrl: A pointer to the newly created NormalizeUrl instance.
 func NewNormalizeUrl(url string) *NormalizeUrl {
 	return &NormalizeUrl{Url: url, BaseUrl: url}
 }
 
+// GetUrl retrieves the normalized URL after applying domain normalization and HTTP normalization.
+//
+// No parameters.
+// Returns a string representing the normalized URL and an error if the URL is invalid.
 func (l *NormalizeUrl) GetUrl() (url string, err error) {
-	l.normalizeHttp()
 	l.normalizeDomain()
+	l.normalizeHttp()
 
 	if !l.isUrl() {
 		err = errors.New("url is invalid")
@@ -30,19 +42,34 @@ func (l *NormalizeUrl) GetUrl() (url string, err error) {
 	return
 }
 
+// normalizeHttp normalizes the URL and BaseUrl by ensuring they have the correct HTTP/HTTPS format.
+//
+// No parameters.
+// Does not return any value.
 func (l *NormalizeUrl) normalizeHttp() {
-	if !strings.HasPrefix(l.Url, "https://") && !strings.HasPrefix(l.Url, "http://") {
+	// URL
+	if !regexp.MustCompile(`^https?://`).MatchString(l.Url) {
 		l.Url = "https://" + l.Url
-	} else if strings.HasPrefix(l.Url, "http://") {
-		l.Url = strings.Replace(l.Url, "http://", "https://", 1)
 	}
-	if !strings.HasPrefix(l.BaseUrl, "https://") && !strings.HasPrefix(l.BaseUrl, "http://") {
+	if regexp.MustCompile(`^https:///`).MatchString(l.Url) {
+		l.Url = strings.Replace(l.Url, "https:///", "https://", 1)
+		l.Url = strings.Replace(l.Url, "http:///", "https://", 1)
+	}
+
+	// BASE URL
+	if !regexp.MustCompile(`^https?://`).MatchString(l.BaseUrl) {
 		l.BaseUrl = "https://" + l.BaseUrl
-	} else if strings.HasPrefix(l.BaseUrl, "http://") {
-		l.BaseUrl = strings.Replace(l.BaseUrl, "http://", "https://", 1)
+	}
+	if regexp.MustCompile(`^https:/`).MatchString(l.BaseUrl) && !regexp.MustCompile(`^https://`).MatchString(l.BaseUrl) {
+		l.BaseUrl = strings.Replace(l.BaseUrl, "https:/", "https://", 1)
+		l.BaseUrl = strings.Replace(l.BaseUrl, "http:/", "https://", 1)
 	}
 }
 
+// normalizeDomain normalizes the URL domain based on the BaseUrl.
+//
+// It parses the current URL and the BaseUrl, then adjusts the path and host accordingly.
+// Returns nothing.
 func (l *NormalizeUrl) normalizeDomain() {
 	if l.BaseUrl == "" {
 		return
@@ -58,14 +85,14 @@ func (l *NormalizeUrl) normalizeDomain() {
 	}
 
 	linkCurrent.Path = strings.TrimSuffix(linkCurrent.Path, "/")
-	if l.isExtension(linkCurrent.String(), linkCurrent.Path) {
+	if l.isExtension(linkCurrent.Path) {
 		linkCurrent.Path = ""
 	}
 
 	if linkCurrent.Host == "" && linkCurrent.Path != "" {
 		linkCurrent.Host = strings.TrimSuffix(linkBase.Host, "/")
 		linkCurrent.Path = strings.TrimPrefix(linkCurrent.Path, "/")
-		l.Url = fmt.Sprintf("https:/%s/%s", linkCurrent.Host, linkCurrent.Path)
+		l.Url = fmt.Sprintf("https://%s/%s", linkCurrent.Host, linkCurrent.Path)
 		return
 	}
 
@@ -89,6 +116,15 @@ func (l *NormalizeUrl) normalizeDomain() {
 	}
 }
 
+// isUrl checks if the given URL is valid and matches the base URL, if provided.
+//
+// It parses the current URL and the BaseUrl, then checks if the host matches.
+// If the BaseUrl is provided and the host does not match, it returns false.
+// It then parses the URL as a request URI and checks if the host is an IP address.
+// If the host is not an IP address, it checks if the host contains a dot (".") and returns the result.
+// If the host is an IP address, it returns true.
+//
+// Returns a boolean indicating whether the URL is valid and matches the base URL.
 func (l *NormalizeUrl) isUrl() bool {
 	linkCurrent, err := url.Parse(l.Url)
 	if err != nil {
@@ -116,7 +152,12 @@ func (l *NormalizeUrl) isUrl() bool {
 	return true
 }
 
-func (l *NormalizeUrl) isExtension(linkHost, linkPath string) bool {
+// isExtension checks if the provided linkPath has a valid extension.
+//
+// Parameters:
+// - linkPath: The path of the link.
+// Returns a boolean indicating if the linkPath has a valid extension.
+func (l *NormalizeUrl) isExtension(linkPath string) bool {
 	if linkPath != "" {
 		linkPath = strings.TrimSuffix(linkPath, "/")
 

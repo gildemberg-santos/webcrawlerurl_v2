@@ -8,6 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestLoadPage_Load is a test function for loading a page.
+//
+// Parameters:
+// - t: The testing.T object used for running the test and reporting the results.
+// Return type: None.
 func TestLoadPage_Load(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -20,6 +25,14 @@ func TestLoadPage_Load(t *testing.T) {
 	assert.Equal(t, 200, loadPage.StatusCode)
 }
 
+// TestLoadPage_LoadError is a test function for testing the behavior of the LoadPage struct's Call method when the HTTP request returns a 404 status code.
+//
+// It activates the HTTP mock, registers a responder for the specified URL with a 404 status code, creates a new LoadPage instance with the URL, calls the Call method, and asserts that the StatusCode is equal to 404.
+//
+// Parameters:
+// - t: The testing.T object used for running the test and reporting the results.
+//
+// Return type: None.
 func TestLoadPage_LoadError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()

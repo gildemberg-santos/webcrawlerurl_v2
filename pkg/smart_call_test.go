@@ -7,6 +7,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestSmartCall_Call is a test function for the Call method of the SmartCall struct.
+//
+// This function tests the functionality of the Call method by mocking an HTTP GET request to "https://www.teste.com"
+// and asserting the response content. It creates a new instance of the SmartCall struct with the URL "https://www.teste.com"
+// and calls the Call method. It then asserts that the response is nil and that the response's Title, Paragraph, and Description
+// fields match the expected values.
+//
+// Parameters:
+// - t: The testing.T object used for running the test and reporting the results.
+//
+// Return type: None.
 func TestSmartCall_Call(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()

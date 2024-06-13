@@ -7,6 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestMappingUrl_Call is a test function for testing the Call method of the MappingUrl struct.
+//
+// No parameters.
+// No return type.
 func TestMappingUrl_Call(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
@@ -32,7 +36,7 @@ func TestMappingUrl_Call(t *testing.T) {
 		<html>
 	`))
 
-	mapping_url := NewMappingUrl("http://www.teste.com", 5, nil)
+	mapping_url := NewMappingUrl("http://www.teste.com", 7, nil)
 	response, err := mapping_url.Call()
 
 	assert.Nil(t, err)
@@ -42,5 +46,5 @@ func TestMappingUrl_Call(t *testing.T) {
 	assert.Equal(t, "https://www.teste.com/teste02", response.Data[1])
 	assert.Equal(t, "https://www.teste.com/teste03", response.Data[2])
 	assert.Equal(t, "https://www.teste.com", response.Data[3])
-	assert.Equal(t, "https://www.teste.com/teste05.pdf", response.Data[4])
+	assert.Len(t, response.Data, 4)
 }

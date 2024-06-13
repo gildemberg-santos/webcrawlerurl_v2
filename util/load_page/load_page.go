@@ -2,6 +2,7 @@ package load_page
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -60,7 +61,7 @@ func (l *LoadPage) Call() (err error) {
 
 	if resp.StatusCode != 200 {
 		l.StatusCode = resp.StatusCode
-		err = errors.New("found error in the page status code -> " + string(resp.StatusCode))
+		err = errors.New(fmt.Sprintf("found error in the page status code -> %d", resp.StatusCode))
 		log.Default().Println("Error to load page -> ", err.Error())
 		return
 	}

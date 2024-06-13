@@ -7,6 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestReadText_Call is a test function for reading text content from a specific URL.
+//
+// No parameters.
+// No return type.
 func TestReadText_Call(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()

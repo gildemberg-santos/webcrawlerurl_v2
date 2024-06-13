@@ -29,6 +29,9 @@ func (l *Link) Call() *Link {
 func (l *Link) extractUrls() {
 	l.Sources.Find("a").Each(func(_ int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
+		if href == "teste03" {
+			// fmt.Println("href is empty")
+		}
 		uri := normalize.NewNormalizeUrl(href)
 		uri.BaseUrl = l.Url
 		url, err := uri.GetUrl()
