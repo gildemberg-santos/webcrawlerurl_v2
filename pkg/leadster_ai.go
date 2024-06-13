@@ -13,7 +13,8 @@ type LeadsterAI struct {
 	Url            string          `json:"-"`
 	MaxUrlLimit    int64           `json:"-"`
 	MaxChunckLimit int64           `json:"-"`
-	CountChunck    int64           `json:"count_chunck"`
+	CountChunck    int64           `json:"-"`
+	TotalCaracters int64           `json:"total_characters"`
 	Data           []DataReadText  `json:"data"`
 	Timestamp      float64         `json:"ts"`
 }
@@ -69,6 +70,7 @@ func (l *LeadsterAI) crawler(url string, maxUrlLimit int64, maxChunckLimit int64
 	readText.Call()
 
 	l.CountChunck += readText.Data.CountChunck
+	l.TotalCaracters += readText.Data.TotalCaracters
 	l.Data = append(l.Data, readText.Data)
 
 	for _, tmp_url := range mapping.Urls {

@@ -16,7 +16,7 @@ func main() {
 	http.HandleFunc("/smart_call", RouteSmartCall)
 	http.HandleFunc("/mappingurl", RouteMappingUrl)
 	http.HandleFunc("/readtext", RouteReadText)
-	http.HandleFunc("/leadster_ai", RouteLeadsterAI)
+	http.HandleFunc("/crawler_leadster_ai", RouteLeadsterAI)
 
 	log.Println("Listening on port " + GetPort())
 	err := http.ListenAndServe(GetPort(), nil)
@@ -89,11 +89,11 @@ func RouteReadText(w http.ResponseWriter, r *http.Request) {
 
 func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	log.Println("RouteLeadsterAI")
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
-	maxUrlLimit, _ := strconv.ParseInt(r.URL.Query().Get("maxurllimit"), 10, 64)
-	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("maxchuncklimit"), 10, 64)
+	maxUrlLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_url_limit"), 10, 64)
+	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_chunck_limit"), 10, 64)
 
 	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit)
 

@@ -17,10 +17,11 @@ type ReadText struct {
 	Data    DataReadText
 }
 type DataReadText struct {
-	Text        string   `json:"text"`
-	CountChunck int64    `json:"count_chunck"`
-	Chuncks     []string `json:"chuncks"`
-	Url         string   `json:"url"`
+	Text           string   `json:"text"`
+	TotalCaracters int64    `json:"total_characters"`
+	CountChunck    int64    `json:"-"`
+	Chuncks        []string `json:"-"`
+	Url            string   `json:"url"`
 }
 
 type ResponseReadtext struct {
@@ -87,10 +88,11 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 	ts.End()
 
 	data := DataReadText{
-		Text:        extractext.Text,
-		CountChunck: chuncks.CountChunck,
-		Chuncks:     chuncks.ListChuncks,
-		Url:         c.Url,
+		Text:           extractext.Text,
+		TotalCaracters: int64(len(extractext.Text)),
+		CountChunck:    chuncks.CountChunck,
+		Chuncks:        chuncks.ListChuncks,
+		Url:            c.Url,
 	}
 	c.Data = data
 	datas := []DataReadText{data}
