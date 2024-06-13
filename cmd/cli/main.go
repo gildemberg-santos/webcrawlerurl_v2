@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var url_base string = "https://leadster.com.br/"
-	var maxUrlLimit int64 = 2_000_000
+	var maxUrlLimit int64 = 28
 	var maxChunckLimit int64 = 2_000_000
 
 	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit)
