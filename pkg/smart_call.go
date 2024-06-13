@@ -17,7 +17,7 @@ type responseSuccessGpt struct {
 		Title       string `json:"main_header"`
 		Paragraph   string `json:"main_paragraph"`
 		Description string `json:"meta_description"`
-	} `json:"smart_call"`
+	} `json:"chatgpt"`
 	Url        string  `json:"url"`
 	Timestamp  float64 `json:"ts"`
 	Scone      float32 `json:"scone"`

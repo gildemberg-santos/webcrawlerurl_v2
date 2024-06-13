@@ -27,7 +27,7 @@ func main() {
 
 func RouteSmartCall(w http.ResponseWriter, r *http.Request) {
 	log.Println("RouteSmartCall")
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
 	smartCall := pkg.NewSmartCall(url)
