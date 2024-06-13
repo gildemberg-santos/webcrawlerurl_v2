@@ -4,17 +4,17 @@ import (
 	"errors"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gildemberg-santos/webcrawlerurl_v2/util/chunck"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
 type ReadText struct {
-	Url     string
-	Limit   int64
-	Sources *goquery.Document
-	Data    DataReadText
+	Url         string
+	MaxChunck   int64
+	MaxCaracter int64
+	Sources     *goquery.Document
+	Data        DataReadText
 }
 type DataReadText struct {
 	Text           string   `json:"text"`
@@ -32,11 +32,12 @@ type ResponseReadtext struct {
 	Timestamp float64        `json:"ts"`
 }
 
-func NewReadText(url string, limit int64, source *goquery.Document) ReadText {
+func NewReadText(url string, maxChunck, maxCaracter int64, source *goquery.Document) ReadText {
 	return ReadText{
-		Url:     url,
-		Limit:   limit,
-		Sources: source,
+		Url:         url,
+		MaxChunck:   maxChunck,
+		MaxCaracter: maxCaracter,
+		Sources:     source,
 	}
 }
 
@@ -82,17 +83,32 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 
 	informatin := extract.NewText(page.Source)
 	extractext := informatin.Call()
-	chuncks := chunck.NewChunck(extractext.Text, c.Limit)
-	chuncks.Call()
+
+	// var text string
+	// if c.MaxCaracter > 0 {
+	// 	runas := []rune(extractext.Text)
+	// 	corte := c.MaxCaracter
+
+	// 	if c.MaxCaracter > int64(len(runas)) {
+	// 		corte = int64(len(runas))
+	// 	}
+
+	// 	text = string(runas[:corte])
+	// } else {
+	// 	text = extractext.Text
+	// }
+
+	// chuncks := chunck.NewChunck(text, c.MaxChunck)
+	// chuncks.Call()
 
 	ts.End()
 
 	data := DataReadText{
 		Text:           extractext.Text,
 		TotalCaracters: int64(len(extractext.Text)),
-		CountChunck:    chuncks.CountChunck,
-		Chuncks:        chuncks.ListChuncks,
-		Url:            c.Url,
+		// CountChunck:    chuncks.CountChunck,
+		// Chuncks:        chuncks.ListChuncks,
+		Url: c.Url,
 	}
 	c.Data = data
 	datas := []DataReadText{data}

@@ -17,8 +17,9 @@ func main() {
 	var url_base string = "https://leadster.com.br/"
 	var maxUrlLimit int64 = 28
 	var maxChunckLimit int64 = 2_000_000
+	var maxCaracterLimit int64 = 2_000_000
 
-	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit)
+	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit, maxCaracterLimit)
 	leadsterAI.Call()
 
 	log.Println(len(leadsterAI.Data))

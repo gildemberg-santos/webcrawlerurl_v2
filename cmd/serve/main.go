@@ -70,10 +70,10 @@ func RouteReadText(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
-	limitchunck, _ := strconv.ParseInt(r.URL.Query().Get("limitchunck"), 10, 64)
-	log.Default().Println("limitchunck -> ", limitchunck)
+	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_chunck_limit"), 10, 64)
+	maxCaracterLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_caracter_limit"), 10, 64)
 
-	readtext := pkg.NewReadText(url, int64(limitchunck), nil)
+	readtext := pkg.NewReadText(url, maxChunckLimit, maxCaracterLimit, nil)
 
 	response, err := readtext.Call()
 	if err != nil {
@@ -94,8 +94,9 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 	maxUrlLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_url_limit"), 10, 64)
 	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_chunck_limit"), 10, 64)
+	maxCaracterLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_caracter_limit"), 10, 64)
 
-	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit)
+	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit, maxCaracterLimit)
 
 	response := leadsterAI.Call()
 

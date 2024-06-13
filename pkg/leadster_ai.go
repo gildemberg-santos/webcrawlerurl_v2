@@ -9,22 +9,24 @@ import (
 )
 
 type LeadsterAI struct {
-	Visited        map[string]bool `json:"-"`
-	Url            string          `json:"-"`
-	MaxUrlLimit    int64           `json:"-"`
-	MaxChunckLimit int64           `json:"-"`
-	CountChunck    int64           `json:"-"`
-	TotalCaracters int64           `json:"total_characters"`
-	Data           []DataReadText  `json:"data"`
-	Timestamp      float64         `json:"ts"`
+	Visited          map[string]bool `json:"-"`
+	Url              string          `json:"-"`
+	MaxUrlLimit      int64           `json:"-"`
+	MaxChunckLimit   int64           `json:"-"`
+	MaxCaracterLimit int64           `json:"-"`
+	CountChunck      int64           `json:"-"`
+	TotalCaracters   int64           `json:"total_characters"`
+	Data             []DataReadText  `json:"data"`
+	Timestamp        float64         `json:"ts"`
 }
 
-func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64) LeadsterAI {
+func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64) LeadsterAI {
 	return LeadsterAI{
-		Url:            url,
-		MaxUrlLimit:    maxUrlLimit,
-		MaxChunckLimit: maxChunckLimit,
-		Visited:        make(map[string]bool),
+		Url:              url,
+		MaxUrlLimit:      maxUrlLimit,
+		MaxChunckLimit:   maxChunckLimit,
+		MaxCaracterLimit: maxCaracterLimit,
+		Visited:          make(map[string]bool),
 	}
 }
 
@@ -32,7 +34,7 @@ func (l *LeadsterAI) Call() *LeadsterAI {
 	log.Println("Start LeadsterAI")
 	ts := timestamp.NewTimestamp().Start()
 	if l.MaxUrlLimit > 0 {
-		l.crawler(l.Url, l.MaxUrlLimit, l.MaxChunckLimit)
+		l.crawler(l.Url)
 	}
 	timestamp.NewTimestamp().End()
 	ts.End()
@@ -41,19 +43,23 @@ func (l *LeadsterAI) Call() *LeadsterAI {
 	return l
 }
 
-func (l *LeadsterAI) crawler(url string, maxUrlLimit int64, maxChunckLimit int64) {
+func (l *LeadsterAI) crawler(url string) {
 	url, _ = normalize.NewNormalizeUrl(url).GetUrl()
 	if l.Visited[url] {
 		return
 	}
 
-	if int64(len(l.Data)) >= maxUrlLimit {
+	if int64(len(l.Data)) >= l.MaxUrlLimit {
 		return
 	}
 
-	if l.CountChunck >= maxChunckLimit {
-		return
-	}
+	// if l.CountChunck >= l.MaxChunckLimit {
+	// 	return
+	// }
+
+	// if l.TotalCaracters >= l.MaxCaracterLimit {
+	// 	return
+	// }
 
 	l.Visited[url] = true
 
@@ -61,12 +67,12 @@ func (l *LeadsterAI) crawler(url string, maxUrlLimit int64, maxChunckLimit int64
 	page.Timeout = 5
 	page.Call()
 
-	mapping := NewMappingUrl(url, maxUrlLimit, page.Source)
-	if maxUrlLimit > 1 {
+	mapping := NewMappingUrl(url, l.MaxUrlLimit, page.Source)
+	if l.MaxUrlLimit > 1 {
 		mapping.Call()
 	}
 
-	readText := NewReadText(url, maxChunckLimit, page.Source)
+	readText := NewReadText(url, l.MaxChunckLimit, l.MaxCaracterLimit, page.Source)
 	readText.Call()
 
 	l.CountChunck += readText.Data.CountChunck
@@ -78,6 +84,6 @@ func (l *LeadsterAI) crawler(url string, maxUrlLimit int64, maxChunckLimit int64
 		if l.Visited[tmp_url] {
 			continue
 		}
-		l.crawler(tmp_url, maxUrlLimit, maxChunckLimit)
+		l.crawler(tmp_url)
 	}
 }
