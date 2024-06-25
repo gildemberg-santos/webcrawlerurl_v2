@@ -51,6 +51,7 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 			Failure:   true,
 			Success:   false,
 			Message:   err.Error(),
+			Data:      []DataReadText{},
 			Timestamp: ts.GetTime(),
 		}
 		return responseErro, err
@@ -76,6 +77,7 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 			Failure:   true,
 			Success:   false,
 			Message:   err.Error(),
+			Data:      []DataReadText{},
 			Timestamp: ts.GetTime(),
 		}
 		return responseErro, err

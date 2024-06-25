@@ -16,22 +16,6 @@ type MappingUrl struct {
 	Urls    []string
 }
 
-type responseSuccessUrls struct {
-	MappingUrl struct {
-		Urls []string `json:"urls"`
-	} `json:"mapping_url"`
-	Url        string  `json:"url"`
-	Timestamp  float64 `json:"ts"`
-	StatusCode int     `json:"status_code"`
-}
-
-type responseErroUrls struct {
-	Erro       string  `json:"erro"`
-	Url        string  `json:"url"`
-	Timestamp  float64 `json:"ts"`
-	StatusCode int     `json:"status_code"`
-}
-
 type ResponseUrls struct {
 	Failure   bool     `json:"failure"`
 	Success   bool     `json:"success"`

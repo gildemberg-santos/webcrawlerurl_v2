@@ -67,8 +67,10 @@ func (l *LeadsterAI) crawler(url string) {
 	readText := NewReadText(url, l.MaxChunckLimit, l.MaxCaracterLimit, page.Source)
 	readText.Call()
 
-	l.TotalCaracters += readText.Data.TotalCaracters
-	l.Data = append(l.Data, readText.Data)
+	if readText.Data.TotalCaracters > 0 {
+		l.TotalCaracters += readText.Data.TotalCaracters
+		l.Data = append(l.Data, readText.Data)
+	}
 
 	for _, tmp_url := range mapping.Urls {
 		tmp_url, _ = normalize.NewNormalizeUrl(tmp_url).GetUrl()
