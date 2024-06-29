@@ -1,10 +1,9 @@
 package pkg
 
 import (
-	"log"
-
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
@@ -22,22 +21,21 @@ type LeadsterAI struct {
 	Timestamp        float64             `json:"ts"`
 }
 
-func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlMatch *url_match.UrlMatch) LeadsterAI {
+func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlPattern string) LeadsterAI {
 	return LeadsterAI{
 		Url:              url,
 		MaxUrlLimit:      maxUrlLimit,
 		MaxChunckLimit:   maxChunckLimit,
 		MaxCaracterLimit: maxCaracterLimit,
 		Visited:          make(map[string]bool),
-		FilterUrlMatch:   urlMatch,
+		FilterUrlMatch:   url_match.NewUrlMatch(urlPattern),
 	}
 }
 
-func (l *LeadsterAI) Call() *LeadsterAI {
-	log.Println("Start LeadsterAI")
+func (l *LeadsterAI) Call(isSiteMap, isComplete bool) *LeadsterAI {
 	ts := timestamp.NewTimestamp().Start()
 	if l.MaxUrlLimit > 0 {
-		l.crawler(l.Url)
+		l.crawler(l.Url, isSiteMap, isComplete)
 	}
 	timestamp.NewTimestamp().End()
 	ts.End()
@@ -46,7 +44,7 @@ func (l *LeadsterAI) Call() *LeadsterAI {
 	return l
 }
 
-func (l *LeadsterAI) crawler(url string) {
+func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	url, _ = normalize.NewNormalizeUrl(url).GetUrl()
 	if l.Visited[url] {
 		return
@@ -75,11 +73,26 @@ func (l *LeadsterAI) crawler(url string) {
 		l.Data = append(l.Data, readText.Data)
 	}
 
-	for _, tmp_url := range mapping.Urls {
-		tmp_url, _ = normalize.NewNormalizeUrl(tmp_url).GetUrl()
-		if l.Visited[tmp_url] {
-			continue
+	if isSiteMap {
+		siteMap := site_map.NewSiteMap(url + "/sitemap.xml")
+		if err := siteMap.Call(); err != nil {
+			for _, tmp_url := range *siteMap.Url {
+				tmp_url.Loc, _ = normalize.NewNormalizeUrl(tmp_url.Loc).GetUrl()
+				if l.Visited[tmp_url.Loc] {
+					continue
+				}
+				l.crawler(tmp_url.Loc, false, false)
+			}
 		}
-		l.crawler(tmp_url)
+	}
+
+	if isComplete {
+		for _, tmp_url := range mapping.Urls {
+			tmp_url, _ = normalize.NewNormalizeUrl(tmp_url).GetUrl()
+			if l.Visited[tmp_url] {
+				continue
+			}
+			l.crawler(tmp_url, false, true)
+		}
 	}
 }
