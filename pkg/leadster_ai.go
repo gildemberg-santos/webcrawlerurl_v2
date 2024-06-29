@@ -6,27 +6,30 @@ import (
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
 
 type LeadsterAI struct {
-	Visited          map[string]bool `json:"-"`
-	Url              string          `json:"-"`
-	MaxUrlLimit      int64           `json:"-"`
-	MaxChunckLimit   int64           `json:"-"`
-	MaxCaracterLimit int64           `json:"-"`
-	CountChunck      int64           `json:"-"`
-	TotalCaracters   int64           `json:"total_characters"`
-	Data             []DataReadText  `json:"data"`
-	Timestamp        float64         `json:"ts"`
+	Visited          map[string]bool     `json:"-"`
+	Url              string              `json:"-"`
+	MaxUrlLimit      int64               `json:"-"`
+	MaxChunckLimit   int64               `json:"-"`
+	MaxCaracterLimit int64               `json:"-"`
+	CountChunck      int64               `json:"-"`
+	FilterUrlMatch   *url_match.UrlMatch `json:"-"`
+	TotalCaracters   int64               `json:"total_characters"`
+	Data             []DataReadText      `json:"data"`
+	Timestamp        float64             `json:"ts"`
 }
 
-func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64) LeadsterAI {
+func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlMatch *url_match.UrlMatch) LeadsterAI {
 	return LeadsterAI{
 		Url:              url,
 		MaxUrlLimit:      maxUrlLimit,
 		MaxChunckLimit:   maxChunckLimit,
 		MaxCaracterLimit: maxCaracterLimit,
 		Visited:          make(map[string]bool),
+		FilterUrlMatch:   urlMatch,
 	}
 }
 
@@ -67,7 +70,7 @@ func (l *LeadsterAI) crawler(url string) {
 	readText := NewReadText(url, l.MaxChunckLimit, l.MaxCaracterLimit, page.Source)
 	readText.Call()
 
-	if readText.Data.TotalCaracters > 0 {
+	if readText.Data.TotalCaracters > 0 && l.FilterUrlMatch.Call(url) {
 		l.TotalCaracters += readText.Data.TotalCaracters
 		l.Data = append(l.Data, readText.Data)
 	}

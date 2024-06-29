@@ -9,6 +9,7 @@ import (
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/pkg"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
 
 func main() {
@@ -96,8 +97,13 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_chunck_limit"), 10, 64)
 	maxCaracterLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_caracter_limit"), 10, 64)
 
-	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit, maxCaracterLimit)
+	var urlPattern string
+	if r.URL.Query().Get("url_pattern") != "" {
+		urlPattern, _ = normalize.NewNormalizeUrl(r.URL.Query().Get("url_pattern")).GetUrl()
+	}
 
+	urlMatch := url_match.NewUrlMatch(urlPattern)
+	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit, maxCaracterLimit, urlMatch)
 	response := leadsterAI.Call()
 
 	log.Println("Success")

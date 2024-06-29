@@ -5,6 +5,7 @@ import (
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/pkg"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/file"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
 
 // main is the entry point of the program.
@@ -14,12 +15,14 @@ import (
 // After that, it calls the Call method of the LeadsterAI instance to start crawling the URLs.
 // Finally, it logs the length of the Data field of the LeadsterAI instance and saves the data to a JSON file named "data.json".
 func main() {
-	var url_base string = "https://leadster.com.br/"
+	var url_base string = "https://leadster.com.br/blog/"
+	var pattern string = "https://leadster.com.br/blog/m**"
+	urlMatch := url_match.NewUrlMatch(pattern)
 	var maxUrlLimit int64 = 28
 	var maxChunckLimit int64 = 2_000_000
 	var maxCaracterLimit int64 = 2_000_000
 
-	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit, maxCaracterLimit)
+	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit, maxCaracterLimit, urlMatch)
 	leadsterAI.Call()
 
 	log.Println(len(leadsterAI.Data))
