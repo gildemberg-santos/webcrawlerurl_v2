@@ -10,11 +10,14 @@ import (
 )
 
 type SiteMap struct {
-	UrlLocation string `xml:"-"`
-	Url         *[]struct {
-		Loc      string    `xml:"loc"`
-		Lastmod  time.Time `xml:"lastmod"`
-		Priority float32   `xml:"priority"`
+	UrlLocation string
+	Urlset      struct {
+		XMLName xml.Name `xml:"urlset"`
+		Urls    []struct {
+			Loc      string  `xml:"loc"`
+			Lastmod  string  `xml:"lastmod"`
+			Priority float32 `xml:"priority"`
+		} `xml:"url"`
 	}
 }
 
@@ -56,7 +59,7 @@ func (s *SiteMap) load() error {
 		return err
 	}
 
-	err = xml.Unmarshal(body, &s.Url)
+	err = xml.Unmarshal(body, &s.Urlset)
 	if err != nil {
 		return err
 	}

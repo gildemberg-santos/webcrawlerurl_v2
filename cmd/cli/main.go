@@ -14,15 +14,15 @@ import (
 // After that, it calls the Call method of the LeadsterAI instance to start crawling the URLs.
 // Finally, it logs the length of the Data field of the LeadsterAI instance and saves the data to a JSON file named "data.json".
 func main() {
-	var url_base string = "https://leadster.com.br/blog"
+	var url_base string = "https://leadster.com.br/"
 	var url_pattern string = "https://leadster.com.br/**"
-	var maxUrlLimit int64 = 50
+	var maxUrlLimit int64 = 2_000_000
 	var maxChunckLimit int64 = 2_000_000
 	var maxCaracterLimit int64 = 2_000_000
 
 	log.Println("Starting crawler...")
 	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit, maxCaracterLimit, url_pattern)
-	leadsterAI.Call(true, true)
+	leadsterAI.Call(true, false)
 	log.Printf("Saving data to file data.json total urls: %d\n", len(leadsterAI.Data))
 
 	fileJson := file.NewFileJson("data.json", leadsterAI)

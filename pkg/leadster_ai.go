@@ -75,13 +75,13 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 
 	if isSiteMap {
 		siteMap := site_map.NewSiteMap(url + "/sitemap.xml")
-		if err := siteMap.Call(); err != nil {
-			for _, tmp_url := range *siteMap.Url {
+		if err := siteMap.Call(); err == nil {
+			for _, tmp_url := range siteMap.Urlset.Urls {
 				tmp_url.Loc, _ = normalize.NewNormalizeUrl(tmp_url.Loc).GetUrl()
 				if l.Visited[tmp_url.Loc] {
 					continue
 				}
-				l.crawler(tmp_url.Loc, false, false)
+				l.crawler(tmp_url.Loc, false, isComplete)
 			}
 		}
 	}
