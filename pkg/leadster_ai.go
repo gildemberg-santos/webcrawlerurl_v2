@@ -17,7 +17,7 @@ type LeadsterAI struct {
 	CountChunck      int64               `json:"-"`
 	FilterUrlMatch   *url_match.UrlMatch `json:"-"`
 	TotalCaracters   int64               `json:"total_characters"`
-	Data             []DataReadText      `json:"data"`
+	Data             []DataReadText      `json:"data,omitempty"`
 	Timestamp        float64             `json:"ts"`
 }
 
