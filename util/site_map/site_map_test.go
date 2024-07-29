@@ -1,10 +1,10 @@
-package site_map_test
+package sitemap_test
 
 import (
 	"log"
 	"testing"
 
-	"github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
+	sitemap "github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -849,7 +849,7 @@ func TestSiteMap_Call(t *testing.T) {
 	</urlset>
 	`))
 
-	siteMap := site_map.NewSiteMap("http://www.teste.com")
+	siteMap := sitemap.NewSiteMap("http://www.teste.com")
 	err := siteMap.Call()
 	log.Println(err)
 	assert.Nil(t, err)

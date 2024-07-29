@@ -51,3 +51,9 @@ func TestUrl_GetUrl_Incomplete_Path(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "https://www.google.com/teste", url)
 }
+
+func TestUrl_GetUrl_SiteMap(t *testing.T) {
+	url, err := normalize.NewNormalizeUrl("https://www.google.com/sitemap.xml").GetUrl()
+	assert.Nil(t, err)
+	assert.Equal(t, "https://www.google.com/sitemap.xml", url)
+}

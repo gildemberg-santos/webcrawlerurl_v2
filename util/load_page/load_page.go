@@ -91,6 +91,7 @@ func (l *LoadPage) loadPageFast() (err error) {
 	return
 }
 
+// TODO: Adicionar um carregamento de um site SPA
 func (l *LoadPage) loadPageSlow() (err error) {
 	panic("Not implemented loadPageSlow")
 }

@@ -1,9 +1,12 @@
 package pkg
 
 import (
+	"log"
+	"strings"
+
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
-	"github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
+	sitemap "github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
@@ -46,9 +49,12 @@ func (l *LeadsterAI) Call(isSiteMap, isComplete bool) *LeadsterAI {
 
 func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	url, _ = normalize.NewNormalizeUrl(url).GetUrl()
+
 	if l.Visited[url] {
 		return
 	}
+
+	log.Println("Crawling: ", url)
 
 	if int64(len(l.Data)) >= l.MaxUrlLimit {
 		return
@@ -68,14 +74,24 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	readText := NewReadText(url, l.MaxChunckLimit, l.MaxCaracterLimit, page.Source)
 	readText.Call()
 
-	if readText.Data.TotalCaracters > 0 && l.FilterUrlMatch.Call(url) {
+	if readText.Data.TotalCaracters > 0 && l.FilterUrlMatch.Call(url) && !strings.Contains(url, ".xml") {
 		l.TotalCaracters += readText.Data.TotalCaracters
 		l.Data = append(l.Data, readText.Data)
 	}
 
 	if isSiteMap {
-		siteMap := site_map.NewSiteMap(url + "/sitemap.xml")
+		if !strings.Contains(url, ".xml") {
+			url = url + "/sitemap.xml"
+		}
+
+		siteMap := sitemap.NewSiteMap(url)
 		if err := siteMap.Call(); err == nil {
+			for _, tmp_url := range siteMap.Sitemapindex.Sitemap {
+				if l.Visited[tmp_url.Loc] {
+					continue
+				}
+				l.crawler(tmp_url.Loc, true, false)
+			}
 			for _, tmp_url := range siteMap.Urlset.Urls {
 				tmp_url.Loc, _ = normalize.NewNormalizeUrl(tmp_url.Loc).GetUrl()
 				if l.Visited[tmp_url.Loc] {

@@ -14,9 +14,9 @@ import (
 // After that, it calls the Call method of the LeadsterAI instance to start crawling the URLs.
 // Finally, it logs the length of the Data field of the LeadsterAI instance and saves the data to a JSON file named "data.json".
 func main() {
-	var url_base string = "https://leadster.com.br/"
-	var url_pattern string = "https://leadster.com.br/**"
-	var maxUrlLimit int64 = 2_000_000
+	var url_base string = "https://www.usaflex.com.br/sitemap/product-1.xml"
+	var url_pattern string = "https://www.usaflex.com.br/**"
+	var maxUrlLimit int64 = 100
 	var maxChunckLimit int64 = 2_000_000
 	var maxCaracterLimit int64 = 2_000_000
 

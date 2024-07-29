@@ -1,4 +1,4 @@
-package site_map
+package sitemap
 
 import (
 	"encoding/xml"
@@ -19,6 +19,12 @@ type SiteMap struct {
 			Priority float32 `xml:"priority"`
 		} `xml:"url"`
 	}
+	Sitemapindex struct {
+		Sitemap []struct {
+			Loc     string `xml:"loc"`
+			Lastmod string `xml:"lastmod"`
+		} `xml:"sitemap"`
+	} `xml:"sitemapindex"`
 }
 
 func NewSiteMap(url string) *SiteMap {
@@ -59,10 +65,8 @@ func (s *SiteMap) load() error {
 		return err
 	}
 
-	err = xml.Unmarshal(body, &s.Urlset)
-	if err != nil {
-		return err
-	}
+	xml.Unmarshal(body, &s.Sitemapindex)
+	xml.Unmarshal(body, &s.Urlset)
 
 	return nil
 }
