@@ -61,7 +61,7 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 	var err error
 
 	if c.Sources == nil {
-		page = load_page.NewLoadPage(c.Url)
+		page = load_page.NewLoadPage(c.Url, true)
 		err = page.Call()
 	} else {
 		page = load_page.LoadPage{

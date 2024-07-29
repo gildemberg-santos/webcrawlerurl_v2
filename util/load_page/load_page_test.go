@@ -19,7 +19,7 @@ func TestLoadPage_Load(t *testing.T) {
 
 	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(200, ``))
 
-	loadPage := load_page.NewLoadPage("http://www.teste.com")
+	loadPage := load_page.NewLoadPage("http://www.teste.com", true)
 	err := loadPage.Call()
 	assert.Nil(t, err)
 	assert.Equal(t, 200, loadPage.StatusCode)
@@ -33,13 +33,24 @@ func TestLoadPage_Load(t *testing.T) {
 // - t: The testing.T object used for running the test and reporting the results.
 //
 // Return type: None.
-func TestLoadPage_LoadError(t *testing.T) {
+func TestLoadPageFast_LoadError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
 	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(404, ``))
 
-	loadPage := load_page.NewLoadPage("http://www.teste.com")
+	loadPage := load_page.NewLoadPage("http://www.teste.com", true)
 	loadPage.Call()
 	assert.Equal(t, 404, loadPage.StatusCode)
+}
+
+func TestLoadPageSlow_LoadError(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(404, ``))
+
+	loadPage := load_page.NewLoadPage("http://www.teste.com", false)
+
+	assert.Panics(t, func() { loadPage.Call() })
 }

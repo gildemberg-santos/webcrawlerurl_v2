@@ -38,7 +38,7 @@ func TestLeadsterCustom_Call(t *testing.T) {
 		<html>
 	`))
 
-	page := load_page.NewLoadPage("http://www.teste.com")
+	page := load_page.NewLoadPage("http://www.teste.com", true)
 	page.Call()
 
 	leadsterCustom := extract.NewLeadsterCustom(page.Source, 5, 5, 30)

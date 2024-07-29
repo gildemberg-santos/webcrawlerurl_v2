@@ -56,7 +56,7 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 
 	l.Visited[url] = true
 
-	page := load_page.NewLoadPage(url)
+	page := load_page.NewLoadPage(url, true)
 	page.Timeout = 5
 	page.Call()
 

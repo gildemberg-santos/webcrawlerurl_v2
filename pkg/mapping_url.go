@@ -51,7 +51,7 @@ func (m *MappingUrl) Call() (ResponseUrls, error) {
 	var err error
 
 	if m.Sources == nil {
-		page = load_page.NewLoadPage(m.Url)
+		page = load_page.NewLoadPage(m.Url, true)
 		err = page.Call()
 	} else {
 		page = load_page.LoadPage{

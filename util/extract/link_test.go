@@ -33,7 +33,7 @@ func TestLink_Call(t *testing.T) {
 		<html>
 	`))
 
-	page := load_page.NewLoadPage("http://www.teste.com")
+	page := load_page.NewLoadPage("http://www.teste.com", true)
 	page.Call()
 
 	readtext := extract.NewLink(page.Source, "http://www.teste.com", 3)

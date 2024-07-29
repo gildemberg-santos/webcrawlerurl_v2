@@ -56,7 +56,7 @@ func (c *SmartCall) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	page := load_page.NewLoadPage(c.Url)
+	page := load_page.NewLoadPage(c.Url, true)
 
 	err := page.Call()
 	if err != nil {

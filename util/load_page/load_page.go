@@ -16,20 +16,30 @@ import (
 var doneLoadPage sync.WaitGroup
 
 type LoadPage struct {
-	Url        string
-	Timeout    time.Duration
-	Source     *goquery.Document
-	StatusCode int
+	Url          string
+	Timeout      time.Duration
+	Source       *goquery.Document
+	StatusCode   int
+	LoadPageFast bool
 }
 
-func NewLoadPage(url string) LoadPage {
+func NewLoadPage(url string, loadPageFast bool) LoadPage {
 	return LoadPage{
-		Url:     url,
-		Timeout: 10,
+		Url:          url,
+		Timeout:      10,
+		LoadPageFast: loadPageFast,
 	}
 }
 
 func (l *LoadPage) Call() (err error) {
+	if l.LoadPageFast {
+		return l.loadPageFast()
+	}
+
+	return l.loadPageSlow()
+}
+
+func (l *LoadPage) loadPageFast() (err error) {
 	_, err = normalize.NewNormalizeUrl(l.Url).GetUrl()
 
 	if err != nil {
@@ -61,7 +71,7 @@ func (l *LoadPage) Call() (err error) {
 
 	if resp.StatusCode != 200 {
 		l.StatusCode = resp.StatusCode
-		err = errors.New(fmt.Sprintf("found error in the page status code -> %d", resp.StatusCode))
+		err = fmt.Errorf("found error in the page status code -> %d", resp.StatusCode)
 		log.Default().Println("Error to load page -> ", err.Error())
 		return
 	}
@@ -79,6 +89,10 @@ func (l *LoadPage) Call() (err error) {
 	l.removerElementos()
 	l.StatusCode = resp.StatusCode
 	return
+}
+
+func (l *LoadPage) loadPageSlow() (err error) {
+	panic("Not implemented loadPageSlow")
 }
 
 func (l *LoadPage) removerElementos() {

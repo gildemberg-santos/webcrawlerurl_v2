@@ -26,7 +26,7 @@ func TestText_Call(t *testing.T) {
 		</body>
 		<html>
 	`))
-	page := load_page.NewLoadPage("http://www.teste.com")
+	page := load_page.NewLoadPage("http://www.teste.com", true)
 	page.Call()
 
 	readtext := extract.NewText(page.Source)
