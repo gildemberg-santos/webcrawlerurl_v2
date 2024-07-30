@@ -17,6 +17,7 @@ import (
 	downloaddrive "github.com/gildemberg-santos/webcrawlerurl_v2/util/download_drive"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
+	"github.com/joho/godotenv"
 )
 
 var doneLoadPage sync.WaitGroup
@@ -106,8 +107,9 @@ func (l *LoadPage) loadPageSlow() (err error) {
 		return
 	}
 
-	chromeDownloadDriver := "https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.72/linux64/chrome-headless-shell-linux64.zip"
-	chromePath := "./drives/chrome-headless-shell-linux64/chrome-headless-shell"
+	godotenv.Load()
+	chromeDownloadDriver := os.Getenv("CHROME_DOWNLOAD_DRIVER")
+	chromePath := os.Getenv("CHROME_PATH")
 
 	if _, err = os.Stat(chromePath); os.IsNotExist(err) {
 		log.Default().Printf("O chromedriver não foi encontrado no caminho especificado: %s", chromePath)
@@ -145,13 +147,12 @@ func (l *LoadPage) loadPageSlow() (err error) {
 
 	var resp string
 
-	// Pegar body do site
-
 	err = chromedp.Run(ctx,
 		chromedp.Navigate(l.Url),
 		chromedp.Sleep(l.Timeout*time.Second),
 		chromedp.OuterHTML(`html`, &resp, chromedp.ByQuery),
 	)
+
 	if err != nil {
 		l.StatusCode = 500
 		return

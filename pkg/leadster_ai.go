@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"log"
 	"strings"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
@@ -20,12 +19,14 @@ type LeadsterAI struct {
 	CountChunck      int64               `json:"-"`
 	FilterUrlMatch   *url_match.UrlMatch `json:"-"`
 	LoadPageFast     bool                `json:"-"`
+	WithTimeout      float64             `json:"-"`
+	WithTimestamp    timestamp.Timestamp `json:"-"`
 	TotalCaracters   int64               `json:"total_characters"`
 	Data             []DataReadText      `json:"data,omitempty"`
 	Timestamp        float64             `json:"ts"`
 }
 
-func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlPattern string, loadPageFast bool) LeadsterAI {
+func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlPattern string, loadPageFast bool, withTimeout float64) LeadsterAI {
 	return LeadsterAI{
 		Url:              url,
 		MaxUrlLimit:      maxUrlLimit,
@@ -34,29 +35,33 @@ func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCarac
 		Visited:          make(map[string]bool),
 		FilterUrlMatch:   url_match.NewUrlMatch(urlPattern),
 		LoadPageFast:     loadPageFast,
+		WithTimeout:      withTimeout,
+		WithTimestamp:    *timestamp.NewTimestamp(),
 	}
 }
 
 func (l *LeadsterAI) Call(isSiteMap, isComplete bool) *LeadsterAI {
-	ts := timestamp.NewTimestamp().Start()
+	l.WithTimestamp.Start()
 	if l.MaxUrlLimit > 0 {
 		l.crawler(l.Url, isSiteMap, isComplete)
 	}
-	timestamp.NewTimestamp().End()
-	ts.End()
-	l.Timestamp = ts.GetTime()
+	l.WithTimestamp.End()
+	l.Timestamp = l.WithTimestamp.GetTime()
 
 	return l
 }
 
 func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
+	l.WithTimestamp.End()
+	if l.WithTimestamp.GetTime() >= (l.WithTimeout - 1) {
+		return
+	}
+
 	url, _ = normalize.NewNormalizeUrl(url).GetUrl()
 
 	if l.Visited[url] {
 		return
 	}
-
-	log.Println("Crawling: ", url)
 
 	if int64(len(l.Data)) >= l.MaxUrlLimit {
 		return

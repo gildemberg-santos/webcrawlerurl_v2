@@ -91,29 +91,27 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	log.Println("RouteLeadsterAI")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
-	maxUrlLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_url_limit"), 10, 64)
-	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_chunck_limit"), 10, 64)
-	maxCaracterLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_caracter_limit"), 10, 64)
-	loadPageFast := r.URL.Query().Get("load_page_fast") == "true"
+	body := struct {
+		Url              string  `json:"url"`
+		MaxUrlLimit      int64   `json:"max_url_limit"`
+		MaxChunckLimit   int64   `json:"max_chunck_limit"`
+		MaxCaracterLimit int64   `json:"max_caracter_limit"`
+		LoadPageFast     bool    `json:"load_page_fast"`
+		UrlPattern       string  `json:"url_pattern"`
+		IsSiteMap        bool    `json:"is_sitemap"`
+		IsComplete       bool    `json:"is_complete"`
+		WithTimeout      float64 `json:"with_timeout"`
+	}{}
 
-	var urlPattern string
-	if r.URL.Query().Get("url_pattern") != "" {
-		urlPattern, _ = normalize.NewNormalizeUrl(r.URL.Query().Get("url_pattern")).GetUrl()
-	}
+	json.NewDecoder(r.Body).Decode(&body)
 
-	var isSiteMap bool
-	if r.URL.Query().Get("is_sitemap") == "true" || r.URL.Query().Get("is_sitemap") == "" {
-		isSiteMap = true
-	}
+	log.Println("Body: ", body)
 
-	var isComplete bool
-	if r.URL.Query().Get("is_complete") == "true" || r.URL.Query().Get("is_complete") == "" {
-		isComplete = true
-	}
+	body.Url, _ = normalize.NewNormalizeUrl(body.Url).GetUrl()
+	body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
 
-	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit, maxCaracterLimit, urlPattern, loadPageFast)
-	response := leadsterAI.Call(isSiteMap, isComplete)
+	leadsterAI := pkg.NewLeadsterAI(body.Url, body.MaxUrlLimit, body.MaxChunckLimit, body.MaxCaracterLimit, body.UrlPattern, body.LoadPageFast, body.WithTimeout)
+	response := leadsterAI.Call(body.IsSiteMap, body.IsComplete)
 
 	log.Println("Success")
 	w.WriteHeader(http.StatusOK)
