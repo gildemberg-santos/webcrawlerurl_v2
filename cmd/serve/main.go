@@ -95,6 +95,7 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	maxUrlLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_url_limit"), 10, 64)
 	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_chunck_limit"), 10, 64)
 	maxCaracterLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_caracter_limit"), 10, 64)
+	loadPageFast := r.URL.Query().Get("load_page_fast") == "true"
 
 	var urlPattern string
 	if r.URL.Query().Get("url_pattern") != "" {
@@ -111,7 +112,7 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 		isComplete = true
 	}
 
-	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit, maxCaracterLimit, urlPattern)
+	leadsterAI := pkg.NewLeadsterAI(url, maxUrlLimit, maxChunckLimit, maxCaracterLimit, urlPattern, loadPageFast)
 	response := leadsterAI.Call(isSiteMap, isComplete)
 
 	log.Println("Success")

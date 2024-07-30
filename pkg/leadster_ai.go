@@ -19,12 +19,13 @@ type LeadsterAI struct {
 	MaxCaracterLimit int64               `json:"-"`
 	CountChunck      int64               `json:"-"`
 	FilterUrlMatch   *url_match.UrlMatch `json:"-"`
+	LoadPageFast     bool                `json:"-"`
 	TotalCaracters   int64               `json:"total_characters"`
 	Data             []DataReadText      `json:"data,omitempty"`
 	Timestamp        float64             `json:"ts"`
 }
 
-func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlPattern string) LeadsterAI {
+func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlPattern string, loadPageFast bool) LeadsterAI {
 	return LeadsterAI{
 		Url:              url,
 		MaxUrlLimit:      maxUrlLimit,
@@ -32,6 +33,7 @@ func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCarac
 		MaxCaracterLimit: maxCaracterLimit,
 		Visited:          make(map[string]bool),
 		FilterUrlMatch:   url_match.NewUrlMatch(urlPattern),
+		LoadPageFast:     loadPageFast,
 	}
 }
 
@@ -62,7 +64,7 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 
 	l.Visited[url] = true
 
-	page := load_page.NewLoadPage(url, true)
+	page := load_page.NewLoadPage(url, l.LoadPageFast)
 	page.Timeout = 5
 	page.Call()
 
