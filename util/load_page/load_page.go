@@ -1,14 +1,20 @@
 package load_page
 
 import (
+	"bytes"
+	"context"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/chromedp/chromedp"
+	downloaddrive "github.com/gildemberg-santos/webcrawlerurl_v2/util/download_drive"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
 )
@@ -93,7 +99,77 @@ func (l *LoadPage) loadPageFast() (err error) {
 
 // TODO: Adicionar um carregamento de um site SPA
 func (l *LoadPage) loadPageSlow() (err error) {
-	panic("Not implemented loadPageSlow")
+	_, err = normalize.NewNormalizeUrl(l.Url).GetUrl()
+
+	if err != nil {
+		l.StatusCode = 500
+		return
+	}
+
+	chromeDownloadDriver := "https://storage.googleapis.com/chrome-for-testing-public/127.0.6533.72/linux64/chrome-headless-shell-linux64.zip"
+	chromePath := "./drives/chrome-headless-shell-linux64/chrome-headless-shell"
+
+	if _, err = os.Stat(chromePath); os.IsNotExist(err) {
+		log.Default().Printf("O chromedriver não foi encontrado no caminho especificado: %s", chromePath)
+		err = downloaddrive.NewDownloadDrive(chromeDownloadDriver, chromePath).Call()
+		if err != nil {
+			l.StatusCode = 500
+			return
+		}
+
+		err = os.Chmod(chromePath, 0755)
+		if err != nil {
+			l.StatusCode = 500
+			return
+		}
+	}
+
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.ExecPath(chromePath),
+		chromedp.Flag("headless", true),
+		chromedp.Flag("disable-gpu", true),
+		chromedp.Flag("no-sandbox", true),
+		chromedp.Flag("remote-debugging-port", "9222"),
+		chromedp.Flag("log-level", "0"),
+		chromedp.Flag("v", "1"),
+	)
+
+	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
+
+	ctx, cancel = chromedp.NewContext(ctx, chromedp.WithLogf(log.Printf))
+	defer cancel()
+
+	ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	var resp string
+
+	// Pegar body do site
+
+	err = chromedp.Run(ctx,
+		chromedp.Navigate(l.Url),
+		chromedp.Sleep(l.Timeout*time.Second),
+		chromedp.OuterHTML(`html`, &resp, chromedp.ByQuery),
+	)
+	if err != nil {
+		l.StatusCode = 500
+		return
+	}
+
+	doc, err := goquery.NewDocumentFromReader(io.NopCloser(bytes.NewReader([]byte(resp))))
+	if err != nil {
+		l.StatusCode = 500
+		err = errors.New("Error to read body request -> " + err.Error())
+		log.Default().Println(err.Error())
+		return
+	}
+
+	l.Source = doc
+
+	l.removerElementos()
+	l.StatusCode = 200
+	return
 }
 
 func (l *LoadPage) removerElementos() {

@@ -1,2 +1,5 @@
 bin/app
 .vscode/launch.json
+util/load_page/drives/*
+drives/*
+data.json

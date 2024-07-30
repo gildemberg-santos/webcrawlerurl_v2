@@ -19,7 +19,7 @@ func main() {
 	var maxUrlLimit int64 = 100
 	var maxChunckLimit int64 = 2_000_000
 	var maxCaracterLimit int64 = 2_000_000
-	var loadPageFast bool = true
+	var loadPageFast bool = false
 
 	log.Println("Starting crawler...")
 	leadsterAI := pkg.NewLeadsterAI(url_base, maxUrlLimit, maxChunckLimit, maxCaracterLimit, url_pattern, loadPageFast)
