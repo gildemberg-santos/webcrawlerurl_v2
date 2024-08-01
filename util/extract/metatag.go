@@ -3,9 +3,9 @@ package extract
 import "github.com/PuerkitoBio/goquery"
 
 type Metatag struct {
-	Generator      string
-	RetailerItemID string
-	Source         *goquery.Document
+	Generator      string            `json:"generator"`
+	RetailerItemID string            `json:"retailer_item_id"`
+	Source         *goquery.Document `json:"-"`
 }
 
 func NewMetatag(source *goquery.Document) *Metatag {
