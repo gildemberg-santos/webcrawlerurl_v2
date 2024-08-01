@@ -17,33 +17,29 @@ import (
 func main() {
 
 	body := struct {
-		Url              string  `json:"url"`
-		MaxUrlLimit      int64   `json:"max_url_limit"`
-		MaxChunckLimit   int64   `json:"max_chunck_limit"`
-		MaxCaracterLimit int64   `json:"max_caracter_limit"`
-		LoadPageFast     bool    `json:"load_page_fast"`
-		UrlPattern       string  `json:"url_pattern"`
-		IsSiteMap        bool    `json:"is_sitemap"`
-		IsComplete       bool    `json:"is_complete"`
-		WithTimeout      float64 `json:"with_timeout"`
+		Url          string  `json:"url"`
+		MaxUrlLimit  int64   `json:"max_url_limit"`
+		LoadPageFast bool    `json:"load_page_fast"`
+		UrlPattern   string  `json:"url_pattern"`
+		IsSiteMap    bool    `json:"is_sitemap"`
+		IsComplete   bool    `json:"is_complete"`
+		MaxTimeout   float64 `json:"max_timeout"`
 	}{}
 
 	body.Url = "https://www.levi.com.br/"
 	body.UrlPattern = "https://www.levi.com.br/**"
 	body.MaxUrlLimit = 2_000_000
-	body.MaxChunckLimit = 2_000_000
-	body.MaxCaracterLimit = 2_000_000
 	body.LoadPageFast = true
 	body.IsSiteMap = true
-	body.IsComplete = true
-	body.WithTimeout = 60
+	body.IsComplete = false
+	body.MaxTimeout = 240
 
 	log.Println("Starting crawler...")
 
 	body.Url, _ = normalize.NewNormalizeUrl(body.Url).GetUrl()
 	body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
 
-	leadsterAI := pkg.NewLeadsterAI(body.Url, body.MaxUrlLimit, body.MaxChunckLimit, body.MaxCaracterLimit, body.UrlPattern, body.LoadPageFast, body.WithTimeout)
+	leadsterAI := pkg.NewLeadsterAI(body.Url, body.MaxUrlLimit, body.UrlPattern, body.LoadPageFast, body.MaxTimeout)
 	leadsterAI.Call(body.IsSiteMap, body.IsComplete)
 	log.Printf("Saving data to file data.json total urls: %d\n", len(leadsterAI.Data))
 

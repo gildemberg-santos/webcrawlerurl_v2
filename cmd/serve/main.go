@@ -30,7 +30,7 @@ func RouteSmartCall(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
-	smartCall := pkg.NewSmartCall(url)
+	smartCall := pkg.NewSmartCall(url, true)
 
 	response, err := smartCall.Call()
 	if err != nil {
@@ -51,7 +51,7 @@ func RouteMappingUrl(w http.ResponseWriter, r *http.Request) {
 
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
 
-	mapping := pkg.NewMappingUrl(url, limit, nil)
+	mapping := pkg.NewMappingUrl(url, limit, true, nil)
 
 	response, err := mapping.Call()
 	if err != nil {
@@ -70,10 +70,8 @@ func RouteReadText(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	url, _ := normalize.NewNormalizeUrl(r.URL.Query().Get("url")).GetUrl()
-	maxChunckLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_chunck_limit"), 10, 64)
-	maxCaracterLimit, _ := strconv.ParseInt(r.URL.Query().Get("max_caracter_limit"), 10, 64)
 
-	readtext := pkg.NewReadText(url, maxChunckLimit, maxCaracterLimit, nil)
+	readtext := pkg.NewReadText(url, nil, true)
 
 	response, err := readtext.Call()
 	if err != nil {
@@ -92,15 +90,13 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	body := struct {
-		Url              string  `json:"url"`
-		MaxUrlLimit      int64   `json:"max_url_limit"`
-		MaxChunckLimit   int64   `json:"max_chunck_limit"`
-		MaxCaracterLimit int64   `json:"max_caracter_limit"`
-		LoadPageFast     bool    `json:"load_page_fast"`
-		UrlPattern       string  `json:"url_pattern"`
-		IsSiteMap        bool    `json:"is_sitemap"`
-		IsComplete       bool    `json:"is_complete"`
-		WithTimeout      float64 `json:"with_timeout"`
+		Url          string  `json:"url"`
+		MaxUrlLimit  int64   `json:"max_url_limit"`
+		LoadPageFast bool    `json:"load_page_fast"`
+		UrlPattern   string  `json:"url_pattern"`
+		IsSiteMap    bool    `json:"is_sitemap"`
+		IsComplete   bool    `json:"is_complete"`
+		MaxTimeout   float64 `json:"max_timeout"`
 	}{}
 
 	json.NewDecoder(r.Body).Decode(&body)
@@ -110,7 +106,7 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	body.Url, _ = normalize.NewNormalizeUrl(body.Url).GetUrl()
 	body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
 
-	leadsterAI := pkg.NewLeadsterAI(body.Url, body.MaxUrlLimit, body.MaxChunckLimit, body.MaxCaracterLimit, body.UrlPattern, body.LoadPageFast, body.WithTimeout)
+	leadsterAI := pkg.NewLeadsterAI(body.Url, body.MaxUrlLimit, body.UrlPattern, body.LoadPageFast, body.MaxTimeout)
 	response := leadsterAI.Call(body.IsSiteMap, body.IsComplete)
 
 	log.Println("Success")
