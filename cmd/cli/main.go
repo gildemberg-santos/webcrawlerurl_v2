@@ -28,15 +28,15 @@ func main() {
 		WithTimeout      float64 `json:"with_timeout"`
 	}{}
 
-	body.Url = "https://www.usaflex.com.br/sitemap/product-1.xml"
-	body.UrlPattern = "https://www.usaflex.com.br/**"
+	body.Url = "https://www.levi.com.br/"
+	body.UrlPattern = "https://www.levi.com.br/**"
 	body.MaxUrlLimit = 2_000_000
 	body.MaxChunckLimit = 2_000_000
 	body.MaxCaracterLimit = 2_000_000
 	body.LoadPageFast = true
 	body.IsSiteMap = true
-	body.IsComplete = false
-	body.WithTimeout = 30
+	body.IsComplete = true
+	body.WithTimeout = 60
 
 	log.Println("Starting crawler...")
 

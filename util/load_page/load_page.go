@@ -98,7 +98,6 @@ func (l *LoadPage) loadPageFast() (err error) {
 	return
 }
 
-// TODO: Adicionar um carregamento de um site SPA
 func (l *LoadPage) loadPageSlow() (err error) {
 	_, err = normalize.NewNormalizeUrl(l.Url).GetUrl()
 
