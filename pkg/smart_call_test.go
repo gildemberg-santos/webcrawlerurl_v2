@@ -36,7 +36,7 @@ func TestSmartCall_Call(t *testing.T) {
 	<html>
 	`))
 
-	smartCall := NewSmartCall("https://www.teste.com")
+	smartCall := NewSmartCall("https://www.teste.com", true)
 	response, err := smartCall.Call()
 
 	assert.Nil(t, err)

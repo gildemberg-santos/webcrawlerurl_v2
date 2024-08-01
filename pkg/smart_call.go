@@ -9,7 +9,8 @@ import (
 )
 
 type SmartCall struct {
-	Url string
+	Url          string
+	LoadPageFast bool
 }
 
 type responseSuccessGpt struct {
@@ -33,9 +34,10 @@ type responseErroGpt struct {
 	StatusCode int         `json:"status_code"`
 }
 
-func NewSmartCall(url string) SmartCall {
+func NewSmartCall(url string, loadPageFast bool) SmartCall {
 	return SmartCall{
-		Url: url,
+		Url:          url,
+		LoadPageFast: loadPageFast,
 	}
 }
 
@@ -56,7 +58,7 @@ func (c *SmartCall) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	page := load_page.NewLoadPage(c.Url, true)
+	page := load_page.NewLoadPage(c.Url, c.LoadPageFast)
 
 	err := page.Call()
 	if err != nil {

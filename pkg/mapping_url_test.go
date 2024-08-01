@@ -36,7 +36,7 @@ func TestMappingUrl_Call(t *testing.T) {
 		<html>
 	`))
 
-	mapping_url := NewMappingUrl("http://www.teste.com", 7, nil)
+	mapping_url := NewMappingUrl("http://www.teste.com", 7, true, nil)
 	response, err := mapping_url.Call()
 
 	assert.Nil(t, err)

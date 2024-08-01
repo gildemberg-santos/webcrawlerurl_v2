@@ -10,34 +10,31 @@ import (
 )
 
 type ReadText struct {
-	Url         string
-	MaxChunck   int64
-	MaxCaracter int64
-	Sources     *goquery.Document
-	Data        DataReadText
+	Url          string
+	Sources      *goquery.Document
+	Data         DataReadText
+	LoadPageFast bool
 }
 type DataReadText struct {
-	Text           string   `json:"text"`
-	TotalCaracters int64    `json:"total_characters"`
-	CountChunck    int64    `json:"-"`
-	Chuncks        []string `json:"-"`
-	Url            string   `json:"url"`
+	Text           string          `json:"text"`
+	TotalCaracters int64           `json:"total_characters"`
+	Url            string          `json:"url"`
+	Metatag        extract.Metatag `json:"metatag"`
 }
 
 type ResponseReadtext struct {
-	Failure   bool           `json:"failure"`
-	Success   bool           `json:"success"`
-	Message   string         `json:"message"`
-	Data      []DataReadText `json:"data"`
+	Failure   bool           `json:"failure,omitempty"`
+	Success   bool           `json:"success,omitempty"`
+	Message   string         `json:"message,omitempty"`
+	Data      []DataReadText `json:"data,omitempty"`
 	Timestamp float64        `json:"ts"`
 }
 
-func NewReadText(url string, maxChunck, maxCaracter int64, source *goquery.Document) ReadText {
+func NewReadText(url string, source *goquery.Document, loadPageFast bool) ReadText {
 	return ReadText{
-		Url:         url,
-		MaxChunck:   maxChunck,
-		MaxCaracter: maxCaracter,
-		Sources:     source,
+		Url:          url,
+		Sources:      source,
+		LoadPageFast: loadPageFast,
 	}
 }
 
@@ -61,12 +58,13 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 	var err error
 
 	if c.Sources == nil {
-		page = load_page.NewLoadPage(c.Url, true)
+		page = load_page.NewLoadPage(c.Url, c.LoadPageFast)
 		err = page.Call()
 	} else {
 		page = load_page.LoadPage{
-			Url:    c.Url,
-			Source: c.Sources,
+			Url:          c.Url,
+			Source:       c.Sources,
+			LoadPageFast: c.LoadPageFast,
 		}
 		err = nil
 	}
@@ -85,11 +83,14 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 
 	informatin := extract.NewText(page.Source)
 	extractext := informatin.Call()
+	metatag := extract.NewMetatag(page.Source).Call()
+	extracMetatag := metatag.Call()
 
 	data := DataReadText{
 		Text:           extractext.Text,
 		TotalCaracters: int64(len(extractext.Text)),
 		Url:            c.Url,
+		Metatag:        *extracMetatag,
 	}
 	c.Data = data
 	datas := []DataReadText{data}

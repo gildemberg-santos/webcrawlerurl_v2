@@ -11,32 +11,27 @@ import (
 )
 
 type LeadsterAI struct {
-	Visited          map[string]bool     `json:"-"`
-	Url              string              `json:"-"`
-	MaxUrlLimit      int64               `json:"-"`
-	MaxChunckLimit   int64               `json:"-"`
-	MaxCaracterLimit int64               `json:"-"`
-	CountChunck      int64               `json:"-"`
-	FilterUrlMatch   *url_match.UrlMatch `json:"-"`
-	LoadPageFast     bool                `json:"-"`
-	WithTimeout      float64             `json:"-"`
-	WithTimestamp    timestamp.Timestamp `json:"-"`
-	TotalCaracters   int64               `json:"total_characters"`
-	Data             []DataReadText      `json:"data,omitempty"`
-	Timestamp        float64             `json:"ts"`
+	Visited        map[string]bool     `json:"-"`
+	Url            string              `json:"-"`
+	MaxUrlLimit    int64               `json:"-"`
+	FilterUrlMatch *url_match.UrlMatch `json:"-"`
+	LoadPageFast   bool                `json:"-"`
+	MaxTimeout     float64             `json:"-"`
+	WithTimestamp  timestamp.Timestamp `json:"-"`
+	TotalCaracters int64               `json:"total_characters"`
+	Data           []DataReadText      `json:"data,omitempty"`
+	Timestamp      float64             `json:"ts"`
 }
 
-func NewLeadsterAI(url string, maxUrlLimit int64, maxChunckLimit int64, maxCaracterLimit int64, urlPattern string, loadPageFast bool, withTimeout float64) LeadsterAI {
+func NewLeadsterAI(url string, maxUrlLimit int64, urlPattern string, loadPageFast bool, maxTimeout float64) LeadsterAI {
 	return LeadsterAI{
-		Url:              url,
-		MaxUrlLimit:      maxUrlLimit,
-		MaxChunckLimit:   maxChunckLimit,
-		MaxCaracterLimit: maxCaracterLimit,
-		Visited:          make(map[string]bool),
-		FilterUrlMatch:   url_match.NewUrlMatch(urlPattern),
-		LoadPageFast:     loadPageFast,
-		WithTimeout:      withTimeout,
-		WithTimestamp:    *timestamp.NewTimestamp(),
+		Url:            url,
+		MaxUrlLimit:    maxUrlLimit,
+		Visited:        make(map[string]bool),
+		FilterUrlMatch: url_match.NewUrlMatch(urlPattern),
+		LoadPageFast:   loadPageFast,
+		MaxTimeout:     maxTimeout,
+		WithTimestamp:  *timestamp.NewTimestamp(),
 	}
 }
 
@@ -53,7 +48,7 @@ func (l *LeadsterAI) Call(isSiteMap, isComplete bool) *LeadsterAI {
 
 func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	l.WithTimestamp.End()
-	if l.WithTimestamp.GetTime() >= (l.WithTimeout - 1) {
+	if l.WithTimestamp.GetTime() >= (l.MaxTimeout - 1) {
 		return
 	}
 
@@ -73,12 +68,12 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	page.Timeout = 5
 	page.Call()
 
-	mapping := NewMappingUrl(url, l.MaxUrlLimit, page.Source)
+	mapping := NewMappingUrl(url, l.MaxUrlLimit, l.LoadPageFast, page.Source)
 	if l.MaxUrlLimit > 1 {
 		mapping.Call()
 	}
 
-	readText := NewReadText(url, l.MaxChunckLimit, l.MaxCaracterLimit, page.Source)
+	readText := NewReadText(url, page.Source, l.LoadPageFast)
 	readText.Call()
 
 	if readText.Data.TotalCaracters > 0 && l.FilterUrlMatch.Call(url) && !strings.Contains(url, ".xml") {

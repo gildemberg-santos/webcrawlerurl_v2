@@ -10,10 +10,11 @@ import (
 )
 
 type MappingUrl struct {
-	Url     string
-	Limit   int64
-	Sources *goquery.Document
-	Urls    []string
+	Url          string
+	Limit        int64
+	Sources      *goquery.Document
+	Urls         []string
+	LoadPageFast bool
 }
 
 type ResponseUrls struct {
@@ -24,11 +25,12 @@ type ResponseUrls struct {
 	Timestamp float64  `json:"ts"`
 }
 
-func NewMappingUrl(url string, limit int64, source *goquery.Document) MappingUrl {
+func NewMappingUrl(url string, limit int64, loadPageFast bool, source *goquery.Document) MappingUrl {
 	return MappingUrl{
-		Url:     url,
-		Limit:   limit,
-		Sources: source,
+		Url:          url,
+		Limit:        limit,
+		Sources:      source,
+		LoadPageFast: loadPageFast,
 	}
 }
 
@@ -51,7 +53,7 @@ func (m *MappingUrl) Call() (ResponseUrls, error) {
 	var err error
 
 	if m.Sources == nil {
-		page = load_page.NewLoadPage(m.Url, true)
+		page = load_page.NewLoadPage(m.Url, m.LoadPageFast)
 		err = page.Call()
 	} else {
 		page = load_page.LoadPage{
