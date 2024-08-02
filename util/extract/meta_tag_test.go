@@ -32,7 +32,7 @@ func TestMetatag_Call(t *testing.T) {
 	page := load_page.NewLoadPage("http://www.exemple.com", true)
 	page.Call()
 
-	metatag := extract.NewMetatag(page.Source)
+	metatag := extract.NewMetaTag(page.Source)
 	response := metatag.Call()
 	assert.Equal(t, "vtex.render-server@8.172.2", response.Generator)
 	assert.Equal(t, "AG2708010", response.RetailerItemID)

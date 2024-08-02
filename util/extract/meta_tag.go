@@ -2,25 +2,25 @@ package extract
 
 import "github.com/PuerkitoBio/goquery"
 
-type Metatag struct {
+type MetaTag struct {
 	Generator      string            `json:"generator"`
 	RetailerItemID string            `json:"retailer_item_id"`
 	Source         *goquery.Document `json:"-"`
 }
 
-func NewMetatag(source *goquery.Document) *Metatag {
-	return &Metatag{
+func NewMetaTag(source *goquery.Document) *MetaTag {
+	return &MetaTag{
 		Source: source,
 	}
 }
 
-func (m *Metatag) Call() *Metatag {
+func (m *MetaTag) Call() *MetaTag {
 	m.extractGenerator()
 	m.extractRetailerItemID()
 	return m
 }
 
-func (m *Metatag) extractGenerator() {
+func (m *MetaTag) extractGenerator() {
 	m.Source.Find("meta").Each(func(_ int, s *goquery.Selection) {
 		name, _ := s.Attr("name")
 		if name == "generator" {
@@ -30,7 +30,7 @@ func (m *Metatag) extractGenerator() {
 	})
 }
 
-func (m *Metatag) extractRetailerItemID() {
+func (m *MetaTag) extractRetailerItemID() {
 	m.Source.Find("meta").Each(func(_ int, s *goquery.Selection) {
 		property, _ := s.Attr("property")
 		if property == "product:retailer_item_id" {
