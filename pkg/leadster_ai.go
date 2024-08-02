@@ -14,22 +14,22 @@ type LeadsterAI struct {
 	Visited        map[string]bool     `json:"-"`
 	Url            string              `json:"-"`
 	MaxUrlLimit    int64               `json:"-"`
+	MaxTimeout     int64               `json:"-"`
 	FilterUrlMatch *url_match.UrlMatch `json:"-"`
-	LoadPageFast   bool                `json:"-"`
-	MaxTimeout     float64             `json:"-"`
+	IsLoadFast     bool                `json:"-"`
 	WithTimestamp  timestamp.Timestamp `json:"-"`
 	TotalCaracters int64               `json:"total_characters"`
 	Data           []DataReadText      `json:"data,omitempty"`
 	Timestamp      float64             `json:"ts"`
 }
 
-func NewLeadsterAI(url string, maxUrlLimit int64, urlPattern string, loadPageFast bool, maxTimeout float64) LeadsterAI {
+func NewLeadsterAI(url, urlPattern string, maxUrlLimit, maxTimeout int64, isLoadFast bool) LeadsterAI {
 	return LeadsterAI{
 		Url:            url,
 		MaxUrlLimit:    maxUrlLimit,
 		Visited:        make(map[string]bool),
 		FilterUrlMatch: url_match.NewUrlMatch(urlPattern),
-		LoadPageFast:   loadPageFast,
+		IsLoadFast:     isLoadFast,
 		MaxTimeout:     maxTimeout,
 		WithTimestamp:  *timestamp.NewTimestamp(),
 	}
@@ -48,7 +48,7 @@ func (l *LeadsterAI) Call(isSiteMap, isComplete bool) *LeadsterAI {
 
 func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	l.WithTimestamp.End()
-	if l.WithTimestamp.GetTime() >= (l.MaxTimeout - 1) {
+	if l.WithTimestamp.GetTime() >= float64(l.MaxTimeout-1) {
 		return
 	}
 
@@ -64,16 +64,16 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 
 	l.Visited[url] = true
 
-	page := load_page.NewLoadPage(url, l.LoadPageFast)
+	page := load_page.NewLoadPage(url, l.IsLoadFast)
 	page.Timeout = 5
 	page.Call()
 
-	mapping := NewMappingUrl(url, l.MaxUrlLimit, l.LoadPageFast, page.Source)
+	mapping := NewMappingUrl(url, l.MaxUrlLimit, l.IsLoadFast, page.Source)
 	if l.MaxUrlLimit > 1 {
 		mapping.Call()
 	}
 
-	readText := NewReadText(url, page.Source, l.LoadPageFast)
+	readText := NewReadText(url, page.Source, l.IsLoadFast)
 	readText.Call()
 
 	if readText.Data.TotalCaracters > 0 && l.FilterUrlMatch.Call(url) && !strings.Contains(url, ".xml") {

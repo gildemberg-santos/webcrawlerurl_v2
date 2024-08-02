@@ -19,7 +19,7 @@ type DataReadText struct {
 	Text           string          `json:"text"`
 	TotalCaracters int64           `json:"total_characters"`
 	Url            string          `json:"url"`
-	Metatag        extract.Metatag `json:"metatag"`
+	MetaTag        extract.MetaTag `json:"meta_tag,omitempty"`
 }
 
 type ResponseReadtext struct {
@@ -83,14 +83,14 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 
 	informatin := extract.NewText(page.Source)
 	extractext := informatin.Call()
-	metatag := extract.NewMetatag(page.Source).Call()
-	extracMetatag := metatag.Call()
+	meta_tag := extract.NewMetaTag(page.Source).Call()
+	extracMetaTag := meta_tag.Call()
 
 	data := DataReadText{
 		Text:           extractext.Text,
 		TotalCaracters: int64(len(extractext.Text)),
 		Url:            c.Url,
-		Metatag:        *extracMetatag,
+		MetaTag:        *extracMetaTag,
 	}
 	c.Data = data
 	datas := []DataReadText{data}
