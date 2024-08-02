@@ -90,13 +90,13 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	body := struct {
-		Url          string  `json:"url"`
-		MaxUrlLimit  int64   `json:"max_url_limit"`
-		LoadPageFast bool    `json:"load_page_fast"`
-		UrlPattern   string  `json:"url_pattern"`
-		IsSiteMap    bool    `json:"is_sitemap"`
-		IsComplete   bool    `json:"is_complete"`
-		MaxTimeout   float64 `json:"max_timeout"`
+		Url         string `json:"url"`
+		UrlPattern  string `json:"url_pattern"`
+		MaxUrlLimit int64  `json:"max_url_limit"`
+		MaxTimeout  int64  `json:"max_timeout"`
+		IsLoadFast  bool   `json:"is_load_fast"`
+		IsSiteMap   bool   `json:"is_sitemap"`
+		IsComplete  bool   `json:"is_complete"`
 	}{}
 
 	json.NewDecoder(r.Body).Decode(&body)
@@ -106,7 +106,7 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	body.Url, _ = normalize.NewNormalizeUrl(body.Url).GetUrl()
 	body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
 
-	leadsterAI := pkg.NewLeadsterAI(body.Url, body.MaxUrlLimit, body.UrlPattern, body.LoadPageFast, body.MaxTimeout)
+	leadsterAI := pkg.NewLeadsterAI(body.Url, body.UrlPattern, body.MaxUrlLimit, body.MaxTimeout, body.IsLoadFast)
 	response := leadsterAI.Call(body.IsSiteMap, body.IsComplete)
 
 	log.Println("Success")
