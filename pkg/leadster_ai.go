@@ -48,7 +48,7 @@ func (l *LeadsterAI) Call(isSiteMap, isComplete bool) *LeadsterAI {
 
 func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	l.WithTimestamp.End()
-	if l.WithTimestamp.GetTime() >= float64(l.MaxTimeout-1) {
+	if l.WithTimestamp.GetTime() >= float64(l.MaxTimeout-5) {
 		return
 	}
 
