@@ -29,7 +29,10 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&body)
 
 	body.Url, _ = normalize.NewNormalizeUrl(body.Url).GetUrl()
-	body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
+
+	if body.UrlPattern != "" {
+		body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
+	}
 
 	leadsterAI := pkg.NewLeadsterAI(body.Url, body.UrlPattern, body.MaxUrlLimit, body.MaxTimeout, body.IsLoadFast)
 	response := leadsterAI.Call(body.IsSiteMap, body.IsComplete)
