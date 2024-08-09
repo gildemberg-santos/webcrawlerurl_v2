@@ -26,12 +26,12 @@ func main() {
 		IsComplete  bool   `json:"is_complete"`
 	}{}
 
-	body.Url = "https://leadster.com.br/"
-	body.UrlPattern = "https://leadster.com.br/**"
-	body.MaxUrlLimit = 100
+	body.Url = "https://leadster.com.br"
+	body.UrlPattern = "https://leadster.com.br**"
+	body.MaxUrlLimit = 1
 	body.MaxTimeout = 30
 	body.IsLoadFast = true
-	body.IsSiteMap = true
+	body.IsSiteMap = false
 	body.IsComplete = false
 
 	log.Println("Starting crawler...")
