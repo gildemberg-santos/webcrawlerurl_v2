@@ -41,6 +41,8 @@ RUN apt-get update && \
         fonts-liberation \
         xdg-utils
 
+ENV PORT=8080
+
 # Expor a porta que a aplicação principal irá rodar (ajuste conforme necessário)
 EXPOSE 8080
 
