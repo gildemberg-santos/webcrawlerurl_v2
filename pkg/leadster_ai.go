@@ -76,7 +76,10 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 	readText := NewReadText(url, page.Source, l.IsLoadFast)
 	readText.Call()
 
-	if readText.Data.TotalCaracters > 0 && l.FilterUrlMatch.Call(url) && !strings.Contains(url, ".xml") {
+	matchUrl := l.FilterUrlMatch.Call(url)
+	isExtensionsXML := !strings.Contains(url, ".xml")
+
+	if readText.Data.TotalCaracters > 0 && matchUrl && isExtensionsXML {
 		l.TotalCaracters += readText.Data.TotalCaracters
 		l.Data = append(l.Data, readText.Data)
 	}
