@@ -8,8 +8,8 @@ import (
 )
 
 func TestUrlMatch_Call(t *testing.T) {
-	filterValid := url_match.NewUrlMatch("https://example.com/perfil/**")
-	filterInvalid := url_match.NewUrlMatch("https://example.com/perfil/**")
-	assert.Equal(t, filterValid.Call("https://example.com/perfil/contact"), true)
-	assert.Equal(t, filterInvalid.Call("https://example.com/admin/contact"), false)
+	assert.Equal(t, url_match.NewUrlMatch("https://example.com/perfil/**").Call("https://example.com/perfil/contact"), true)
+	assert.Equal(t, url_match.NewUrlMatch("https://example.com/perfil/**").Call("https://example.com/admin/contact"), false)
+	assert.Equal(t, url_match.NewUrlMatch("https://example.com**").Call("https://example.com"), true)
+	assert.Equal(t, url_match.NewUrlMatch("https://example.com/**").Call("https://example.com"), false)
 }
