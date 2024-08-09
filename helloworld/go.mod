@@ -4,15 +4,15 @@ go 1.22.5
 
 require (
 	github.com/GoogleCloudPlatform/functions-framework-go v1.7.3
-	github.com/gildemberg-santos/webcrawlerurl_v2 v0.0.8
+	github.com/gildemberg-santos/webcrawlerurl_v2 v0.0.9
 )
 
 require (
 	cloud.google.com/go/functions v1.13.0 // indirect
 	github.com/PuerkitoBio/goquery v1.9.2 // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
-	github.com/chromedp/cdproto v0.0.0-20240721024200-dac8efcb39ce // indirect
-	github.com/chromedp/chromedp v0.9.5 // indirect
+	github.com/chromedp/cdproto v0.0.0-20240801214329-3f85d328b335 // indirect
+	github.com/chromedp/chromedp v0.10.0 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/cloudevents/sdk-go/v2 v2.15.2 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
