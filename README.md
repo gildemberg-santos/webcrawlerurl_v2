@@ -1,61 +1,102 @@
-# Web Crawler para extração de dados
+Aqui está uma versão aprimorada da documentação para o seu projeto de Web Crawler:
 
-![example workflow](https://github.com/gildemberg-santos/webcrawlerurl_v2/actions/workflows/go.yml/badge.svg)
+---
 
-O objetivo deste projeto é fornecer uma ferramenta automatizada para coletar informações específicas de uma página da web. Nós utilizamos técnicas de mapeamento e extração de dados para analisar a estrutura da página e identificar padrões na apresentação de dados, permitindo que os dados sejam extraídos e organizados em uma estrutura de dados útil.
+# Web Crawler para Extração de Dados
 
-### Instalação
+![Example Workflow](https://github.com/gildemberg-santos/webcrawlerurl_v2/actions/workflows/go.yml/badge.svg)
 
-Para instalar o projeto, você precisa clonar o repositório do Github:
+## Visão Geral
 
-``` shell
-$ git clone git@github.com:gildemberg-santos/webcrawlerurl_v2.git
+Este projeto fornece uma ferramenta automatizada para coletar informações específicas de páginas da web. Utilizando técnicas avançadas de mapeamento e extração de dados, o crawler analisa a estrutura das páginas e identifica padrões na apresentação dos dados, organizando-os em uma estrutura útil para análise ou processamento posterior.
+
+## Pré-requisitos
+
+- **Git**: Para clonar o repositório.
+- **Docker**: Para construir e executar o container do projeto.
+- **Make**: Para simplificar os comandos de execução.
+
+## Instalação
+
+Clone o repositório em sua máquina local:
+
+```bash
+git clone git@github.com:gildemberg-santos/webcrawlerurl_v2.git
+cd webcrawlerurl_v2
 ```
 
-### Iniciando o conteiner
+## Configuração do Docker
 
-Para iniciar o conteiner, basta executar o seguinte comando:
+### Construção da Imagem Docker
 
-``` start
-$ make start
+Construa a imagem Docker do projeto:
+
+```bash
+docker build -t webcrawlerurl_v2 .
 ```
 
-### Parando o conteiner
+### Executando o Container
 
-Se você precisar parar o conteiner, basta executar o seguinte comando:
+Inicie o container em segundo plano:
 
-``` stop
-$ make stop
+```bash
+docker run -d --name webcrawlerurl_v2 -p 8080:8080 webcrawlerurl_v2
 ```
 
-### Executando o serviço
+Iteragindo com o container:
 
-Para executar o serviço, basta executar o seguinte comando:
-
-``` run
-$ make run
+```bash
+docker exec -it webcrawlerurl_v2 /bin/bash
 ```
 
-ou
+## Uso do Makefile
 
-``` dev
-$ make dev
+### Iniciando o Container
+
+Para iniciar o container utilizando o `make`, execute:
+
+```bash
+make start
 ```
 
-### Executando os testes
+### Parando o Container
 
-Para executar todos os testes, basta executar o seguinte comando:
+Para parar o container:
 
-``` test
-$ make test
+```bash
+make stop
 ```
 
-### Executando o build do projeto
+### Executando o Serviço
 
-Para executar o build, basta executar o seguinte comando:
+Para rodar o serviço de web crawler:
 
-``` build
-$ make build
+```bash
+make run
 ```
 
-Com estes comandos, você pode facilmente instalar, iniciar e executar o nosso web crawler para extração de dados. Divirta-se coletando informações úteis da web!
+Modo de desenvolvimento:
+
+```bash
+make dev
+```
+
+### Executando os Testes
+
+Para rodar todos os testes automatizados:
+
+```bash
+make test
+```
+
+### Realizando o Build do Projeto
+
+Para construir o projeto:
+
+```bash
+make build
+```
+
+## Considerações Finais
+
+Com esses comandos, você pode facilmente instalar, configurar e executar o web crawler para extrair dados de qualquer site. Sinta-se à vontade para explorar e customizar conforme as necessidades do seu projeto.
