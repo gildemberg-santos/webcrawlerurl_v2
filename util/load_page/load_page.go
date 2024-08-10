@@ -8,16 +8,13 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
-	downloaddrive "github.com/gildemberg-santos/webcrawlerurl_v2/util/download_drive"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
-	"github.com/joho/godotenv"
 )
 
 var doneLoadPage sync.WaitGroup
@@ -106,36 +103,7 @@ func (l *LoadPage) loadPageSlow() (err error) {
 		return
 	}
 
-	godotenv.Load()
-	chromeDownloadDriver := os.Getenv("CHROME_DOWNLOAD_DRIVER")
-	chromePath := os.Getenv("CHROME_PATH")
-
-	if _, err = os.Stat(chromePath); os.IsNotExist(err) {
-		log.Default().Printf("O chromedriver não foi encontrado no caminho especificado: %s", chromePath)
-		err = downloaddrive.NewDownloadDrive(chromeDownloadDriver, chromePath).Call()
-		if err != nil {
-			l.StatusCode = 500
-			return
-		}
-
-		err = os.Chmod(chromePath, 0755)
-		if err != nil {
-			l.StatusCode = 500
-			return
-		}
-	}
-
-	opts := append(chromedp.DefaultExecAllocatorOptions[:],
-		chromedp.ExecPath(chromePath),
-		chromedp.Flag("headless", true),
-		chromedp.Flag("disable-gpu", true),
-		chromedp.Flag("no-sandbox", true),
-		chromedp.Flag("remote-debugging-port", "9222"),
-		chromedp.Flag("log-level", "0"),
-		chromedp.Flag("v", "1"),
-	)
-
-	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	ctx, cancel := chromedp.NewExecAllocator(context.Background(), chromedp.DefaultExecAllocatorOptions[:]...)
 	defer cancel()
 
 	ctx, cancel = chromedp.NewContext(ctx, chromedp.WithLogf(log.Printf))
@@ -153,6 +121,7 @@ func (l *LoadPage) loadPageSlow() (err error) {
 	)
 
 	if err != nil {
+		log.Default().Println("Error to load page -> ", err.Error())
 		l.StatusCode = 500
 		return
 	}

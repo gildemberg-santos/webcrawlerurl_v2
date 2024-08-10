@@ -45,12 +45,7 @@ func TestLoadPageFast_LoadError(t *testing.T) {
 }
 
 // func TestLoadPageSlow_Load(t *testing.T) {
-// 	httpmock.Activate()
-// 	defer httpmock.DeactivateAndReset()
-
-// 	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(200, ``))
-
-// 	loadPage := load_page.NewLoadPage("http://www.teste.com", false)
+// 	loadPage := load_page.NewLoadPage("https://leadster.com.br", false)
 // 	err := loadPage.Call()
 // 	assert.Nil(t, err)
 // 	assert.Equal(t, 200, loadPage.StatusCode)
