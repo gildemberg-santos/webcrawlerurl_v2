@@ -30,7 +30,7 @@ func main() {
 	body.UrlPattern = "https://leadster.com.br**"
 	body.MaxUrlLimit = 1
 	body.MaxTimeout = 30
-	body.IsLoadFast = true
+	body.IsLoadFast = false
 	body.IsSiteMap = false
 	body.IsComplete = false
 

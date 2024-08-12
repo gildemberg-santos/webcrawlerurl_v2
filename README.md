@@ -1,4 +1,4 @@
-Aqui está uma versão aprimorada da documentação para o seu projeto de Web Crawler:
+Aqui está a versão atualizada da documentação com os comandos solicitados:
 
 ---
 
@@ -43,10 +43,32 @@ Inicie o container em segundo plano:
 docker run -d --name webcrawlerurl_v2 -p 8080:8080 webcrawlerurl_v2
 ```
 
-Iteragindo com o container:
+Interagindo com o container:
 
 ```bash
 docker exec -it webcrawlerurl_v2 /bin/bash
+```
+
+### Outros Comandos Docker
+
+Para matar o container em execução:
+
+```bash
+docker container kill webcrawlerurl_v2
+```
+
+Para remover todos os containers parados e liberar espaço:
+
+```bash
+docker container prune -f
+```
+
+### Exibindo Logs do Container
+
+Para visualizar os logs do container em execução:
+
+```bash
+docker logs webcrawlerurl_v2
 ```
 
 ## Uso do Makefile

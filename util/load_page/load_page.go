@@ -103,7 +103,16 @@ func (l *LoadPage) loadPageSlow() (err error) {
 		return
 	}
 
-	ctx, cancel := chromedp.NewExecAllocator(context.Background(), chromedp.DefaultExecAllocatorOptions[:]...)
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("headless", true),
+		chromedp.Flag("disable-gpu", true),
+		chromedp.Flag("no-sandbox", true),
+		chromedp.Flag("remote-debugging-port", "9222"),
+		chromedp.Flag("log-level", "0"),
+		chromedp.Flag("v", "1"),
+	)
+
+	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
 	defer cancel()
 
 	ctx, cancel = chromedp.NewContext(ctx, chromedp.WithLogf(log.Printf))
