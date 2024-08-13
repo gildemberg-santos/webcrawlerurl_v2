@@ -23,11 +23,17 @@ type LeadsterAI struct {
 	Timestamp      float64             `json:"ts"`
 }
 
-func NewLeadsterAI(url, urlPattern string, maxUrlLimit, maxTimeout int64, isLoadFast bool) LeadsterAI {
+func NewLeadsterAI(url, urlPattern string, maxUrlLimit, maxTimeout int64, isLoadFast bool, discardedUrls []string) LeadsterAI {
+	visited := make(map[string]bool)
+
+	for _, url := range discardedUrls {
+		visited[url] = true
+	}
+
 	return LeadsterAI{
 		Url:            url,
 		MaxUrlLimit:    maxUrlLimit,
-		Visited:        make(map[string]bool),
+		Visited:        visited,
 		FilterUrlMatch: url_match.NewUrlMatch(urlPattern),
 		IsLoadFast:     isLoadFast,
 		MaxTimeout:     maxTimeout,

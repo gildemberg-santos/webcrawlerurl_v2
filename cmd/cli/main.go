@@ -17,29 +17,31 @@ import (
 func main() {
 
 	body := struct {
-		Url         string `json:"url"`
-		MaxUrlLimit int64  `json:"max_url_limit"`
-		MaxTimeout  int64  `json:"max_timeout"`
-		UrlPattern  string `json:"url_pattern"`
-		IsLoadFast  bool   `json:"is_load_fast"`
-		IsSiteMap   bool   `json:"is_sitemap"`
-		IsComplete  bool   `json:"is_complete"`
+		Url           string   `json:"url"`
+		MaxUrlLimit   int64    `json:"max_url_limit"`
+		MaxTimeout    int64    `json:"max_timeout"`
+		UrlPattern    string   `json:"url_pattern"`
+		IsLoadFast    bool     `json:"is_load_fast"`
+		IsSiteMap     bool     `json:"is_sitemap"`
+		IsComplete    bool     `json:"is_complete"`
+		DiscardedUrls []string `json:"discarded_urls"`
 	}{}
 
 	body.Url = "https://leadster.com.br"
-	body.UrlPattern = "https://leadster.com.br**"
-	body.MaxUrlLimit = 1
+	body.UrlPattern = "https://leadster.com.br/blog/**"
+	body.MaxUrlLimit = 100
 	body.MaxTimeout = 30
-	body.IsLoadFast = false
-	body.IsSiteMap = false
+	body.IsLoadFast = true
+	body.IsSiteMap = true
 	body.IsComplete = false
+	body.DiscardedUrls = []string{"https://leadster.com.br/blog/marketing-de-eventos", "https://leadster.com.br/blog/lead-qualificado-o-que-e-e-como-gerar-leads-qualificados", "https://leadster.com.br/blog/categoria/geracao-de-leads"}
 
 	log.Println("Starting crawler...")
 
 	body.Url, _ = normalize.NewNormalizeUrl(body.Url).GetUrl()
 	body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
 
-	leadsterAI := pkg.NewLeadsterAI(body.Url, body.UrlPattern, body.MaxUrlLimit, body.MaxTimeout, body.IsLoadFast)
+	leadsterAI := pkg.NewLeadsterAI(body.Url, body.UrlPattern, body.MaxUrlLimit, body.MaxTimeout, body.IsLoadFast, body.DiscardedUrls)
 	leadsterAI.Call(body.IsSiteMap, body.IsComplete)
 	log.Printf("Saving data to file data.json total urls: %d\n", len(leadsterAI.Data))
 
