@@ -36,6 +36,7 @@ func NewLoadPage(url string, loadPageFast bool) LoadPage {
 }
 
 func (l *LoadPage) Call() (err error) {
+	log.Default().Println("Loading page -> ", l.Url)
 	if l.LoadPageFast {
 		return l.loadPageFast()
 	}
