@@ -4,3 +4,4 @@ util/load_page/drives/*
 drives/*
 data.json
 urls.json
+__debug_bin*
