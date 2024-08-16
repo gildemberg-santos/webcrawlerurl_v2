@@ -20,9 +20,12 @@ func (f *UrlMatch) Call(url string) bool {
 	if f.Pattern == "" {
 		return true
 	}
-	pattern := regexp.QuoteMeta(f.Pattern)
-	pattern = strings.Replace(pattern, `\*\*`, `.*`, -1)
-	pattern = "^" + pattern + "$"
-	re := regexp.MustCompile(pattern)
+
+	pattern := strings.Replace(f.Pattern, "**", ".*", -1)
+
+	pattern = strings.Replace(pattern, "*", "[^/]*", -1)
+
+	re := regexp.MustCompile("^" + pattern + "$")
+
 	return re.MatchString(url)
 }
