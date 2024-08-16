@@ -5,47 +5,27 @@ import (
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/pkg"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/file"
-	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 )
 
-// main is the entry point of the program.
-//
-// It initializes the variables url_base, maxUrlLimit, and maxChunckLimit with default values.
-// Then, it creates a new instance of LeadsterAI with the given parameters.
-// After that, it calls the Call method of the LeadsterAI instance to start crawling the URLs.
-// Finally, it logs the length of the Data field of the LeadsterAI instance and saves the data to a JSON file named "data.json".
 func main() {
+	sitemap := struct {
+		Url               string
+		UrlPattern        string
+		UrlSiteMapPattern string
+	}{
+		Url:               "https://www.usaflex.com.br/sitemap.xml",
+		UrlPattern:        "https://www.usaflex.com.br/ac**/p",
+		UrlSiteMapPattern: "",
+	}
 
-	body := struct {
-		Url           string   `json:"url"`
-		MaxUrlLimit   int64    `json:"max_url_limit"`
-		MaxTimeout    int64    `json:"max_timeout"`
-		UrlPattern    string   `json:"url_pattern"`
-		IsLoadFast    bool     `json:"is_load_fast"`
-		IsSiteMap     bool     `json:"is_sitemap"`
-		IsComplete    bool     `json:"is_complete"`
-		DiscardedUrls []string `json:"discarded_urls"`
-	}{}
-
-	body.Url = "https://leadster.com.br"
-	body.UrlPattern = "https://leadster.com.br/blog/**"
-	body.MaxUrlLimit = 100
-	body.MaxTimeout = 30
-	body.IsLoadFast = true
-	body.IsSiteMap = true
-	body.IsComplete = false
-	body.DiscardedUrls = []string{"https://leadster.com.br/blog/marketing-de-eventos", "https://leadster.com.br/blog/lead-qualificado-o-que-e-e-como-gerar-leads-qualificados", "https://leadster.com.br/blog/categoria/geracao-de-leads"}
-
-	log.Println("Starting crawler...")
-
-	body.Url, _ = normalize.NewNormalizeUrl(body.Url).GetUrl()
-	body.UrlPattern, _ = normalize.NewNormalizeUrl(body.UrlPattern).GetUrl()
-
-	leadsterAI := pkg.NewLeadsterAI(body.Url, body.UrlPattern, body.MaxUrlLimit, body.MaxTimeout, body.IsLoadFast, body.DiscardedUrls)
-	leadsterAI.Call(body.IsSiteMap, body.IsComplete)
-	log.Printf("Saving data to file data.json total urls: %d\n", len(leadsterAI.Data))
-
-	fileJson := file.NewFileJson("data.json", leadsterAI)
+	log.Println("Starting")
+	log.Println("Loading sitemap -> ", sitemap.Url)
+	urls := pkg.NewEcommerceSitemap(sitemap.Url, sitemap.UrlPattern, sitemap.UrlSiteMapPattern).Call()
+	fileJson := file.NewFileJson("urls.json", urls)
 	fileJson.Save()
-	log.Println("Data saved to file data.json")
+	log.Println("Loading data")
+	data := pkg.NewEcommerce(urls.Urls, 1_000_000_000, false).Call()
+	fileJson = file.NewFileJson("data.json", data)
+	fileJson.Save()
+	log.Println("Completed")
 }
