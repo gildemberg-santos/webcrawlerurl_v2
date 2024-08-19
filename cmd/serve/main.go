@@ -17,6 +17,8 @@ func main() {
 	http.HandleFunc("/mappingurl", RouteMappingUrl)
 	http.HandleFunc("/readtext", RouteReadText)
 	http.HandleFunc("/crawler_leadster_ai", RouteLeadsterAI)
+	http.HandleFunc("/e-commerce-sitemap", RouteEcommerceSiteMap)
+	http.HandleFunc("/e-commerce", RouteEcommerce)
 
 	log.Println("Listening on port " + GetPort())
 	err := http.ListenAndServe(GetPort(), nil)
@@ -112,6 +114,46 @@ func RouteLeadsterAI(w http.ResponseWriter, r *http.Request) {
 
 	leadsterAI := pkg.NewLeadsterAI(body.Url, body.UrlPattern, body.MaxUrlLimit, body.MaxTimeout, body.IsLoadFast, body.DiscardedUrls)
 	response := leadsterAI.Call(body.IsSiteMap, body.IsComplete)
+
+	log.Println("Success")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func RouteEcommerceSiteMap(w http.ResponseWriter, r *http.Request) {
+	log.Println("RouteEcommerceSiteMap")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	body := struct {
+		Url               string `json:"url"`
+		UrlPattern        string `json:"url_pattern"`
+		UrlSiteMapPattern string `json:"url_sitemap_pattern"`
+	}{}
+
+	json.NewDecoder(r.Body).Decode(&body)
+
+	ecommerceSiteMap := pkg.NewEcommerceSitemap(body.Url, body.UrlPattern, body.UrlSiteMapPattern)
+	response := ecommerceSiteMap.Call()
+
+	log.Println("Success")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func RouteEcommerce(w http.ResponseWriter, r *http.Request) {
+	log.Println("RouteEcommerce")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	body := struct {
+		Urls       []string `json:"urls"`
+		MaxTimeout int64    `json:"max_timeout"`
+		IsLoadFast bool     `json:"is_load_fast"`
+	}{}
+
+	json.NewDecoder(r.Body).Decode(&body)
+
+	ecommerce := pkg.NewEcommerce(body.Urls, body.MaxTimeout, body.IsLoadFast)
+	response := ecommerce.Call()
 
 	log.Println("Success")
 	w.WriteHeader(http.StatusOK)
