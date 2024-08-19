@@ -6,10 +6,10 @@ import (
 )
 
 type Link struct {
-	Url     string
-	OutUrls []string
-	Sources *goquery.Document
-	Limit   int64
+	Sources *goquery.Document `json:"-"`
+	Limit   int64             `json:"-"`
+	Url     string            `json:"url"`
+	OutUrls []string          `json:"urls"`
 }
 
 func NewLink(source *goquery.Document, baseUrl string, limit int64) Link {
@@ -29,9 +29,6 @@ func (l *Link) Call() *Link {
 func (l *Link) extractUrls() {
 	l.Sources.Find("a").Each(func(_ int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
-		if href == "teste03" {
-			// fmt.Println("href is empty")
-		}
 		uri := normalize.NewNormalizeUrl(href)
 		uri.BaseUrl = l.Url
 		url, err := uri.GetUrl()
