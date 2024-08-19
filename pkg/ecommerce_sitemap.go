@@ -3,18 +3,17 @@ package pkg
 import (
 	"log"
 
-	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	sitemap "github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
 
 type EcommerceSitemap struct {
 	Visited           map[string]bool     `json:"-"`
-	Url               string              `json:"url"`
-	UrlPattern        *url_match.UrlMatch `json:"-"`
 	UrlSiteMapPattern *url_match.UrlMatch `json:"-"`
-	Urls              []string            `json:"urls"`
-	UrlSiteMap        []string            `json:"sitemaps"`
+	UrlPattern        *url_match.UrlMatch `json:"-"`
+	Url               string              `json:"url,omitempty"`
+	Urls              []string            `json:"urls,omitempty"`
+	UrlSiteMap        []string            `json:"sitemaps,omitempty"`
 }
 
 func NewEcommerceSitemap(url, urlPattern, urlSiteMapPattern string) *EcommerceSitemap {
@@ -52,9 +51,8 @@ func (s *EcommerceSitemap) crawler(url string) error {
 	}
 
 	for _, url := range siteMap.Urlset.Urls {
-		normalizeUrl, _ := normalize.NewNormalizeUrl(url.Loc).GetUrl()
-		if s.UrlPattern.Call(normalizeUrl) {
-			s.Urls = append(s.Urls, normalizeUrl)
+		if s.UrlPattern.Call(url.Loc) {
+			s.Urls = append(s.Urls, url.Loc)
 		}
 	}
 

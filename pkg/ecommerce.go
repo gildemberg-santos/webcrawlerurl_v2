@@ -1,8 +1,6 @@
 package pkg
 
 import (
-	"log"
-
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
@@ -13,10 +11,10 @@ type Ecommerce struct {
 	MaxTimeout     int64               `json:"-"`
 	IsLoadFast     bool                `json:"-"`
 	WithTimestamp  timestamp.Timestamp `json:"-"`
-	Urls           []string            `json:"urls"`
-	TotalCaracters int64               `json:"total_characters"`
-	Data           []DataReadText      `json:"data"`
-	Timestamp      float64             `json:"ts"`
+	Urls           []string            `json:"urls,omitempty"`
+	TotalCaracters int64               `json:"total_characters,omitempty"`
+	Data           []DataReadText      `json:"data,omitempty"`
+	Timestamp      float64             `json:"ts,omitempty"`
 }
 
 func NewEcommerce(urls []string, maxTimeout int64, isLoadFast bool) *Ecommerce {
@@ -53,8 +51,6 @@ func (e *Ecommerce) crawler(url string) error {
 	}
 
 	e.Visited[url] = true
-
-	log.Default().Println("Crawling url -> ", url)
 
 	page := load_page.NewLoadPage(url, e.IsLoadFast)
 	page.Timeout = 5
