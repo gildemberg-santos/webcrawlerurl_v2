@@ -1,6 +1,8 @@
 package normalize
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net"
@@ -40,6 +42,15 @@ func (l *NormalizeUrl) GetUrl() (url string, err error) {
 	url = l.Url
 
 	return
+}
+
+func (l *NormalizeUrl) MD5() string {
+	url, _ := l.GetUrl()
+	url = strings.Replace(url, "https://", "", 1)
+	url = strings.Replace(url, "www.", "", 1)
+	hash := md5.Sum([]byte(url))
+	hashString := hex.EncodeToString(hash[:])
+	return hashString
 }
 
 // normalizeHttp normalizes the URL and BaseUrl by ensuring they have the correct HTTP/HTTPS format.

@@ -57,3 +57,8 @@ func TestUrl_GetUrl_SiteMap(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "https://www.google.com/sitemap.xml", url)
 }
+
+func TestUrl_MD5(t *testing.T) {
+	hash := normalize.NewNormalizeUrl("https://www.google.com/contato/?p=google").MD5()
+	assert.Equal(t, "9635180a42da30ac7cd3f4b0447975b9", hash)
+}
