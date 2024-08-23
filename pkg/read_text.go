@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -19,6 +20,7 @@ type DataReadText struct {
 	Text           string          `json:"text"`
 	TotalCaracters int64           `json:"total_characters"`
 	Url            string          `json:"url"`
+	RetailerItemID string          `json:"retailer_item_id"`
 	MetaTag        extract.MetaTag `json:"meta_tag,omitempty"`
 }
 
@@ -84,12 +86,14 @@ func (c *ReadText) Call() (ResponseReadtext, error) {
 	informatin := extract.NewText(page.Source)
 	extractext := informatin.Call()
 	meta_tag := extract.NewMetaTag(page.Source).Call()
+	retailerItemID := normalize.NewNormalizeUrl(c.Url).MD5()
 	extracMetaTag := meta_tag.Call()
 
 	data := DataReadText{
 		Text:           extractext.Text,
 		TotalCaracters: int64(len(extractext.Text)),
 		Url:            c.Url,
+		RetailerItemID: retailerItemID,
 		MetaTag:        *extracMetaTag,
 	}
 	c.Data = data
