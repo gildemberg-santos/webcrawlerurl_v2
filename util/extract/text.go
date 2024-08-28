@@ -31,6 +31,14 @@ func (t *Text) normalizeHTML() {
 	html = re.ReplaceAllString(html, "</$1> ")
 
 	t.Sources, _ = goquery.NewDocumentFromReader(strings.NewReader(html))
+
+	metaTag := NewMetaTag(t.Sources).Call()
+	if metaTag.Generator == "vtex.render-server@8.172.5" {
+		t.Sources.Find("#desktop-top-header-id").Remove()
+		t.Sources.Find("#footer-desktop-id").Remove()
+		t.Sources.Find("#breadcrumb-id").Remove()
+		t.Sources.Find("#tabs-product-id").Remove()
+	}
 }
 
 func (t *Text) normalize() {
