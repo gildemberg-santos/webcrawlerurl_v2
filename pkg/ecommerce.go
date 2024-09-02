@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"log"
 	"sync"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
@@ -9,11 +10,10 @@ import (
 )
 
 type Ecommerce struct {
-	Visited        map[string]bool     `json:"-"`
+	Visited        sync.Map            `json:"-"`
 	MaxTimeout     int64               `json:"-"`
 	IsLoadFast     bool                `json:"-"`
 	WithTimestamp  timestamp.Timestamp `json:"-"`
-	DoneReadPage   sync.WaitGroup      `json:"-"`
 	Urls           []string            `json:"urls,omitempty"`
 	TotalCaracters int64               `json:"total_characters,omitempty"`
 	Data           []DataReadText      `json:"data,omitempty"`
@@ -25,27 +25,37 @@ func NewEcommerce(urls []string, maxTimeout int64, isLoadFast bool) *Ecommerce {
 		Urls:          urls,
 		MaxTimeout:    maxTimeout,
 		IsLoadFast:    isLoadFast,
-		Visited:       make(map[string]bool),
+		Visited:       sync.Map{},
 		WithTimestamp: *timestamp.NewTimestamp(),
 	}
 }
 
 func (e *Ecommerce) Call() *Ecommerce {
 	e.WithTimestamp.Start()
-	e.DoneReadPage.Add(len(e.Urls))
 
-	limitThreads := make(chan struct{}, 10)
+	limitThreads := make(chan struct{}, 2)
+	done := make(chan bool, len(e.Urls))
 
 	for _, url := range e.Urls {
 		limitThreads <- struct{}{}
+
 		go func(url string) {
-			defer func() { <-limitThreads }()
-			e.crawler(url)
-			e.DoneReadPage.Done()
+			defer func() {
+				done <- true
+				<-limitThreads
+			}()
+
+			if err := e.crawler(url); err != nil {
+				log.Printf("Erro ao processar URL %s: %v", url, err)
+				return
+			}
 		}(url)
 	}
 
-	e.DoneReadPage.Wait()
+	for i := 0; i < len(e.Urls); i++ {
+		<-done
+	}
+
 	e.WithTimestamp.End()
 	e.Timestamp = e.WithTimestamp.GetTime()
 
@@ -60,11 +70,10 @@ func (e *Ecommerce) crawler(url string) error {
 
 	url, _ = normalize.NewNormalizeUrl(url).GetUrl()
 
-	if e.Visited[url] {
+	if _, loaded := e.Visited.LoadOrStore(url, true); loaded {
+		// Se o URL já está presente no mapa, retorne sem fazer nada
 		return nil
 	}
-
-	e.Visited[url] = true
 
 	page := load_page.NewLoadPage(url, e.IsLoadFast)
 	page.Timeout = 5
