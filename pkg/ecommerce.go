@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"sync"
+
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
@@ -11,6 +13,7 @@ type Ecommerce struct {
 	MaxTimeout     int64               `json:"-"`
 	IsLoadFast     bool                `json:"-"`
 	WithTimestamp  timestamp.Timestamp `json:"-"`
+	DoneReadPage   sync.WaitGroup      `json:"-"`
 	Urls           []string            `json:"urls,omitempty"`
 	TotalCaracters int64               `json:"total_characters,omitempty"`
 	Data           []DataReadText      `json:"data,omitempty"`
@@ -29,9 +32,20 @@ func NewEcommerce(urls []string, maxTimeout int64, isLoadFast bool) *Ecommerce {
 
 func (e *Ecommerce) Call() *Ecommerce {
 	e.WithTimestamp.Start()
+	e.DoneReadPage.Add(len(e.Urls))
+
+	limitThreads := make(chan struct{}, 10)
+
 	for _, url := range e.Urls {
-		e.crawler(url)
+		limitThreads <- struct{}{}
+		go func(url string) {
+			defer func() { <-limitThreads }()
+			e.crawler(url)
+			e.DoneReadPage.Done()
+		}(url)
 	}
+
+	e.DoneReadPage.Wait()
 	e.WithTimestamp.End()
 	e.Timestamp = e.WithTimestamp.GetTime()
 
