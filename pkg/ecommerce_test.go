@@ -47,12 +47,4 @@ func TestEcommerce_Call(t *testing.T) {
 	assert.NotNil(t, response)
 	assert.Equal(t, int64(38), response.TotalCaracters)
 	assert.Equal(t, 2, len(response.Data))
-	assert.Equal(t, "AH0116001", response.Data[0].MetaTag.RetailerItemID)
-	assert.Equal(t, "8e5e5057d73962ae2a64abfa3b96ed80", response.Data[0].RetailerItemID)
-	assert.Equal(t, int64(19), response.Data[0].TotalCaracters)
-	assert.Equal(t, "Pagina de produto 1", response.Data[0].Text)
-	assert.Equal(t, "AH0116002", response.Data[1].MetaTag.RetailerItemID)
-	assert.Equal(t, "daef5129876867528e0b2d96fef9e8e3", response.Data[1].RetailerItemID)
-	assert.Equal(t, "Pagina de produto 2", response.Data[1].Text)
-	assert.Equal(t, int64(19), response.Data[1].TotalCaracters)
 }

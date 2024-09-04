@@ -33,7 +33,7 @@ func NewEcommerce(urls []string, maxTimeout int64, isLoadFast bool) *Ecommerce {
 func (e *Ecommerce) Call() *Ecommerce {
 	e.WithTimestamp.Start()
 
-	limitThreads := make(chan struct{}, 2)
+	limitThreads := make(chan struct{}, 5)
 	done := make(chan bool, len(e.Urls))
 
 	for _, url := range e.Urls {
