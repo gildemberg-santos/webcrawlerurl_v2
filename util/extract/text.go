@@ -33,7 +33,9 @@ func (t *Text) normalizeHTML() {
 	t.Sources, _ = goquery.NewDocumentFromReader(strings.NewReader(html))
 
 	metaTag := NewMetaTag(t.Sources).Call()
-	if metaTag.Generator == "vtex.render-server@8.172.5" {
+	version := metaTag.Generator
+	pattern := regexp.MustCompile(`^vtex\.render-server@8\.\d+\.\d+$`)
+	if pattern.MatchString(version) {
 		t.Sources.Find("#desktop-top-header-id").Remove()
 		t.Sources.Find("#footer-desktop-id").Remove()
 		t.Sources.Find("#breadcrumb-id").Remove()
