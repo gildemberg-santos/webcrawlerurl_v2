@@ -18,6 +18,7 @@ func main() {
 	http.HandleFunc("/readtext", RouteReadText)
 	http.HandleFunc("/crawler_leadster_ai", RouteLeadsterAI)
 	http.HandleFunc("/e-commerce-sitemap", RouteEcommerceSiteMap)
+	http.HandleFunc("/e-commerce-google-shopping", RouteEcommerceGoogleShopping)
 	http.HandleFunc("/e-commerce", RouteEcommerce)
 
 	log.Println("Listening on port " + GetPort())
@@ -134,6 +135,26 @@ func RouteEcommerceSiteMap(w http.ResponseWriter, r *http.Request) {
 
 	ecommerceSiteMap := pkg.NewEcommerceSitemap(body.Url, body.UrlPattern, body.UrlSiteMapPattern)
 	response := ecommerceSiteMap.Call()
+
+	log.Println("Success")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+func RouteEcommerceGoogleShopping(w http.ResponseWriter, r *http.Request) {
+	log.Println("RouteEcommerceGoogleShopping")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	body := struct {
+		Url        string `json:"url"`
+		UrlPattern string `json:"url_pattern"`
+		MaxTimeout int64  `json:"max_timeout"`
+	}{}
+
+	json.NewDecoder(r.Body).Decode(&body)
+
+	ecommerceGoogleShopping := pkg.NewEcommerceGoogleShopping(body.Url, body.UrlPattern, body.MaxTimeout)
+	response := ecommerceGoogleShopping.Call()
 
 	log.Println("Success")
 	w.WriteHeader(http.StatusOK)
