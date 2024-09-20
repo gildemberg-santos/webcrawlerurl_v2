@@ -1,7 +1,6 @@
 package sitemap_test
 
 import (
-	"log"
 	"testing"
 
 	sitemap "github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
@@ -35,6 +34,8 @@ func TestSiteMap_Call(t *testing.T) {
 
 	siteMap := sitemap.NewSiteMap("http://www.teste.com")
 	err := siteMap.Call()
-	log.Println(err)
 	assert.Nil(t, err)
+	assert.Equal(t, "http://www.teste.com", siteMap.UrlLocation)
+	assert.Equal(t, "https://leadster.com.br/", siteMap.Urlset.Urls[0].Loc)
+	assert.Equal(t, "https://leadster.com.br/leads-qualificados-com-anuncios/", siteMap.Urlset.Urls[1].Loc)
 }
