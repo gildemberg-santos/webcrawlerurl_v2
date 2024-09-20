@@ -3,6 +3,7 @@ package googleshopping
 import (
 	"encoding/xml"
 	"io"
+	"log"
 	"net/http"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 
 type GoogleShopping struct {
 	UrlLocation string
+	MaxTimeout  int64
 	Feed        struct {
 		Entry []struct {
 			Link struct {
@@ -20,9 +22,10 @@ type GoogleShopping struct {
 	} `xml:"feed"`
 }
 
-func NewGoogleShopping(url string) *GoogleShopping {
+func NewGoogleShopping(url string, maxTimeout int64) *GoogleShopping {
 	return &GoogleShopping{
 		UrlLocation: url,
+		MaxTimeout:  maxTimeout,
 	}
 }
 
@@ -35,9 +38,11 @@ func (g *GoogleShopping) Call() error {
 }
 
 func (g *GoogleShopping) load() error {
-	client := &http.Client{Timeout: 10 * time.Second}
+	log.Println("Start crawler google shopping")
+	client := &http.Client{Timeout: time.Duration(g.MaxTimeout) * time.Second}
 	req, err := http.NewRequest("GET", g.UrlLocation, nil)
 	if err != nil {
+		log.Default().Println("Error request google shopping: ", err)
 		return err
 	}
 
@@ -45,21 +50,42 @@ func (g *GoogleShopping) load() error {
 
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Default().Println("Error request google shopping: ", err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		log.Println("Status code: ", resp.StatusCode)
 		return err
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
+	decoder := xml.NewDecoder(resp.Body)
+	for {
+		t, err := decoder.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Default().Println("Error decoding token: ", err)
+			return err
+		}
 
-	if err := xml.Unmarshal(body, &g.Feed); err != nil {
-		return err
+		switch se := t.(type) {
+		case xml.StartElement:
+			if se.Name.Local == "entry" {
+				var entry struct {
+					Link struct {
+						Value string `xml:",chardata"`
+					} `xml:"link"`
+				}
+				if err := decoder.DecodeElement(&entry, &se); err != nil {
+					log.Default().Println("Error decoding entry: ", err)
+					return err
+				}
+				g.Feed.Entry = append(g.Feed.Entry, entry)
+			}
+		}
 	}
 
 	return nil

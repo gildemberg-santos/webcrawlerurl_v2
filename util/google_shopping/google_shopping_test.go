@@ -25,7 +25,7 @@ func TestGoogleShopping_Call(t *testing.T) {
 	</feed>
 	`))
 
-	googleShopping := googleshopping.NewGoogleShopping("http://www.teste.com")
+	googleShopping := googleshopping.NewGoogleShopping("http://www.teste.com", 240)
 	err := googleShopping.Call()
 	assert.Nil(t, err)
 	assert.Equal(t, "http://www.teste.com", googleShopping.UrlLocation)
