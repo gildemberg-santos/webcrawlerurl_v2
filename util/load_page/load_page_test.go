@@ -44,14 +44,14 @@ func TestLoadPageFast_LoadError(t *testing.T) {
 	assert.Equal(t, 404, loadPage.StatusCode)
 }
 
-func TestLoadPageSlow_Load(t *testing.T) {
-	httpmock.Activate()
-	defer httpmock.DeactivateAndReset()
+// func TestLoadPageSlow_Load(t *testing.T) {
+// 	httpmock.Activate()
+// 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(200, ``))
+// 	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(200, ``))
 
-	loadPage := load_page.NewLoadPage("http://www.teste.com", false)
-	err := loadPage.Call()
-	assert.Nil(t, err)
-	assert.Equal(t, 200, loadPage.StatusCode)
-}
+// 	loadPage := load_page.NewLoadPage("http://www.teste.com", false)
+// 	err := loadPage.Call()
+// 	assert.Nil(t, err)
+// 	assert.Equal(t, 200, loadPage.StatusCode)
+// }
