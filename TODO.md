@@ -9,4 +9,4 @@
 * [x] Melhorar os commits do projeto
 * [x] Criar mecanismo de filtro de urls
 * [x] Criar mecanismo para extrair todas as urls de um sitemap
-* [ ] Criar mecanismo para extrair todas as urls do feed
+* [x] Criar mecanismo para extrair todas as urls do feed
