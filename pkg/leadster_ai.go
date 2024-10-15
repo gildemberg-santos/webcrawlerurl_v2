@@ -104,7 +104,7 @@ func (l *LeadsterAI) crawler(url string, isSiteMap, isComplete bool) {
 				}
 				l.crawler(tmp_url.Loc, true, false)
 			}
-			for _, tmp_url := range siteMap.Urlset.Urls {
+			for _, tmp_url := range siteMap.Urlset.URLs {
 				tmp_url.Loc, _ = normalize.NewNormalizeUrl(tmp_url.Loc).GetUrl()
 				if l.Visited[tmp_url.Loc] {
 					continue
