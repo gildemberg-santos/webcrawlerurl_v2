@@ -13,10 +13,15 @@ type SiteMap struct {
 	UrlLocation string
 	Urlset      struct {
 		XMLName xml.Name `xml:"urlset"`
-		Urls    []struct {
+		URLs    []struct {
 			Loc      string  `xml:"loc"`
 			Lastmod  string  `xml:"lastmod"`
 			Priority float32 `xml:"priority"`
+			Link     []struct {
+				Rel      string `xml:"rel,attr"`
+				Hreflang string `xml:"hreflang,attr"`
+				Href     string `xml:"href,attr"`
+			} `xml:"link"`
 		} `xml:"url"`
 	}
 	Sitemapindex struct {
