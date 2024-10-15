@@ -50,9 +50,25 @@ func (s *EcommerceSitemap) crawler(url string) error {
 		return err
 	}
 
-	for _, url := range siteMap.Urlset.Urls {
+	for _, url := range siteMap.Urlset.URLs {
 		if s.UrlPattern.Call(url.Loc) {
+			if s.Visited[url.Loc] {
+				continue
+			}
+
 			s.Urls = append(s.Urls, url.Loc)
+			s.Visited[url.Loc] = true
+		}
+
+		for _, link := range url.Link {
+			if s.UrlPattern.Call(link.Href) {
+				if s.Visited[link.Href] {
+					continue
+				}
+
+				s.Urls = append(s.Urls, link.Href)
+				s.Visited[link.Href] = true
+			}
 		}
 	}
 
