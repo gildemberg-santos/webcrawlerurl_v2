@@ -18,6 +18,9 @@ type GoogleShopping struct {
 			Link struct {
 				Value string `xml:",chardata"`
 			} `xml:"link"`
+			ImageLink struct {
+				Value string `xml:",chardata"`
+			} `xml:"image_link"`
 		} `xml:"entry"`
 	} `xml:"feed"`
 }
@@ -78,6 +81,9 @@ func (g *GoogleShopping) load() error {
 					Link struct {
 						Value string `xml:",chardata"`
 					} `xml:"link"`
+					ImageLink struct {
+						Value string `xml:",chardata"`
+					} `xml:"image_link"`
 				}
 				if err := decoder.DecodeElement(&entry, &se); err != nil {
 					log.Default().Println("Error decoding entry: ", err)
