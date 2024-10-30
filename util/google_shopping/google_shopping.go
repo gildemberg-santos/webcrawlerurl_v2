@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
@@ -89,6 +90,10 @@ func (g *GoogleShopping) load() error {
 					log.Default().Println("Error decoding entry: ", err)
 					return err
 				}
+
+				entry.Link.Value = strings.Replace(entry.Link.Value, "\n", "", -1)
+				entry.ImageLink.Value = strings.Replace(entry.ImageLink.Value, "\n", "", -1)
+
 				g.Feed.Entry = append(g.Feed.Entry, entry)
 			}
 		}
