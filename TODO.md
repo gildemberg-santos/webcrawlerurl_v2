@@ -10,3 +10,5 @@
 * [x] Criar mecanismo de filtro de urls
 * [x] Criar mecanismo para extrair todas as urls de um sitemap
 * [x] Criar mecanismo para extrair todas as urls do feed
+* [x] Ler todos as urls de diferentes idiomas de um sitemap
+* [x] Ler imagens do google shopping
