@@ -13,6 +13,7 @@ type EcommerceGoogleShopping struct {
 	MaxTimeout int64               `json:"-"`
 	Url        string              `json:"url,omitempty"`
 	Urls       []string            `json:"urls,omitempty"`
+	Images     []string            `json:"images,omitempty"`
 }
 
 func NewEcommerceGoogleShopping(url, urlPattern string, maxTimeout int64) *EcommerceGoogleShopping {
@@ -49,7 +50,9 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 		}
 		if s.UrlPattern.Call(entry.Link.Value) {
 			log.Println("Add url -> ", entry.Link.Value)
+			log.Println("Add image -> ", entry.ImageLink.Value)
 			s.Urls = append(s.Urls, entry.Link.Value)
+			s.Images = append(s.Images, entry.ImageLink.Value)
 		}
 		s.Visited[entry.Link.Value] = true
 	}

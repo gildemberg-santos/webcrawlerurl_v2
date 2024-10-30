@@ -17,9 +17,11 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	<feed xmlns="http://www.w3.org/2005/Atom">
 		<entry>
 			<g:link>https://www.google.com/shopping/product/1</g:link>
+			<g:image_link>https://www.google.com/shopping/image/product/1.jpg</g:image_link>
 		</entry>
 		<entry>
 			<g:link>https://www.google.com/shopping/product/2</g:link>
+			<g:image_link>https://www.google.com/shopping/image/product/2.jpg</g:image_link>
 		</entry>
 	</feed>
 	`))
@@ -32,4 +34,6 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	assert.Len(t, ecommerceGoogleShopping.Urls, 2)
 	assert.Equal(t, "https://www.google.com/shopping/product/1", ecommerceGoogleShopping.Urls[0])
 	assert.Equal(t, "https://www.google.com/shopping/product/2", ecommerceGoogleShopping.Urls[1])
+	assert.Equal(t, "https://www.google.com/shopping/image/product/1.jpg", ecommerceGoogleShopping.Images[0])
+	assert.Equal(t, "https://www.google.com/shopping/image/product/2.jpg", ecommerceGoogleShopping.Images[1])
 }
