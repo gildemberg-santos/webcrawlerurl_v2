@@ -91,8 +91,8 @@ func (g *GoogleShopping) load() error {
 					return err
 				}
 
-				entry.Link.Value = strings.Replace(entry.Link.Value, "\n", "", -1)
-				entry.ImageLink.Value = strings.Replace(entry.ImageLink.Value, "\n", "", -1)
+				entry.Link.Value = strings.TrimSpace(strings.ReplaceAll(entry.Link.Value, "\n", ""))
+				entry.ImageLink.Value = strings.TrimSpace(strings.ReplaceAll(entry.ImageLink.Value, "\n", ""))
 
 				g.Feed.Entry = append(g.Feed.Entry, entry)
 			}
