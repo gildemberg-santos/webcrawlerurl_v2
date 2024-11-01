@@ -8,6 +8,8 @@ RUN go mod download
 
 RUN mkdir -p ./bin
 
+RUN go test ./...
+
 RUN go build -o ./bin/serve ./cmd/serve/main.go
 
 FROM browserless/chrome:latest
