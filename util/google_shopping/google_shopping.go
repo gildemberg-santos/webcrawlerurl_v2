@@ -22,9 +22,9 @@ type GoogleShopping struct {
 			Title struct {
 				Value string `xml:",chardata"`
 			} `xml:"title"`
-			Summary struct {
+			Description struct {
 				Value string `xml:",chardata"`
-			} `xml:"summary"`
+			} `xml:"description"`
 			Link struct {
 				Value string `xml:",chardata"`
 			} `xml:"link"`
@@ -106,9 +106,9 @@ func (g *GoogleShopping) load() error {
 					Title struct {
 						Value string `xml:",chardata"`
 					} `xml:"title"`
-					Summary struct {
+					Description struct {
 						Value string `xml:",chardata"`
-					} `xml:"summary"`
+					} `xml:"description"`
 					Link struct {
 						Value string `xml:",chardata"`
 					} `xml:"link"`
@@ -129,7 +129,7 @@ func (g *GoogleShopping) load() error {
 
 				entry.ID.Value = strings.TrimSpace(strings.ReplaceAll(entry.ID.Value, "\n", ""))
 				entry.Title.Value = strings.TrimSpace(strings.ReplaceAll(entry.Title.Value, "\n", ""))
-				entry.Summary.Value = strings.TrimSpace(strings.ReplaceAll(entry.Summary.Value, "\n", ""))
+				entry.Description.Value = strings.TrimSpace(strings.ReplaceAll(entry.Description.Value, "\n", ""))
 				entry.Link.Value = strings.TrimSpace(strings.ReplaceAll(entry.Link.Value, "\n", ""))
 				entry.ImageLink.Value = strings.TrimSpace(strings.ReplaceAll(entry.ImageLink.Value, "\n", ""))
 				entry.Price.Value = strings.TrimSpace(strings.ReplaceAll(entry.Price.Value, "\n", ""))
