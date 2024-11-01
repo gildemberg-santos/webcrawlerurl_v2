@@ -81,6 +81,12 @@ func (g *GoogleShopping) load() error {
 
 	decoder := xml.NewDecoder(resp.Body)
 	for {
+		var currentTime = time.Now()
+		timeoutThreshold := float64(g.MaxTimeout) * 0.95
+		if time.Since(currentTime).Seconds() > timeoutThreshold {
+			log.Println("Timeout threshold reached")
+			break
+		}
 		t, err := decoder.Token()
 		if err == io.EOF {
 			break
