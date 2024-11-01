@@ -16,12 +16,27 @@ type GoogleShopping struct {
 	MaxTimeout  int64
 	Feed        struct {
 		Entry []struct {
+			ID struct {
+				Value string `xml:",chardata"`
+			} `xml:"id"`
+			Title struct {
+				Value string `xml:",chardata"`
+			} `xml:"title"`
+			Summary struct {
+				Value string `xml:",chardata"`
+			} `xml:"summary"`
 			Link struct {
 				Value string `xml:",chardata"`
 			} `xml:"link"`
 			ImageLink struct {
 				Value string `xml:",chardata"`
 			} `xml:"image_link"`
+			Price struct {
+				Value string `xml:",chardata"`
+			} `xml:"price"`
+			Availability struct {
+				Value string `xml:",chardata"`
+			} `xml:"availability"`
 		} `xml:"entry"`
 	} `xml:"feed"`
 }
@@ -79,12 +94,27 @@ func (g *GoogleShopping) load() error {
 		case xml.StartElement:
 			if se.Name.Local == "entry" {
 				var entry struct {
+					ID struct {
+						Value string `xml:",chardata"`
+					} `xml:"id"`
+					Title struct {
+						Value string `xml:",chardata"`
+					} `xml:"title"`
+					Summary struct {
+						Value string `xml:",chardata"`
+					} `xml:"summary"`
 					Link struct {
 						Value string `xml:",chardata"`
 					} `xml:"link"`
 					ImageLink struct {
 						Value string `xml:",chardata"`
 					} `xml:"image_link"`
+					Price struct {
+						Value string `xml:",chardata"`
+					} `xml:"price"`
+					Availability struct {
+						Value string `xml:",chardata"`
+					} `xml:"availability"`
 				}
 				if err := decoder.DecodeElement(&entry, &se); err != nil {
 					log.Default().Println("Error decoding entry: ", err)
