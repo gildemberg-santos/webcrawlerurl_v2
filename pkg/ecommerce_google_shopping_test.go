@@ -18,7 +18,7 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 		<entry>
 			<g:id>1</g:id>
 			<g:title>Product 1</g:title>
-			<g:summary>Summary product 1</g:summary>
+			<g:description>Description product 1</g:description>
 			<g:link>https://www.google.com/shopping/product/1</g:link>
 			<g:image_link>https://www.google.com/shopping/image/product/1.jpg</g:image_link>
 			<g:price>5.00</g:price>
@@ -27,7 +27,7 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 		<entry>
 			<g:id>2</g:id>
 			<g:title>Product 2</g:title>
-			<g:summary>Summary product 2</g:summary>
+			<g:description>Description product 2</g:description>
 			<g:link>https://www.google.com/shopping/product/2</g:link>
 			<g:image_link>https://www.google.com/shopping/image/product/2.jpg</g:image_link>
 			<g:price>10.00</g:price>
@@ -49,7 +49,7 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	assert.Len(t, ecommerceGoogleShopping.Products, 2)
 	assert.Equal(t, "1", ecommerceGoogleShopping.Products[0].ID)
 	assert.Equal(t, "Product 1", ecommerceGoogleShopping.Products[0].Title)
-	assert.Equal(t, "Summary product 1", ecommerceGoogleShopping.Products[0].Summary)
+	assert.Equal(t, "Description product 1", ecommerceGoogleShopping.Products[0].Description)
 	assert.Equal(t, "https://www.google.com/shopping/product/1", ecommerceGoogleShopping.Products[0].Url)
 	assert.Equal(t, "https://www.google.com/shopping/image/product/1.jpg", ecommerceGoogleShopping.Products[0].Image)
 	assert.Equal(t, "5.00", ecommerceGoogleShopping.Products[0].Price)
@@ -57,7 +57,7 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 
 	assert.Equal(t, "2", ecommerceGoogleShopping.Products[1].ID)
 	assert.Equal(t, "Product 2", ecommerceGoogleShopping.Products[1].Title)
-	assert.Equal(t, "Summary product 2", ecommerceGoogleShopping.Products[1].Summary)
+	assert.Equal(t, "Description product 2", ecommerceGoogleShopping.Products[1].Description)
 	assert.Equal(t, "https://www.google.com/shopping/product/2", ecommerceGoogleShopping.Products[1].Url)
 	assert.Equal(t, "https://www.google.com/shopping/image/product/2.jpg", ecommerceGoogleShopping.Products[1].Image)
 	assert.Equal(t, "10.00", ecommerceGoogleShopping.Products[1].Price)

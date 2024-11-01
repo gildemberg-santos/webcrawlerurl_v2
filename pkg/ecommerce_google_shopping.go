@@ -15,7 +15,7 @@ type EcommerceGoogleShopping struct {
 	Products   []struct {
 		ID           string `json:"id,omitempty"`
 		Title        string `json:"title,omitempty"`
-		Summary      string `json:"summary,omitempty"`
+		Description  string `json:"description,omitempty"`
 		Url          string `json:"url,omitempty"`
 		Image        string `json:"image,omitempty"`
 		Price        string `json:"price,omitempty"`
@@ -60,7 +60,7 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 			var product struct {
 				ID           string `json:"id,omitempty"`
 				Title        string `json:"title,omitempty"`
-				Summary      string `json:"summary,omitempty"`
+				Description  string `json:"description,omitempty"`
 				Url          string `json:"url,omitempty"`
 				Image        string `json:"image,omitempty"`
 				Price        string `json:"price,omitempty"`
@@ -69,7 +69,7 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 
 			product.ID = entry.ID.Value
 			product.Title = entry.Title.Value
-			product.Summary = entry.Summary.Value
+			product.Description = entry.Description.Value
 			product.Url = entry.Link.Value
 			product.Image = entry.ImageLink.Value
 			product.Price = entry.Price.Value
