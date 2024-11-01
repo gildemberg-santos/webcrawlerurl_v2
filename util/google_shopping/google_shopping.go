@@ -57,6 +57,7 @@ func (g *GoogleShopping) Call() error {
 }
 
 func (g *GoogleShopping) load() error {
+	var currentTime = time.Now()
 	log.Println("Start crawler google shopping")
 	client := &http.Client{Timeout: time.Duration(g.MaxTimeout) * time.Second}
 	req, err := http.NewRequest("GET", g.UrlLocation, nil)
@@ -81,7 +82,6 @@ func (g *GoogleShopping) load() error {
 
 	decoder := xml.NewDecoder(resp.Body)
 	for {
-		var currentTime = time.Now()
 		timeoutThreshold := float64(g.MaxTimeout) * 0.95
 		if time.Since(currentTime).Seconds() > timeoutThreshold {
 			log.Println("Timeout threshold reached")
@@ -127,8 +127,13 @@ func (g *GoogleShopping) load() error {
 					return err
 				}
 
+				entry.ID.Value = strings.TrimSpace(strings.ReplaceAll(entry.ID.Value, "\n", ""))
+				entry.Title.Value = strings.TrimSpace(strings.ReplaceAll(entry.Title.Value, "\n", ""))
+				entry.Summary.Value = strings.TrimSpace(strings.ReplaceAll(entry.Summary.Value, "\n", ""))
 				entry.Link.Value = strings.TrimSpace(strings.ReplaceAll(entry.Link.Value, "\n", ""))
 				entry.ImageLink.Value = strings.TrimSpace(strings.ReplaceAll(entry.ImageLink.Value, "\n", ""))
+				entry.Price.Value = strings.TrimSpace(strings.ReplaceAll(entry.Price.Value, "\n", ""))
+				entry.Availability.Value = strings.TrimSpace(strings.ReplaceAll(entry.Availability.Value, "\n", ""))
 
 				g.Feed.Entry = append(g.Feed.Entry, entry)
 			}
