@@ -13,8 +13,13 @@ type EcommerceGoogleShopping struct {
 	MaxTimeout int64               `json:"-"`
 	Url        string              `json:"url,omitempty"`
 	Products   []struct {
-		Url   string `json:"url,omitempty"`
-		Image string `json:"image,omitempty"`
+		ID           string `json:"id,omitempty"`
+		Title        string `json:"title,omitempty"`
+		Summary      string `json:"summary,omitempty"`
+		Url          string `json:"url,omitempty"`
+		Image        string `json:"image,omitempty"`
+		Price        string `json:"price,omitempty"`
+		Availability string `json:"availability,omitempty"`
 	} `json:"products,omitempty"`
 	Urls []string `json:"urls,omitempty"`
 }
@@ -53,12 +58,22 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 		}
 		if s.UrlPattern.Call(entry.Link.Value) {
 			var product struct {
-				Url   string `json:"url,omitempty"`
-				Image string `json:"image,omitempty"`
+				ID           string `json:"id,omitempty"`
+				Title        string `json:"title,omitempty"`
+				Summary      string `json:"summary,omitempty"`
+				Url          string `json:"url,omitempty"`
+				Image        string `json:"image,omitempty"`
+				Price        string `json:"price,omitempty"`
+				Availability string `json:"availability,omitempty"`
 			}
 
+			product.ID = entry.ID.Value
+			product.Title = entry.Title.Value
+			product.Summary = entry.Summary.Value
 			product.Url = entry.Link.Value
 			product.Image = entry.ImageLink.Value
+			product.Price = entry.Price.Value
+			product.Availability = entry.Availability.Value
 
 			s.Urls = append(s.Urls, entry.Link.Value)
 			s.Products = append(s.Products, product)
