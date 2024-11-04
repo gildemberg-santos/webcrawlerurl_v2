@@ -1,13 +1,17 @@
 package googleshopping
 
-type GooogleShoppingFeed struct {
+type Feed struct {
 	Entry []Entry `xml:"entry"`
 }
 
-func (g *GooogleShoppingFeed) AddEntry(e Entry) {
-	g.Entry = append(g.Entry, e)
+func NewFeed() *Feed {
+	return &Feed{}
 }
 
-func (g *GooogleShoppingFeed) GetEntry() []Entry {
-	return g.Entry
+func (f *Feed) AddEntry(e Entry) {
+	f.Entry = append(f.Entry, e)
+}
+
+func (f *Feed) GetEntry() []Entry {
+	return f.Entry
 }

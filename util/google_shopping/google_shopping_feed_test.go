@@ -8,7 +8,7 @@ import (
 )
 
 func TestGooogleShoppingFeed_AddEntry(t *testing.T) {
-	feed := googleshopping.GooogleShoppingFeed{}
+	feed := googleshopping.NewFeed()
 
 	entry1 := *googleshopping.NewEntry(
 		"1",
@@ -39,7 +39,7 @@ func TestGooogleShoppingFeed_AddEntry(t *testing.T) {
 }
 
 func TestGooogleShoppingFeed_GetEntry(t *testing.T) {
-	feed := googleshopping.GooogleShoppingFeed{}
+	feed := googleshopping.NewFeed()
 
 	entry1 := *googleshopping.NewEntry(
 		"1",
