@@ -13,7 +13,7 @@ import (
 type GoogleShopping struct {
 	UrlLocation string
 	MaxTimeout  int64
-	Feed        GooogleShoppingFeed `xml:"feed"`
+	Feed        Feed `xml:"feed"`
 }
 
 func NewGoogleShopping(url string, maxTimeout int64) *GoogleShopping {
