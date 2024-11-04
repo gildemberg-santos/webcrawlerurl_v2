@@ -8,20 +8,22 @@ import (
 )
 
 type EcommerceGoogleShopping struct {
-	Visited    map[string]bool     `json:"-"`
-	UrlPattern *url_match.UrlMatch `json:"-"`
-	MaxTimeout int64               `json:"-"`
-	Url        string              `json:"url,omitempty"`
-	Products   []struct {
-		ID           string `json:"id,omitempty"`
-		Title        string `json:"title,omitempty"`
-		Description  string `json:"description,omitempty"`
-		Url          string `json:"url,omitempty"`
-		Image        string `json:"image,omitempty"`
-		Price        string `json:"price,omitempty"`
-		Availability string `json:"availability,omitempty"`
-	} `json:"products,omitempty"`
-	Urls []string `json:"urls,omitempty"`
+	Visited    map[string]bool          `json:"-"`
+	UrlPattern *url_match.UrlMatch      `json:"-"`
+	MaxTimeout int64                    `json:"-"`
+	Url        string                   `json:"url,omitempty"`
+	Products   []GooogleShoppingProduct `json:"products,omitempty"`
+	Urls       []string                 `json:"urls,omitempty"`
+}
+
+type GooogleShoppingProduct struct {
+	ID           string `json:"id,omitempty"`
+	Title        string `json:"title,omitempty"`
+	Description  string `json:"description,omitempty"`
+	Url          string `json:"url,omitempty"`
+	Image        string `json:"image,omitempty"`
+	Price        string `json:"price,omitempty"`
+	Availability string `json:"availability,omitempty"`
 }
 
 func NewEcommerceGoogleShopping(url, urlPattern string, maxTimeout int64) *EcommerceGoogleShopping {
@@ -57,15 +59,7 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 			continue
 		}
 		if s.UrlPattern.Call(entry.Link.Value) {
-			var product struct {
-				ID           string `json:"id,omitempty"`
-				Title        string `json:"title,omitempty"`
-				Description  string `json:"description,omitempty"`
-				Url          string `json:"url,omitempty"`
-				Image        string `json:"image,omitempty"`
-				Price        string `json:"price,omitempty"`
-				Availability string `json:"availability,omitempty"`
-			}
+			var product GooogleShoppingProduct
 
 			product.ID = entry.ID.Value
 			product.Title = entry.Title.Value
