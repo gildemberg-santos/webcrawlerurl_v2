@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
@@ -14,31 +13,7 @@ import (
 type GoogleShopping struct {
 	UrlLocation string
 	MaxTimeout  int64
-	Feed        struct {
-		Entry []struct {
-			ID struct {
-				Value string `xml:",chardata"`
-			} `xml:"id"`
-			Title struct {
-				Value string `xml:",chardata"`
-			} `xml:"title"`
-			Description struct {
-				Value string `xml:",chardata"`
-			} `xml:"description"`
-			Link struct {
-				Value string `xml:",chardata"`
-			} `xml:"link"`
-			ImageLink struct {
-				Value string `xml:",chardata"`
-			} `xml:"image_link"`
-			Price struct {
-				Value string `xml:",chardata"`
-			} `xml:"price"`
-			Availability struct {
-				Value string `xml:",chardata"`
-			} `xml:"availability"`
-		} `xml:"entry"`
-	} `xml:"feed"`
+	Feed        GooogleShoppingFeed `xml:"feed"`
 }
 
 func NewGoogleShopping(url string, maxTimeout int64) *GoogleShopping {
@@ -99,43 +74,13 @@ func (g *GoogleShopping) load() error {
 		switch se := t.(type) {
 		case xml.StartElement:
 			if se.Name.Local == "entry" {
-				var entry struct {
-					ID struct {
-						Value string `xml:",chardata"`
-					} `xml:"id"`
-					Title struct {
-						Value string `xml:",chardata"`
-					} `xml:"title"`
-					Description struct {
-						Value string `xml:",chardata"`
-					} `xml:"description"`
-					Link struct {
-						Value string `xml:",chardata"`
-					} `xml:"link"`
-					ImageLink struct {
-						Value string `xml:",chardata"`
-					} `xml:"image_link"`
-					Price struct {
-						Value string `xml:",chardata"`
-					} `xml:"price"`
-					Availability struct {
-						Value string `xml:",chardata"`
-					} `xml:"availability"`
-				}
+				var entry Entry
 				if err := decoder.DecodeElement(&entry, &se); err != nil {
 					log.Default().Println("Error decoding entry: ", err)
 					return err
 				}
 
-				entry.ID.Value = strings.TrimSpace(strings.ReplaceAll(entry.ID.Value, "\n", ""))
-				entry.Title.Value = strings.TrimSpace(strings.ReplaceAll(entry.Title.Value, "\n", ""))
-				entry.Description.Value = strings.TrimSpace(strings.ReplaceAll(entry.Description.Value, "\n", ""))
-				entry.Link.Value = strings.TrimSpace(strings.ReplaceAll(entry.Link.Value, "\n", ""))
-				entry.ImageLink.Value = strings.TrimSpace(strings.ReplaceAll(entry.ImageLink.Value, "\n", ""))
-				entry.Price.Value = strings.TrimSpace(strings.ReplaceAll(entry.Price.Value, "\n", ""))
-				entry.Availability.Value = strings.TrimSpace(strings.ReplaceAll(entry.Availability.Value, "\n", ""))
-
-				g.Feed.Entry = append(g.Feed.Entry, entry)
+				g.Feed.AddEntry(entry)
 			}
 		}
 	}
