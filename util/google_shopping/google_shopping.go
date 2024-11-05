@@ -80,7 +80,7 @@ func (g *GoogleShopping) load() error {
 					return err
 				}
 
-				g.Feed.AddEntry(entry)
+				g.Feed.AddEntry(*entry.ToNormalise())
 			}
 		}
 	}

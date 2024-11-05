@@ -25,3 +25,7 @@ func NewEntry(id, title, description, link, imageLink, price, availability strin
 func (e *Entry) ToString() string {
 	return "ID: " + e.ID.Value + ", Title: " + e.Title.Value + ", Description: " + e.Description.Value + ", Link: " + e.Link.Value + ", ImageLink: " + e.ImageLink.Value + ", Price: " + e.Price.Value + ", Availability: " + e.Availability.Value
 }
+
+func (e *Entry) ToNormalise() *Entry {
+	return NewEntry(e.ID.Value, e.Title.Value, e.Description.Value, e.Link.Value, e.ImageLink.Value, e.Price.Value, e.Availability.Value)
+}
