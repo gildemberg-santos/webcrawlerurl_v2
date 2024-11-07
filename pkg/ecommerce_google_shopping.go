@@ -17,13 +17,16 @@ type EcommerceGoogleShopping struct {
 }
 
 type GooogleShoppingProduct struct {
-	ID           string `json:"id,omitempty"`
-	Title        string `json:"title,omitempty"`
-	Description  string `json:"description,omitempty"`
-	Url          string `json:"url,omitempty"`
-	Image        string `json:"image,omitempty"`
-	Price        string `json:"price,omitempty"`
-	Availability string `json:"availability,omitempty"`
+	ID                    string `json:"id,omitempty"`
+	Title                 string `json:"title,omitempty"`
+	Description           string `json:"description,omitempty"`
+	Url                   string `json:"url,omitempty"`
+	Image                 string `json:"image,omitempty"`
+	Price                 string `json:"price,omitempty"`
+	SalePrice             string `json:"sale_price,omitempty"`
+	Availability          string `json:"availability,omitempty"`
+	Condition             string `json:"condition,omitempty"`
+	GoogleProductCategory string `json:"google_product_category,omitempty"`
 }
 
 func NewEcommerceGoogleShopping(url, urlPattern string, maxTimeout int64) *EcommerceGoogleShopping {
@@ -67,7 +70,10 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 			product.Url = entry.Link.Value
 			product.Image = entry.ImageLink.Value
 			product.Price = entry.Price.Value
+			product.SalePrice = entry.SalePrice.Value
 			product.Availability = entry.Availability.Value
+			product.Condition = entry.Condition.Value
+			product.GoogleProductCategory = entry.GoogleProductCategory.Value
 
 			s.Urls = append(s.Urls, entry.Link.Value)
 			s.Products = append(s.Products, product)

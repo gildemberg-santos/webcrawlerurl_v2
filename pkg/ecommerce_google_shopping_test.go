@@ -22,7 +22,10 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 			<g:link>https://www.google.com/shopping/product/1</g:link>
 			<g:image_link>https://www.google.com/shopping/image/product/1.jpg</g:image_link>
 			<g:price>5.00</g:price>
+			<g:sale_price>4.00</g:sale_price>
 			<g:availability>in stock</g:availability>
+			<g:condition>new</g:condition>
+			<g:google_product_category>Google Product Category 1</g:google_product_category>
 		</entry>
 		<entry>
 			<g:id>2</g:id>
@@ -31,7 +34,10 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 			<g:link>https://www.google.com/shopping/product/2</g:link>
 			<g:image_link>https://www.google.com/shopping/image/product/2.jpg</g:image_link>
 			<g:price>10.00</g:price>
+			<g:sale_price>8.00</g:sale_price>
 			<g:availability>in stock</g:availability>
+			<g:condition>new</g:condition>
+			<g:google_product_category>Google Product Category 2</g:google_product_category>
 		</entry>
 	</feed>
 	`))
@@ -53,7 +59,10 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	assert.Equal(t, "https://www.google.com/shopping/product/1", ecommerceGoogleShopping.Products[0].Url)
 	assert.Equal(t, "https://www.google.com/shopping/image/product/1.jpg", ecommerceGoogleShopping.Products[0].Image)
 	assert.Equal(t, "5.00", ecommerceGoogleShopping.Products[0].Price)
+	assert.Equal(t, "4.00", ecommerceGoogleShopping.Products[0].SalePrice)
 	assert.Equal(t, "in stock", ecommerceGoogleShopping.Products[0].Availability)
+	assert.Equal(t, "new", ecommerceGoogleShopping.Products[0].Condition)
+	assert.Equal(t, "Google Product Category 1", ecommerceGoogleShopping.Products[0].GoogleProductCategory)
 
 	assert.Equal(t, "2", ecommerceGoogleShopping.Products[1].ID)
 	assert.Equal(t, "Product 2", ecommerceGoogleShopping.Products[1].Title)
@@ -61,5 +70,8 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	assert.Equal(t, "https://www.google.com/shopping/product/2", ecommerceGoogleShopping.Products[1].Url)
 	assert.Equal(t, "https://www.google.com/shopping/image/product/2.jpg", ecommerceGoogleShopping.Products[1].Image)
 	assert.Equal(t, "10.00", ecommerceGoogleShopping.Products[1].Price)
+	assert.Equal(t, "8.00", ecommerceGoogleShopping.Products[1].SalePrice)
 	assert.Equal(t, "in stock", ecommerceGoogleShopping.Products[1].Availability)
+	assert.Equal(t, "new", ecommerceGoogleShopping.Products[1].Condition)
+	assert.Equal(t, "Google Product Category 2", ecommerceGoogleShopping.Products[1].GoogleProductCategory)
 }
