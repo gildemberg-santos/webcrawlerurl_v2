@@ -34,12 +34,25 @@ func (t *Text) normalizeHTML() {
 
 	metaTag := NewMetaTag(t.Sources).Call()
 	version := metaTag.Generator
-	pattern := regexp.MustCompile(`^vtex\.render-server@8\.\d+\.\d+$`)
-	if pattern.MatchString(version) {
+
+	vtex := regexp.MustCompile(`^vtex\.render-server@8\.\d+\.\d+$`)
+	chicorei := regexp.MustCompile(`^@chicorei$`)
+
+	if vtex.MatchString(version) {
 		t.Sources.Find("#desktop-top-header-id").Remove()
 		t.Sources.Find("#footer-desktop-id").Remove()
 		t.Sources.Find("#breadcrumb-id").Remove()
 		t.Sources.Find("#tabs-product-id").Remove()
+	} else if chicorei.MatchString(version) {
+		t.Sources.Find("header").Remove()
+		t.Sources.Find("footer").Remove()
+		t.Sources.Find("#products-history-ab").Remove()
+		t.Sources.Find("#advantages").Remove()
+		t.Sources.Find("#creator-other-products-ab").Remove()
+		t.Sources.Find("#recommendation-list").Remove()
+		t.Sources.Find("#product > article > div:nth-child(9)").Remove()
+		t.Sources.Find("#product > article > div:nth-child(8)").Remove()
+		t.Sources.Find(".nld-chatbot").Remove()
 	}
 }
 
