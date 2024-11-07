@@ -17,7 +17,10 @@ func TestGooogleShoppingFeed_AddEntry(t *testing.T) {
 		"https://www.google.com/shopping/product/1",
 		"https://www.google.com/shopping/image/product/1.jpg",
 		"5.00",
+		"4.00",
 		"in stock",
+		"new",
+		"Google Product Category 1",
 	)
 
 	entry2 := *googleshopping.NewEntry(
@@ -27,7 +30,10 @@ func TestGooogleShoppingFeed_AddEntry(t *testing.T) {
 		"https://www.google.com/shopping/product/2",
 		"https://www.google.com/shopping/image/product/2.jpg",
 		"10.00",
+		"8.00",
 		"in stock",
+		"new",
+		"Google Product Category 2",
 	)
 
 	feed.AddEntry(entry1)
@@ -48,7 +54,10 @@ func TestGooogleShoppingFeed_GetEntry(t *testing.T) {
 		"https://www.google.com/shopping/product/1",
 		"https://www.google.com/shopping/image/product/1.jpg",
 		"5.00",
+		"4.00",
 		"in stock",
+		"new",
+		"Google Product Category 1",
 	)
 
 	entry2 := *googleshopping.NewEntry(
@@ -58,7 +67,10 @@ func TestGooogleShoppingFeed_GetEntry(t *testing.T) {
 		"https://www.google.com/shopping/product/2",
 		"https://www.google.com/shopping/image/product/2.jpg",
 		"10.00",
+		"8.00",
 		"in stock",
+		"new",
+		"Google Product Category 2",
 	)
 
 	feed.AddEntry(entry1)
