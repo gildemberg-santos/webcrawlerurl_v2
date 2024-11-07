@@ -26,6 +26,9 @@ func (m *MetaTag) extractGenerator() {
 		if name == "generator" {
 			m.Generator = s.AttrOr("content", "")
 			return
+		} else if name == "twitter:creator" {
+			m.Generator = s.AttrOr("content", "")
+			return
 		}
 	})
 }
