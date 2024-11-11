@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGoogleShoppingChardata_Normalize(t *testing.T) {
+func TestChardata_Normalize(t *testing.T) {
 	charData := googleshopping.NewChardata("\n 1 \n")
 
 	assert.Equal(t, "1", charData.Value)
