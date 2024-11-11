@@ -17,16 +17,23 @@ type EcommerceGoogleShopping struct {
 }
 
 type GooogleShoppingProduct struct {
-	ID                    string `json:"id,omitempty"`
-	Title                 string `json:"title,omitempty"`
-	Description           string `json:"description,omitempty"`
-	Url                   string `json:"url,omitempty"`
-	Image                 string `json:"image,omitempty"`
-	Price                 string `json:"price,omitempty"`
-	SalePrice             string `json:"sale_price,omitempty"`
-	Availability          string `json:"availability,omitempty"`
-	Condition             string `json:"condition,omitempty"`
-	GoogleProductCategory string `json:"google_product_category,omitempty"`
+	ID           string `json:"id,omitempty"`
+	Title        string `json:"title,omitempty"`
+	Description  string `json:"description,omitempty"`
+	Url          string `json:"url,omitempty"`
+	Image        string `json:"image,omitempty"`
+	Price        string `json:"price,omitempty"`
+	SalePrice    string `json:"sale_price,omitempty"`
+	Availability string `json:"availability,omitempty"`
+	Condition    string `json:"condition,omitempty"`
+	Gender       string `json:"gender,omitempty"`
+	Size         string `json:"size,omitempty"`
+	AgeGroup     string `json:"age_group,omitempty"`
+	Color        string `json:"color,omitempty"`
+	Months       string `json:"months,omitempty"`
+	Amount       string `json:"amount,omitempty"`
+	Downpayment  string `json:"downpayment,omitempty"`
+	CreditType   string `json:"credit_type,omitempty"`
 }
 
 func NewEcommerceGoogleShopping(url, urlPattern string, maxTimeout int64) *EcommerceGoogleShopping {
@@ -73,7 +80,14 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 			product.SalePrice = entry.SalePrice.Value
 			product.Availability = entry.Availability.Value
 			product.Condition = entry.Condition.Value
-			product.GoogleProductCategory = entry.GoogleProductCategory.Value
+			product.Gender = entry.Gender.Value
+			product.Size = entry.Size.Value
+			product.AgeGroup = entry.AgeGroup.Value
+			product.Color = entry.Color.Value
+			product.Months = entry.Installment.Months.Value
+			product.Amount = entry.Installment.Amount.Value
+			product.Downpayment = entry.Installment.Downpayment.Value
+			product.CreditType = entry.Installment.CreditType.Value
 
 			s.Urls = append(s.Urls, entry.Link.Value)
 			s.Products = append(s.Products, product)
