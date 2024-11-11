@@ -25,7 +25,16 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 			<g:sale_price>4.00</g:sale_price>
 			<g:availability>in stock</g:availability>
 			<g:condition>new</g:condition>
-			<g:google_product_category>Google Product Category 1</g:google_product_category>
+			<g:gender>mole</g:gender>
+			<g:size>size</g:size>
+			<g:age_group>age group</g:age_group>
+			<g:color>color</g:color>
+			<g:installment>
+				<g:months>12</g:months>
+				<g:amount>5.00</g:amount>
+				<g:downpayment>USD</g:downpayment>
+				<g:credit_type>monthly</g:credit_type>
+			</g:installment>
 		</entry>
 		<entry>
 			<g:id>2</g:id>
@@ -37,7 +46,16 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 			<g:sale_price>8.00</g:sale_price>
 			<g:availability>in stock</g:availability>
 			<g:condition>new</g:condition>
-			<g:google_product_category>Google Product Category 2</g:google_product_category>
+			<g:gender>male</g:gender>
+			<g:size>size</g:size>
+			<g:age_group>age group</g:age_group>
+			<g:color>color</g:color>
+			<g:installment>
+				<g:months>12</g:months>
+				<g:amount>5.00</g:amount>
+				<g:downpayment>USD</g:downpayment>
+				<g:credit_type>monthly</g:credit_type>
+			</g:installment>
 		</entry>
 	</feed>
 	`))
@@ -62,7 +80,14 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	assert.Equal(t, "4.00", ecommerceGoogleShopping.Products[0].SalePrice)
 	assert.Equal(t, "in stock", ecommerceGoogleShopping.Products[0].Availability)
 	assert.Equal(t, "new", ecommerceGoogleShopping.Products[0].Condition)
-	assert.Equal(t, "Google Product Category 1", ecommerceGoogleShopping.Products[0].GoogleProductCategory)
+	assert.Equal(t, "mole", ecommerceGoogleShopping.Products[0].Gender)
+	assert.Equal(t, "size", ecommerceGoogleShopping.Products[0].Size)
+	assert.Equal(t, "age group", ecommerceGoogleShopping.Products[0].AgeGroup)
+	assert.Equal(t, "color", ecommerceGoogleShopping.Products[0].Color)
+	assert.Equal(t, "12", ecommerceGoogleShopping.Products[0].Months)
+	assert.Equal(t, "5.00", ecommerceGoogleShopping.Products[0].Amount)
+	assert.Equal(t, "USD", ecommerceGoogleShopping.Products[0].Downpayment)
+	assert.Equal(t, "monthly", ecommerceGoogleShopping.Products[0].CreditType)
 
 	assert.Equal(t, "2", ecommerceGoogleShopping.Products[1].ID)
 	assert.Equal(t, "Product 2", ecommerceGoogleShopping.Products[1].Title)
@@ -73,5 +98,12 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	assert.Equal(t, "8.00", ecommerceGoogleShopping.Products[1].SalePrice)
 	assert.Equal(t, "in stock", ecommerceGoogleShopping.Products[1].Availability)
 	assert.Equal(t, "new", ecommerceGoogleShopping.Products[1].Condition)
-	assert.Equal(t, "Google Product Category 2", ecommerceGoogleShopping.Products[1].GoogleProductCategory)
+	assert.Equal(t, "male", ecommerceGoogleShopping.Products[1].Gender)
+	assert.Equal(t, "size", ecommerceGoogleShopping.Products[1].Size)
+	assert.Equal(t, "age group", ecommerceGoogleShopping.Products[1].AgeGroup)
+	assert.Equal(t, "color", ecommerceGoogleShopping.Products[1].Color)
+	assert.Equal(t, "12", ecommerceGoogleShopping.Products[1].Months)
+	assert.Equal(t, "5.00", ecommerceGoogleShopping.Products[1].Amount)
+	assert.Equal(t, "USD", ecommerceGoogleShopping.Products[1].Downpayment)
+	assert.Equal(t, "monthly", ecommerceGoogleShopping.Products[1].CreditType)
 }
