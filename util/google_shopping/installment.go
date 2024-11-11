@@ -8,14 +8,12 @@ type Installment struct {
 }
 
 func NewInstallment(months, amount, downpayment, creditType string) *Installment {
-	i := Installment{
+	return &Installment{
 		Months:      *NewChardata(months),
 		Amount:      *NewChardata(amount),
 		Downpayment: *NewChardata(downpayment),
 		CreditType:  *NewChardata(creditType),
 	}
-	// i.Normalize()
-	return &i
 }
 
 func (i *Installment) Normalize() *Installment {
