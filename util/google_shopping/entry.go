@@ -1,11 +1,10 @@
 package googleshopping
 
-import "fmt"
-
 type Entry struct {
 	ID           Chardata    `xml:"id"`
 	Title        Chardata    `xml:"title"`
 	Description  Chardata    `xml:"description"`
+	Summary      Chardata    `xml:"summary"`
 	Link         Chardata    `xml:"link"`
 	MobileLink   Chardata    `xml:"mobile_link"`
 	ImageLink    Chardata    `xml:"image_link"`
@@ -20,11 +19,12 @@ type Entry struct {
 	Installment  Installment `xml:"installment"`
 }
 
-func NewEntry(id, title, description, link, imageLink, price, salePrice, availability, condition, gender, size, ageGroup, color string, installment Installment) *Entry {
+func NewEntry(id, title, description, summary, link, imageLink, price, salePrice, availability, condition, gender, size, ageGroup, color string, installment Installment) *Entry {
 	return &Entry{
 		ID:           *NewChardata(id),
 		Title:        *NewChardata(title),
 		Description:  *NewChardata(description),
+		Summary:      *NewChardata(summary),
 		Link:         *NewChardata(link),
 		ImageLink:    *NewChardata(imageLink),
 		Price:        *NewChardata(price),
@@ -39,11 +39,6 @@ func NewEntry(id, title, description, link, imageLink, price, salePrice, availab
 	}
 }
 
-func (e *Entry) ToString() string {
-	return fmt.Sprintf("ID: %s, Title: %s, Description: %s, Link: %s, ImageLink: %s, Price: %s, SalePrice: %s, Availability: %s, Condition: %s, Gender: %s",
-		e.ID.Value, e.Title.Value, e.Description.Value, e.Link.Value, e.ImageLink.Value, e.Price.Value, e.SalePrice.Value, e.Availability.Value, e.Condition.Value, e.Gender.Value)
-}
-
 func (e *Entry) ToNormalise() *Entry {
-	return NewEntry(e.ID.Value, e.Title.Value, e.Description.Value, e.Link.Value, e.ImageLink.Value, e.Price.Value, e.SalePrice.Value, e.Availability.Value, e.Condition.Value, e.Gender.Value, e.Size.Value, e.AgeGroup.Value, e.Color.Value, e.Installment)
+	return NewEntry(e.ID.Value, e.Title.Value, e.Description.Value, e.Summary.Value, e.Link.Value, e.ImageLink.Value, e.Price.Value, e.SalePrice.Value, e.Availability.Value, e.Condition.Value, e.Gender.Value, e.Size.Value, e.AgeGroup.Value, e.Color.Value, e.Installment)
 }
