@@ -14,5 +14,7 @@ func NewChardata(value string) *Chardata {
 }
 
 func (c *Chardata) Normalize() {
-	c.Value = strings.TrimSpace(strings.ReplaceAll(c.Value, "\n", ""))
+	c.Value = strings.ReplaceAll(c.Value, "\n", "")
+	c.Value = strings.ReplaceAll(c.Value, "  ", " ")
+	c.Value = strings.TrimSpace(c.Value)
 }
