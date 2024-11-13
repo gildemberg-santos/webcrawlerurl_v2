@@ -15,3 +15,12 @@ func (f *Feed) AddEntry(e Entry) {
 func (f *Feed) GetEntry() []Entry {
 	return f.Entry
 }
+
+func (f *Feed) Normalize() {
+	for i, e := range f.Entry {
+		if e.Summary.Value != "" && e.Description.Value == "" {
+			f.Entry[i].Description = e.Summary
+			f.Entry[i].Summary = Chardata{}
+		}
+	}
+}
