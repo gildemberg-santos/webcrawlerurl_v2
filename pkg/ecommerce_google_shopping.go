@@ -91,8 +91,6 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 
 			s.Urls = append(s.Urls, entry.Link.Value)
 			s.Products = append(s.Products, product)
-
-			log.Println("Product found: ", product)
 		}
 		s.Visited[entry.Link.Value] = true
 	}
@@ -124,8 +122,6 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 
 			s.Urls = append(s.Urls, item.Link.Value)
 			s.Products = append(s.Products, product)
-
-			log.Println("Product found: ", product)
 		}
 		s.Visited[item.Link.Value] = true
 	}
@@ -157,8 +153,6 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 
 			s.Urls = append(s.Urls, item.Link.Value)
 			s.Products = append(s.Products, product)
-
-			log.Println("Product found: ", product)
 		}
 		s.Visited[item.Link.Value] = true
 	}
