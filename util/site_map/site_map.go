@@ -9,27 +9,37 @@ import (
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
 )
 
+type Link struct {
+	Rel      string `xml:"rel,attr"`
+	Hreflang string `xml:"hreflang,attr"`
+	Href     string `xml:"href,attr"`
+}
+
+type URLs struct {
+	Loc      string  `xml:"loc"`
+	Lastmod  string  `xml:"lastmod"`
+	Priority float32 `xml:"priority"`
+	Link     []Link  `xml:"link"`
+}
+
+type Urlset struct {
+	XMLName xml.Name `xml:"urlset"`
+	URLs    []URLs   `xml:"url"`
+}
+
+type SitemapItem struct {
+	Loc     string `xml:"loc"`
+	Lastmod string `xml:"lastmod"`
+}
+
+type Sitemapindex struct {
+	Sitemap []SitemapItem `xml:"sitemap"`
+}
+
 type SiteMap struct {
-	UrlLocation string
-	Urlset      struct {
-		XMLName xml.Name `xml:"urlset"`
-		URLs    []struct {
-			Loc      string  `xml:"loc"`
-			Lastmod  string  `xml:"lastmod"`
-			Priority float32 `xml:"priority"`
-			Link     []struct {
-				Rel      string `xml:"rel,attr"`
-				Hreflang string `xml:"hreflang,attr"`
-				Href     string `xml:"href,attr"`
-			} `xml:"link"`
-		} `xml:"url"`
-	}
-	Sitemapindex struct {
-		Sitemap []struct {
-			Loc     string `xml:"loc"`
-			Lastmod string `xml:"lastmod"`
-		} `xml:"sitemap"`
-	} `xml:"sitemapindex"`
+	UrlLocation  string
+	Urlset       Urlset       `xml:"urlset"`
+	Sitemapindex Sitemapindex `xml:"sitemapindex"`
 }
 
 func NewSiteMap(url string) *SiteMap {
