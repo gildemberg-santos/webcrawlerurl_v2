@@ -8,12 +8,16 @@ import (
 	"time"
 
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
+	"golang.org/x/net/html/charset"
 )
 
 type GoogleShopping struct {
 	UrlLocation string
 	MaxTimeout  int64
+	isRSS       bool
 	Feed        Feed `xml:"feed"`
+	RSS         RSS  `xml:"rss"`
+	RDF         RDF  `xml:"rdf"`
 }
 
 func NewGoogleShopping(url string, maxTimeout int64) *GoogleShopping {
@@ -56,6 +60,8 @@ func (g *GoogleShopping) load() error {
 	}
 
 	decoder := xml.NewDecoder(resp.Body)
+	decoder.CharsetReader = charset.NewReaderLabel
+
 	for {
 		timeoutThreshold := float64(g.MaxTimeout) * 0.95
 		if time.Since(currentTime).Seconds() > timeoutThreshold {
@@ -73,6 +79,12 @@ func (g *GoogleShopping) load() error {
 
 		switch se := t.(type) {
 		case xml.StartElement:
+			if se.Name.Local == "rss" {
+				g.isRSS = true
+			}
+			if se.Name.Local == "rdf" {
+				g.isRSS = false
+			}
 			if se.Name.Local == "entry" {
 				var entry Entry
 				if err := decoder.DecodeElement(&entry, &se); err != nil {
@@ -80,10 +92,26 @@ func (g *GoogleShopping) load() error {
 					return err
 				}
 
-				g.Feed.AddEntry(*entry.ToNormalise())
+				g.Feed.AddEntry(entry)
+			}
+			if se.Name.Local == "item" {
+				var item Item
+				if err := decoder.DecodeElement(&item, &se); err != nil {
+					log.Default().Println("Error decoding item: ", err)
+					return err
+				}
+
+				if g.isRSS {
+					g.RSS.AddItem(item)
+				} else {
+					g.RDF.AddItem(item)
+				}
+
 			}
 		}
 	}
+	g.Feed.Normalize()
+	g.RSS.Normalize()
 
 	return nil
 }
