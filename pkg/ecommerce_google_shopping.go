@@ -97,5 +97,71 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 		s.Visited[entry.Link.Value] = true
 	}
 
+	for _, item := range googleShopping.RSS.Item {
+		if s.Visited[item.Link.Value] {
+			continue
+		}
+		if s.UrlPattern.Call(item.Link.Value) {
+			var product GooogleShoppingProduct
+
+			product.ID = item.ID.Value
+			product.Title = item.Title.Value
+			product.Description = item.Description.Value
+			product.Url = item.Link.Value
+			product.Image = item.ImageLink.Value
+			product.Price = item.Price.Value
+			product.SalePrice = item.SalePrice.Value
+			product.Availability = item.Availability.Value
+			product.Condition = item.Condition.Value
+			product.Gender = item.Gender.Value
+			product.Size = item.Size.Value
+			product.AgeGroup = item.AgeGroup.Value
+			product.Color = item.Color.Value
+			product.Months = item.Installment.Months.Value
+			product.Amount = item.Installment.Amount.Value
+			product.Downpayment = item.Installment.Downpayment.Value
+			product.CreditType = item.Installment.CreditType.Value
+
+			s.Urls = append(s.Urls, item.Link.Value)
+			s.Products = append(s.Products, product)
+
+			log.Println("Product found: ", product)
+		}
+		s.Visited[item.Link.Value] = true
+	}
+
+	for _, item := range googleShopping.RDF.Item {
+		if s.Visited[item.Link.Value] {
+			continue
+		}
+		if s.UrlPattern.Call(item.Link.Value) {
+			var product GooogleShoppingProduct
+
+			product.ID = item.ID.Value
+			product.Title = item.Title.Value
+			product.Description = item.Description.Value
+			product.Url = item.Link.Value
+			product.Image = item.ImageLink.Value
+			product.Price = item.Price.Value
+			product.SalePrice = item.SalePrice.Value
+			product.Availability = item.Availability.Value
+			product.Condition = item.Condition.Value
+			product.Gender = item.Gender.Value
+			product.Size = item.Size.Value
+			product.AgeGroup = item.AgeGroup.Value
+			product.Color = item.Color.Value
+			product.Months = item.Installment.Months.Value
+			product.Amount = item.Installment.Amount.Value
+			product.Downpayment = item.Installment.Downpayment.Value
+			product.CreditType = item.Installment.CreditType.Value
+
+			s.Urls = append(s.Urls, item.Link.Value)
+			s.Products = append(s.Products, product)
+
+			log.Println("Product found: ", product)
+		}
+		s.Visited[item.Link.Value] = true
+	}
+
 	return nil
 }
