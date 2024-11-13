@@ -7,6 +7,7 @@ import (
 	"time"
 
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
+	"golang.org/x/net/html/charset"
 )
 
 type Link struct {
@@ -75,13 +76,38 @@ func (s *SiteMap) load() error {
 		return err
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
+	decoder := xml.NewDecoder(resp.Body)
+	decoder.CharsetReader = charset.NewReaderLabel
 
-	xml.Unmarshal(body, &s.Sitemapindex)
-	xml.Unmarshal(body, &s.Urlset)
+	for {
+		t, err := decoder.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		switch se := t.(type) {
+		case xml.StartElement:
+			if se.Name.Local == "urlset" {
+				var urlset Urlset
+				if err := decoder.DecodeElement(&urlset, &se); err != nil {
+					return err
+				}
+
+				s.Urlset = urlset
+			}
+			if se.Name.Local == "sitemapindex" {
+				var sitemapindex Sitemapindex
+				if err := decoder.DecodeElement(&sitemapindex, &se); err != nil {
+					return err
+				}
+
+				s.Sitemapindex = sitemapindex
+			}
+		}
+	}
 
 	return nil
 }
