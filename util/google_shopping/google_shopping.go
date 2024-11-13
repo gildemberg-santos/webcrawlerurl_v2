@@ -65,7 +65,7 @@ func (g *GoogleShopping) load() error {
 	for {
 		timeoutThreshold := float64(g.MaxTimeout) * 0.95
 		if time.Since(currentTime).Seconds() > timeoutThreshold {
-			log.Println("Timeout threshold reached")
+			log.Default().Println("Timeout threshold reached")
 			break
 		}
 		t, err := decoder.Token()
@@ -112,6 +112,7 @@ func (g *GoogleShopping) load() error {
 	}
 	g.Feed.Normalize()
 	g.RSS.Normalize()
+	g.RDF.Normalize()
 
 	return nil
 }
