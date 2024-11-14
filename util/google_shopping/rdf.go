@@ -18,7 +18,7 @@ func (r *RDF) GetItem() []Item {
 
 func (r *RDF) Normalize() {
 	for i, e := range r.Item {
-		if e.Description.Value != "" && e.Summary.Value == "" {
+		if e.Summary.Value != "" && e.Description.Value == "" {
 			r.Item[i].Description = e.Summary
 			r.Item[i].Summary = Chardata{}
 		}
