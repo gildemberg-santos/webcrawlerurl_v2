@@ -36,7 +36,6 @@ func (e *Ecommerce) Call() *Ecommerce {
 	done := make(chan bool, len(e.Urls))
 
 	for _, url := range e.Urls {
-		log.Default().Println("Url", url)
 		limitThreads <- struct{}{}
 
 		go func(url string) {
