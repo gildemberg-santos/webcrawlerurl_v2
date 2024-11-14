@@ -19,8 +19,8 @@ func (r *RSS) GetItem() []Item {
 func (r *RSS) Normalize() {
 	for i, e := range r.Item {
 		if e.Description.Value != "" && e.Summary.Value == "" {
-			r.Item[i].Summary = e.Description
-			r.Item[i].Description = Chardata{}
+			r.Item[i].Description = e.Summary
+			r.Item[i].Summary = Chardata{}
 		}
 	}
 }
