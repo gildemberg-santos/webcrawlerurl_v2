@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -13,19 +14,21 @@ type Ecommerce struct {
 	MaxTimeout     int64               `json:"-"`
 	IsLoadFast     bool                `json:"-"`
 	WithTimestamp  timestamp.Timestamp `json:"-"`
+	IsNormalizeUrl bool                `json:"-"`
 	Urls           []string            `json:"urls,omitempty"`
 	TotalCaracters int64               `json:"total_characters,omitempty"`
 	Data           []DataReadText      `json:"data,omitempty"`
 	Timestamp      float64             `json:"ts,omitempty"`
 }
 
-func NewEcommerce(urls []string, maxTimeout int64, isLoadFast bool) *Ecommerce {
+func NewEcommerce(urls []string, maxTimeout int64, isLoadFast, isNormalizeUrl bool) *Ecommerce {
 	return &Ecommerce{
-		Urls:          urls,
-		MaxTimeout:    maxTimeout,
-		IsLoadFast:    isLoadFast,
-		Visited:       sync.Map{},
-		WithTimestamp: *timestamp.NewTimestamp(),
+		Urls:           urls,
+		MaxTimeout:     maxTimeout,
+		IsLoadFast:     isLoadFast,
+		IsNormalizeUrl: isNormalizeUrl,
+		Visited:        sync.Map{},
+		WithTimestamp:  *timestamp.NewTimestamp(),
 	}
 }
 
@@ -65,6 +68,10 @@ func (e *Ecommerce) crawler(url string) error {
 	e.WithTimestamp.End()
 	if e.WithTimestamp.GetTime() >= float64(e.MaxTimeout-5) {
 		return nil
+	}
+
+	if e.IsNormalizeUrl {
+		url, _ = normalize.NewNormalizeUrl(url).GetUrl()
 	}
 
 	if _, loaded := e.Visited.LoadOrStore(url, true); loaded {
