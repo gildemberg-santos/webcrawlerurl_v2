@@ -166,14 +166,20 @@ func RouteEcommerce(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	body := struct {
-		Urls       []string `json:"urls"`
-		MaxTimeout int64    `json:"max_timeout"`
-		IsLoadFast bool     `json:"is_load_fast"`
-	}{}
+		Urls           []string `json:"urls"`
+		MaxTimeout     int64    `json:"max_timeout"`
+		IsLoadFast     bool     `json:"is_load_fast"`
+		IsNormalizeUrl bool     `json:"is_normalize_url"`
+	}{
+		Urls:           []string{},
+		MaxTimeout:     240,
+		IsLoadFast:     true,
+		IsNormalizeUrl: true,
+	}
 
 	json.NewDecoder(r.Body).Decode(&body)
 
-	ecommerce := pkg.NewEcommerce(body.Urls, body.MaxTimeout, body.IsLoadFast)
+	ecommerce := pkg.NewEcommerce(body.Urls, body.MaxTimeout, body.IsLoadFast, body.IsNormalizeUrl)
 	response := ecommerce.Call()
 
 	log.Println("Success")
