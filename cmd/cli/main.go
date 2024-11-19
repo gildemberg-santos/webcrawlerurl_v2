@@ -24,7 +24,7 @@ func main() {
 	fileJson := file.NewFileJson("urls.json", urls)
 	fileJson.Save()
 	log.Println("Loading data")
-	data := pkg.NewEcommerce(urls.Urls, 1_000_000_000, true).Call()
+	data := pkg.NewEcommerce(urls.Urls, 1_000_000_000, true, true).Call()
 	fileJson = file.NewFileJson("data.json", data)
 	fileJson.Save()
 	log.Println("Completed")
