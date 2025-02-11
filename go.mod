@@ -5,7 +5,7 @@ go 1.23
 toolchain go1.23.1
 
 require (
-	github.com/PuerkitoBio/goquery v1.10.0
+	github.com/PuerkitoBio/goquery v1.10.1
 	github.com/chromedp/chromedp v0.12.1
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/joho/godotenv v1.5.1
@@ -14,7 +14,7 @@ require (
 )
 
 require (
-	github.com/andybalholm/cascadia v1.3.2 // indirect
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/chromedp/cdproto v0.0.0-20250120090109-d38428e4d9c8 // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
