@@ -9,7 +9,7 @@ require (
 	github.com/chromedp/chromedp v0.12.1
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/joho/godotenv v1.5.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	golang.org/x/net v0.35.0
 )
 
