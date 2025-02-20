@@ -14,3 +14,4 @@
 * [x] Ler imagens do google shopping
 * [ ] Implementar testes automatizados
 * [ ] Documentar o código
+* [ ] Implementar suporte ao gRPC
