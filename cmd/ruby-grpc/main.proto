@@ -1,16 +1,19 @@
 syntax = "proto3";
 option go_package = "/grpc";
 
-package helloworld;
+package leadster;
 
 service Greeter {
-  rpc SayHello(HelloRequest) returns (HelloReply);
+  rpc CreateLead(LeadRequest) returns (LeadReply);
 }
-
-message HelloRequest {
+message LeadRequest {
   string name = 1;
+  string email = 2;
+  string phone = 3;
 }
 
-message HelloReply {
-  string message = 1;
+message LeadReply {
+  string id = 1;
+  string status = 2;
+  string message = 3;
 }

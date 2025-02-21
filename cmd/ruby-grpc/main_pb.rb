@@ -5,12 +5,12 @@
 require 'google/protobuf'
 
 
-descriptor_data = "\n\nmain.proto\x12\nhelloworld\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t2G\n\x07Greeter\x12<\n\x08SayHello\x12\x18.helloworld.HelloRequest\x1a\x16.helloworld.HelloReplyB\x07Z\x05/grpcb\x06proto3"
+descriptor_data = "\n\nmain.proto\x12\x08leadster\"9\n\x0bLeadRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\r\n\x05phone\x18\x03 \x01(\t\"8\n\tLeadReply\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t2C\n\x07Greeter\x12\x38\n\nCreateLead\x12\x15.leadster.LeadRequest\x1a\x13.leadster.LeadReplyB\x07Z\x05/grpcb\x06proto3"
 
 pool = Google::Protobuf::DescriptorPool.generated_pool
 pool.add_serialized_file(descriptor_data)
 
-module Helloworld
-  HelloRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("helloworld.HelloRequest").msgclass
-  HelloReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("helloworld.HelloReply").msgclass
+module Leadster
+  LeadRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("leadster.LeadRequest").msgclass
+  LeadReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("leadster.LeadReply").msgclass
 end

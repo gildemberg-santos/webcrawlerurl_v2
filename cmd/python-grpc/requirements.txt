@@ -1,0 +1,1 @@
+pip install grpcio-tools==1.70.0

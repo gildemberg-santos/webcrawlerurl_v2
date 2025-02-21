@@ -7,6 +7,7 @@ require_relative 'main_services_pb'
 require_relative 'greeter_server'
 
 def main
+  puts "Starting server..."
   s = GRPC::RpcServer.new
   s.add_http2_port('0.0.0.0:50051', :this_port_is_insecure)
   s.handle(GreeterServer)

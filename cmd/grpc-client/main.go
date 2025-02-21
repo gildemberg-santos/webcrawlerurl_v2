@@ -11,8 +11,7 @@ import (
 )
 
 const (
-	address     = "localhost:50051"
-	defaultName = "world"
+	address = "localhost:50051"
 )
 
 func main() {
@@ -25,17 +24,30 @@ func main() {
 	client := pb.NewGreeterClient(conn)
 
 	// Preparar a requisição
-	name := defaultName
+	name := ""
 	if len(os.Args) > 1 {
 		name = os.Args[1]
 	}
+
+	email := ""
+	if len(os.Args) > 2 {
+		email = os.Args[2]
+	}
+
+	phone := ""
+	if len(os.Args) > 3 {
+		phone = os.Args[3]
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// Enviar a requisição e receber a resposta
-	r, err := client.SayHello(ctx, &pb.HelloRequest{Name: name})
+	r, err := client.CreateLead(ctx, &pb.LeadRequest{Name: name, Email: email, Phone: phone})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting: %s", r.GetMessage())
+	log.Println("ID:", r.GetId())
+	log.Println("Status:", r.GetStatus())
+	log.Println("Message:", r.GetMessage())
 }

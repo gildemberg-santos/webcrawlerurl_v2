@@ -6,6 +6,7 @@ package leadster;
 service Greeter {
   rpc CreateLead(LeadRequest) returns (LeadReply);
 }
+
 message LeadRequest {
   string name = 1;
   string email = 2;

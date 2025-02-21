@@ -6,10 +6,19 @@ require_relative 'main_pb'
 require_relative 'main_services_pb'
 
 def main
-  name = ARGV.size > 0 ?  ARGV[0] : 'World'
-  stub = Helloworld::Greeter::Stub.new('localhost:50051', :this_channel_is_insecure)
-  message = stub.say_hello(Helloworld::HelloRequest.new(name: name)).message
-  puts "Greeting: #{message}"
+  name = ARGV.size > 0 ?  ARGV[0] : ""
+  email = ARGV.size > 1 ?  ARGV[1] : ""
+  phone = ARGV.size > 2 ?  ARGV[2] : ""
+
+  stub = Leadster::Greeter::Stub.new('localhost:50051', :this_channel_is_insecure)
+  response = stub.create_lead(Leadster::LeadRequest.new(name: name, email: email, phone: phone))
+  id = response.id
+  status = response.status
+  message = response.message
+
+  puts "ID: #{id}"
+  puts "Status: #{status}"
+  puts "Message: #{message}"
 end
 
 main
