@@ -8,7 +8,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -16,8 +15,6 @@ import (
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
 )
-
-var doneLoadPage sync.WaitGroup
 
 type LoadPage struct {
 	Url          string
@@ -152,20 +149,18 @@ func (l *LoadPage) loadPageSlow() (err error) {
 }
 
 func (l *LoadPage) removerElementos() {
-	doneLoadPage.Add(12)
-	go l.removeElementsDisplayNone("div", "d-none")
-	go l.removeElementsDisplayNone("h1", "d-none")
-	go l.removeElementsDisplayNone("h2", "d-none")
-	go l.removeElementsDisplayNone("h3", "d-none")
-	go l.removeElementsDisplayNone("h4", "d-none")
-	go l.removeElementsDisplayNone("h5", "d-none")
-	go l.removeElementsDisplayNone("p", "d-none")
-	go l.removeElementsDisplayNone("span", "d-none")
-	go l.removeElementsDisplayNone("a", "d-none")
-	go l.removeElementsDisplayNone("script", "")
-	go l.removeElementsDisplayNone("noscript", "")
-	go l.removeElementsDisplayNone("style", "")
-	doneLoadPage.Wait()
+	l.removeElementsDisplayNone("div", "d-none")
+	l.removeElementsDisplayNone("h1", "d-none")
+	l.removeElementsDisplayNone("h2", "d-none")
+	l.removeElementsDisplayNone("h3", "d-none")
+	l.removeElementsDisplayNone("h4", "d-none")
+	l.removeElementsDisplayNone("h5", "d-none")
+	l.removeElementsDisplayNone("p", "d-none")
+	l.removeElementsDisplayNone("span", "d-none")
+	l.removeElementsDisplayNone("a", "d-none")
+	l.removeElementsDisplayNone("script", "")
+	l.removeElementsDisplayNone("noscript", "")
+	l.removeElementsDisplayNone("style", "")
 }
 
 func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
@@ -174,5 +169,4 @@ func (l *LoadPage) removeElementsDisplayNone(tag string, css string) {
 			s.Remove()
 		}
 	})
-	defer doneLoadPage.Done()
 }
