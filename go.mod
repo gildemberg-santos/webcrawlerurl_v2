@@ -1,8 +1,7 @@
 module github.com/gildemberg-santos/webcrawlerurl_v2
 
 go 1.23
-
-toolchain go1.23.1
+toolchain go1.24.1
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.1
@@ -10,7 +9,7 @@ require (
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/net v0.35.0
+	golang.org/x/net v0.36.0
 	google.golang.org/grpc v1.70.0
 	google.golang.org/protobuf v1.36.5
 )
