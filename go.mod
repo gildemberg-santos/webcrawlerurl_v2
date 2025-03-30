@@ -4,7 +4,7 @@ go 1.23
 toolchain go1.24.1
 
 require (
-	github.com/PuerkitoBio/goquery v1.10.1
+	github.com/PuerkitoBio/goquery v1.10.2
 	github.com/chromedp/chromedp v0.13.3
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/joho/godotenv v1.5.1
