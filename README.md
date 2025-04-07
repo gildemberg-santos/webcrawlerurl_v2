@@ -1,124 +1,73 @@
-Aqui está a versão atualizada da documentação com os comandos solicitados:
-
----
-
 # Web Crawler para Extração de Dados
 
 ![Example Workflow](https://github.com/gildemberg-santos/webcrawlerurl_v2/actions/workflows/go.yml/badge.svg)
 
-## Visão Geral
+## **Visão Geral**  
+Este projeto fornece uma **solução automatizada** para coletar e organizar informações específicas de páginas da web. Utilizando **técnicas avançadas de mapeamento e extração de dados**, o crawler analisa a estrutura das páginas, identifica padrões na apresentação dos dados e os organiza em uma estrutura útil para análise ou processamento posterior.  
 
-Este projeto fornece uma ferramenta automatizada para coletar informações específicas de páginas da web. Utilizando técnicas avançadas de mapeamento e extração de dados, o crawler analisa a estrutura das páginas e identifica padrões na apresentação dos dados, organizando-os em uma estrutura útil para análise ou processamento posterior.
+### **Principais Benefícios**  
+✅ **Automação eficiente** – Reduz esforço manual na coleta de informações.  
+✅ **Precisão na extração** – Identificação e estruturação automática dos dados.  
+✅ **Flexibilidade e personalização** – Configuração adaptável conforme as necessidades do usuário.  
 
-## Pré-requisitos
+---
 
-- **Git**: Para clonar o repositório.
-- **Docker**: Para construir e executar o container do projeto.
-- **Make**: Para simplificar os comandos de execução.
+## **Pré-requisitos**  
+Antes de iniciar a instalação, certifique-se de ter os seguintes componentes:  
 
-## Instalação
+- **Git** – Necessário para clonar o repositório.  
+- **Docker** – Utilizado para construir e executar o container do projeto.  
+- **Make** – Facilita a execução de comandos automatizados. 
 
-Clone o repositório em sua máquina local:
+---
+## Instalação e Configuração  
 
-```bash
+### 1. Clonando o Repositório  
+Para obter o código-fonte, execute os seguintes comandos:  
+
+```sh
 git clone git@github.com:gildemberg-santos/webcrawlerurl_v2.git
 cd webcrawlerurl_v2
 ```
 
-## Configuração do Docker
+### 2. Construção e Execução da Aplicação com Docker
+**Construindo a Imagem Docker**
+Execute o seguinte comando para criar a imagem Docker:
 
-### Construção da Imagem Docker
-
-Construa a imagem Docker do projeto:
-
-```bash
+```sh
 docker build -t webcrawlerurl_v2 .
 ```
 
-### Executando o Container
+**Executando o Container**
+Para iniciar o container e executar a aplicação, utilize:
 
-Inicie o container em segundo plano:
-
-```bash
+```sh
 docker run -d --name webcrawlerurl_v2 -p 8080:8080 webcrawlerurl_v2
 ```
 
-Interagindo com o container:
+**Interagindo com o Container**
+Caso precise acessar o ambiente interno do container:
 
-```bash
+```sh
 docker exec -it webcrawlerurl_v2 /bin/bash
 ```
 
-### Outros Comandos Docker
+**Parar e Remover Containers**
+Finalizar um container ativo:
 
-Para matar o container em execução:
-
-```bash
+```sh
 docker container kill webcrawlerurl_v2
 ```
 
-Para remover todos os containers parados e liberar espaço:
+Remover containers parados e liberar espaço:
 
-```bash
+```sh
 docker container prune -f
 ```
 
-### Exibindo Logs do Container
+**Visualizando Logs do Container**
+Para consultar logs do serviço em execução:
 
-Para visualizar os logs do container em execução:
-
-```bash
+```sh
 docker logs webcrawlerurl_v2
 ```
-
-## Uso do Makefile
-
-### Iniciando o Container
-
-Para iniciar o container utilizando o `make`, execute:
-
-```bash
-make start
-```
-
-### Parando o Container
-
-Para parar o container:
-
-```bash
-make stop
-```
-
-### Executando o Serviço
-
-Para rodar o serviço de web crawler:
-
-```bash
-make run
-```
-
-Modo de desenvolvimento:
-
-```bash
-make dev
-```
-
-### Executando os Testes
-
-Para rodar todos os testes automatizados:
-
-```bash
-make test
-```
-
-### Realizando o Build do Projeto
-
-Para construir o projeto:
-
-```bash
-make build
-```
-
-## Considerações Finais
-
-Com esses comandos, você pode facilmente instalar, configurar e executar o web crawler para extrair dados de qualquer site. Sinta-se à vontade para explorar e customizar conforme as necessidades do seu projeto.
