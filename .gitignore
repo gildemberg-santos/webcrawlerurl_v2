@@ -1,7 +1,7 @@
 bin/app
-.vscode/launch.json
 util/load_page/drives/*
 drives/*
 data.json
 urls.json
 __debug_bin*
+.vscode/*
