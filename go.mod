@@ -6,7 +6,7 @@ toolchain go1.24.1
 require (
 	github.com/PuerkitoBio/goquery v1.10.2
 	github.com/chromedp/chromedp v0.13.3
-	github.com/jarcoal/httpmock v1.3.1
+	github.com/jarcoal/httpmock v1.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/net v0.38.0
