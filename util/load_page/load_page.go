@@ -67,14 +67,10 @@ func (l *LoadPage) loadPageFast() (err error) {
 		return
 	}
 
-	transport := &http.Transport{}
-	if l.SkipTLSVerify {
-		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	}
+	client := &http.Client{Timeout: l.Timeout * time.Second}
 
-	client := &http.Client{
-		Timeout:   l.Timeout * time.Second,
-		Transport: transport,
+	if l.SkipTLSVerify {
+		client.Transport = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 	}
 
 	req, err := http.NewRequest("GET", l.Url, nil)
