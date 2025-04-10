@@ -37,11 +37,11 @@ func TestLoadPageFast_LoadError(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(404, ``))
+	httpmock.RegisterResponder("GET", "http://www.teste.com", httpmock.NewStringResponder(400, ``))
 
 	loadPage := load_page.NewLoadPage("http://www.teste.com", true)
 	loadPage.Call()
-	assert.Equal(t, 404, loadPage.StatusCode)
+	assert.Equal(t, 400, loadPage.StatusCode)
 }
 
 // func TestLoadPageSlow_Load(t *testing.T) {
