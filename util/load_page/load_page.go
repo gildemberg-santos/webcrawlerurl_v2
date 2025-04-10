@@ -3,11 +3,13 @@ package load_page
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -17,11 +19,12 @@ import (
 )
 
 type LoadPage struct {
-	Url          string
-	Timeout      time.Duration
-	Source       *goquery.Document
-	StatusCode   int
-	LoadPageFast bool
+	Url           string
+	Timeout       time.Duration
+	Source        *goquery.Document
+	StatusCode    int
+	LoadPageFast  bool
+	SkipTLSVerify bool
 }
 
 func NewLoadPage(url string, loadPageFast bool) LoadPage {
@@ -32,13 +35,28 @@ func NewLoadPage(url string, loadPageFast bool) LoadPage {
 	}
 }
 
-func (l *LoadPage) Call() (err error) {
+func (l *LoadPage) Call() error {
 	log.Default().Println("Loading page -> ", l.Url)
+
 	if l.LoadPageFast {
-		return l.loadPageFast()
+		if err := l.tryLoadPageFast(); err != nil {
+			return err
+		}
+		return nil
 	}
 
 	return l.loadPageSlow()
+}
+
+func (l *LoadPage) tryLoadPageFast() error {
+	if err := l.loadPageFast(); err != nil {
+		if strings.Contains(err.Error(), "x509: certificate signed by unknown authority") {
+			l.SkipTLSVerify = true
+			return l.loadPageFast()
+		}
+		return err
+	}
+	return nil
 }
 
 func (l *LoadPage) loadPageFast() (err error) {
@@ -49,8 +67,14 @@ func (l *LoadPage) loadPageFast() (err error) {
 		return
 	}
 
+	transport := &http.Transport{}
+	if l.SkipTLSVerify {
+		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
+
 	client := &http.Client{
-		Timeout: l.Timeout * time.Second,
+		Timeout:   l.Timeout * time.Second,
+		Transport: transport,
 	}
 
 	req, err := http.NewRequest("GET", l.Url, nil)
