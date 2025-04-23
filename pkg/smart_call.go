@@ -27,7 +27,7 @@ type responseSuccessGpt struct {
 
 type responseErroGpt struct {
 	Erro       string      `json:"erro"`
-	SmartCall  interface{} `json:"smart_call"`
+	SmartCall  interface{} `json:"chatgpt"`
 	Url        string      `json:"url"`
 	Timestamp  float64     `json:"ts"`
 	Scone      float32     `json:"scone"`
@@ -74,11 +74,11 @@ func (c *SmartCall) Call() (interface{}, error) {
 		return responseErro, err
 	}
 
-	informatin := extract.NewLeadsterCustom(page.Source, 5, 5, 30)
-	informatin.Call()
+	information := extract.NewLeadsterCustom(page.Source, 5, 5, 30)
+	information.Call()
 
 	score := Score{}
-	score.Init(&informatin)
+	score.Init(&information)
 	score.Call()
 
 	ts.End()
@@ -88,9 +88,9 @@ func (c *SmartCall) Call() (interface{}, error) {
 		Scone:      score.GetScore(),
 		StatusCode: page.StatusCode,
 	}
-	responseSuccess.SmartCall.Title = informatin.TitleWebSite
-	responseSuccess.SmartCall.Paragraph = informatin.MostRelevantText
-	responseSuccess.SmartCall.Description = informatin.MetaDescription
+	responseSuccess.SmartCall.Title = information.TitleWebSite
+	responseSuccess.SmartCall.Paragraph = information.MostRelevantText
+	responseSuccess.SmartCall.Description = information.MetaDescription
 
 	return responseSuccess, nil
 }
