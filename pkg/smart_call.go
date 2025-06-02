@@ -2,6 +2,8 @@ package pkg
 
 import (
 	"errors"
+	"strings"
+	"time"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/extract"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
@@ -60,8 +62,25 @@ func (c *SmartCall) Call() (interface{}, error) {
 
 	page := load_page.NewLoadPage(c.Url, c.LoadPageFast)
 
-	err := page.Call()
+	var err error
+	maxRetries := 3
+	for attempt := 1; attempt <= maxRetries; attempt++ {
+		err = page.Call()
+		if err == nil {
+			break
+		}
+		if !(containsTimeoutError(err.Error())) {
+			break
+		}
+		if attempt < maxRetries {
+			time.Sleep(2 * time.Second)
+		}
+	}
+
 	if err != nil {
+		if page.StatusCode == 408 {
+			err = errors.New("timeout error")
+		}
 		ts.End()
 		responseErro := responseErroGpt{
 			Erro:       err.Error(),
@@ -93,4 +112,8 @@ func (c *SmartCall) Call() (interface{}, error) {
 	responseSuccess.SmartCall.Description = information.MetaDescription
 
 	return responseSuccess, nil
+}
+
+func containsTimeoutError(errMsg string) bool {
+	return strings.Contains(errMsg, "timeout") || strings.Contains(errMsg, "Client.Timeout")
 }
