@@ -34,7 +34,7 @@ func TestEcommerceSitemap_Call(t *testing.T) {
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 			<url>
-				<loc>https://www.teste.com/ag1622005-scarpin-marrom-telha-salto-bloco-couro-enfeite/p</loc>
+				<loc>https://www.teste.com/ag1622005-scarpin-marrom-telha-salto-bloco-couro-enfeite/p?utm_source=test</loc>
 				<lastmod>2024-08-15T18:08:10.653Z</lastmod>
 			</url>
 			<url>
@@ -61,7 +61,7 @@ func TestEcommerceSitemap_Call(t *testing.T) {
 		</urlset>
 `))
 
-	ecommerceSitemap := pkg.NewEcommerceSitemap("https://www.teste.com/sitemap.xml", "", "")
+	ecommerceSitemap := pkg.NewEcommerceSitemap("https://www.teste.com/sitemap.xml", "", "", true)
 	response := ecommerceSitemap.Call()
 
 	assert.NotNil(t, response)
