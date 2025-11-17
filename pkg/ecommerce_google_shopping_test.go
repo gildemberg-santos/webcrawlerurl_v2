@@ -40,7 +40,7 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 			<g:id>2</g:id>
 			<g:title>Product 2</g:title>
 			<g:description>Description product 2</g:description>
-			<g:link>https://www.google.com/shopping/product/2</g:link>
+			<g:link>https://www.google.com/shopping/product/2?utm_source=test</g:link>
 			<g:image_link>https://www.google.com/shopping/image/product/2.jpg</g:image_link>
 			<g:price>10.00</g:price>
 			<g:sale_price>8.00</g:sale_price>
@@ -60,7 +60,7 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	</feed>
 	`))
 
-	ecommerceGoogleShopping := pkg.NewEcommerceGoogleShopping("http://www.teste.com/google_shopping.xml", "https://www.google.com/shopping/product/**", 30, false)
+	ecommerceGoogleShopping := pkg.NewEcommerceGoogleShopping("http://www.teste.com/google_shopping.xml", "https://www.google.com/shopping/product/**", 30, true)
 	response := ecommerceGoogleShopping.Call()
 
 	assert.NotNil(t, response)
