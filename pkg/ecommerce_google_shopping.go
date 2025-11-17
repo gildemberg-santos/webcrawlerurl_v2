@@ -4,16 +4,18 @@ import (
 	"log"
 
 	googleshopping "github.com/gildemberg-santos/webcrawlerurl_v2/util/google_shopping"
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
 
 type EcommerceGoogleShopping struct {
-	Visited    map[string]bool          `json:"-"`
-	UrlPattern *url_match.UrlMatch      `json:"-"`
-	MaxTimeout int64                    `json:"-"`
-	Url        string                   `json:"url,omitempty"`
-	Products   []GooogleShoppingProduct `json:"products,omitempty"`
-	Urls       []string                 `json:"urls,omitempty"`
+	Visited        map[string]bool          `json:"-"`
+	UrlPattern     *url_match.UrlMatch      `json:"-"`
+	MaxTimeout     int64                    `json:"-"`
+	IsNormalizeUrl bool                     `json:"-"`
+	Url            string                   `json:"url,omitempty"`
+	Products       []GooogleShoppingProduct `json:"products,omitempty"`
+	Urls           []string                 `json:"urls,omitempty"`
 }
 
 type GooogleShoppingProduct struct {
@@ -36,12 +38,13 @@ type GooogleShoppingProduct struct {
 	CreditType   string `json:"credit_type,omitempty"`
 }
 
-func NewEcommerceGoogleShopping(url, urlPattern string, maxTimeout int64) *EcommerceGoogleShopping {
+func NewEcommerceGoogleShopping(url, urlPattern string, maxTimeout int64, isNormalizeUrl bool) *EcommerceGoogleShopping {
 	return &EcommerceGoogleShopping{
-		Url:        url,
-		UrlPattern: url_match.NewUrlMatch(urlPattern),
-		Visited:    map[string]bool{},
-		MaxTimeout: maxTimeout,
+		Url:            url,
+		UrlPattern:     url_match.NewUrlMatch(urlPattern),
+		Visited:        map[string]bool{},
+		MaxTimeout:     maxTimeout,
+		IsNormalizeUrl: isNormalizeUrl,
 	}
 }
 
@@ -65,16 +68,23 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 	}
 
 	for _, entry := range googleShopping.Feed.Entry {
-		if s.Visited[entry.Link.Value] {
+		url_entry := entry.Link.Value
+
+		if s.IsNormalizeUrl {
+			url_entry, _ = normalize.NewNormalizeUrl(url_entry).GetUrl()
+		}
+
+		if s.Visited[url_entry] {
 			continue
 		}
-		if s.UrlPattern.Call(entry.Link.Value) {
+
+		if s.UrlPattern.Call(url_entry) {
 			var product GooogleShoppingProduct
 
 			product.ID = entry.ID.Value
 			product.Title = entry.Title.Value
 			product.Description = entry.Description.Value
-			product.Url = entry.Link.Value
+			product.Url = url_entry
 			product.Image = entry.ImageLink.Value
 			product.Price = entry.Price.Value
 			product.SalePrice = entry.SalePrice.Value
@@ -89,23 +99,30 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 			product.Downpayment = entry.Installment.Downpayment.Value
 			product.CreditType = entry.Installment.CreditType.Value
 
-			s.Urls = append(s.Urls, entry.Link.Value)
+			s.Urls = append(s.Urls, url_entry)
 			s.Products = append(s.Products, product)
 		}
-		s.Visited[entry.Link.Value] = true
+		s.Visited[url_entry] = true
 	}
 
 	for _, item := range googleShopping.RSS.Item {
-		if s.Visited[item.Link.Value] {
+		url_item := item.Link.Value
+
+		if s.IsNormalizeUrl {
+			url_item, _ = normalize.NewNormalizeUrl(url_item).GetUrl()
+		}
+
+		if s.Visited[url_item] {
 			continue
 		}
-		if s.UrlPattern.Call(item.Link.Value) {
+
+		if s.UrlPattern.Call(url_item) {
 			var product GooogleShoppingProduct
 
 			product.ID = item.ID.Value
 			product.Title = item.Title.Value
 			product.Description = item.Description.Value
-			product.Url = item.Link.Value
+			product.Url = url_item
 			product.Image = item.ImageLink.Value
 			product.Price = item.Price.Value
 			product.SalePrice = item.SalePrice.Value
@@ -120,23 +137,30 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 			product.Downpayment = item.Installment.Downpayment.Value
 			product.CreditType = item.Installment.CreditType.Value
 
-			s.Urls = append(s.Urls, item.Link.Value)
+			s.Urls = append(s.Urls, url_item)
 			s.Products = append(s.Products, product)
 		}
-		s.Visited[item.Link.Value] = true
+		s.Visited[url_item] = true
 	}
 
 	for _, item := range googleShopping.RDF.Item {
-		if s.Visited[item.Link.Value] {
+		url_item := item.Link.Value
+
+		if s.IsNormalizeUrl {
+			url_item, _ = normalize.NewNormalizeUrl(url_item).GetUrl()
+		}
+
+		if s.Visited[url_item] {
 			continue
 		}
-		if s.UrlPattern.Call(item.Link.Value) {
+
+		if s.UrlPattern.Call(url_item) {
 			var product GooogleShoppingProduct
 
 			product.ID = item.ID.Value
 			product.Title = item.Title.Value
 			product.Description = item.Description.Value
-			product.Url = item.Link.Value
+			product.Url = url_item
 			product.Image = item.ImageLink.Value
 			product.Price = item.Price.Value
 			product.SalePrice = item.SalePrice.Value
@@ -151,10 +175,10 @@ func (s *EcommerceGoogleShopping) crawler(url string) error {
 			product.Downpayment = item.Installment.Downpayment.Value
 			product.CreditType = item.Installment.CreditType.Value
 
-			s.Urls = append(s.Urls, item.Link.Value)
+			s.Urls = append(s.Urls, url_item)
 			s.Products = append(s.Products, product)
 		}
-		s.Visited[item.Link.Value] = true
+		s.Visited[url_item] = true
 	}
 
 	return nil
