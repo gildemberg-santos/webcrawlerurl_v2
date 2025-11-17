@@ -60,7 +60,7 @@ func TestEcommerceGoogleShopping_Call(t *testing.T) {
 	</feed>
 	`))
 
-	ecommerceGoogleShopping := pkg.NewEcommerceGoogleShopping("http://www.teste.com/google_shopping.xml", "https://www.google.com/shopping/product/**", 30)
+	ecommerceGoogleShopping := pkg.NewEcommerceGoogleShopping("http://www.teste.com/google_shopping.xml", "https://www.google.com/shopping/product/**", 30, false)
 	response := ecommerceGoogleShopping.Call()
 
 	assert.NotNil(t, response)
