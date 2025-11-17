@@ -146,14 +146,15 @@ func RouteEcommerceGoogleShopping(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	body := struct {
-		Url        string `json:"url"`
-		UrlPattern string `json:"url_pattern"`
-		MaxTimeout int64  `json:"max_timeout"`
+		Url            string `json:"url"`
+		UrlPattern     string `json:"url_pattern"`
+		MaxTimeout     int64  `json:"max_timeout"`
+		IsNormalizeUrl bool   `json:"is_normalize_url"`
 	}{}
 
 	json.NewDecoder(r.Body).Decode(&body)
 
-	ecommerceGoogleShopping := pkg.NewEcommerceGoogleShopping(body.Url, body.UrlPattern, body.MaxTimeout)
+	ecommerceGoogleShopping := pkg.NewEcommerceGoogleShopping(body.Url, body.UrlPattern, body.MaxTimeout, body.IsNormalizeUrl)
 	response := ecommerceGoogleShopping.Call()
 
 	log.Println("Success")
