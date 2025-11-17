@@ -3,6 +3,7 @@ package pkg
 import (
 	"log"
 
+	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	sitemap "github.com/gildemberg-santos/webcrawlerurl_v2/util/site_map"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/url_match"
 )
@@ -11,16 +12,18 @@ type EcommerceSitemap struct {
 	Visited           map[string]bool     `json:"-"`
 	UrlSiteMapPattern *url_match.UrlMatch `json:"-"`
 	UrlPattern        *url_match.UrlMatch `json:"-"`
+	IsNormalize       bool                `json:"-"`
 	Url               string              `json:"url,omitempty"`
 	Urls              []string            `json:"urls,omitempty"`
 	UrlSiteMap        []string            `json:"sitemaps,omitempty"`
 }
 
-func NewEcommerceSitemap(url, urlPattern, urlSiteMapPattern string) *EcommerceSitemap {
+func NewEcommerceSitemap(url, urlPattern, urlSiteMapPattern string, isNormalize bool) *EcommerceSitemap {
 	return &EcommerceSitemap{
 		Url:               url,
 		UrlPattern:        url_match.NewUrlMatch(urlPattern),
 		UrlSiteMapPattern: url_match.NewUrlMatch(urlSiteMapPattern),
+		IsNormalize:       isNormalize,
 		Visited:           map[string]bool{},
 	}
 }
@@ -51,13 +54,19 @@ func (s *EcommerceSitemap) crawler(url string) error {
 	}
 
 	for _, url := range siteMap.Urlset.URLs {
-		if s.UrlPattern.Call(url.Loc) {
-			if s.Visited[url.Loc] {
+		urlLoc := url.Loc
+
+		if s.IsNormalize {
+			urlLoc, _ = normalize.NewNormalizeUrl(urlLoc).GetUrl()
+		}
+
+		if s.UrlPattern.Call(urlLoc) {
+			if s.Visited[urlLoc] {
 				continue
 			}
 
-			s.Urls = append(s.Urls, url.Loc)
-			s.Visited[url.Loc] = true
+			s.Urls = append(s.Urls, urlLoc)
+			s.Visited[urlLoc] = true
 		}
 
 		for _, link := range url.Link {
