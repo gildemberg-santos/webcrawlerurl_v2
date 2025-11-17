@@ -129,11 +129,12 @@ func RouteEcommerceSiteMap(w http.ResponseWriter, r *http.Request) {
 		Url               string `json:"url"`
 		UrlPattern        string `json:"url_pattern"`
 		UrlSiteMapPattern string `json:"url_sitemap_pattern"`
+		IsNormalizeUrl    bool   `json:"is_normalize_url"`
 	}{}
 
 	json.NewDecoder(r.Body).Decode(&body)
 
-	ecommerceSiteMap := pkg.NewEcommerceSitemap(body.Url, body.UrlPattern, body.UrlSiteMapPattern)
+	ecommerceSiteMap := pkg.NewEcommerceSitemap(body.Url, body.UrlPattern, body.UrlSiteMapPattern, body.IsNormalizeUrl)
 	response := ecommerceSiteMap.Call()
 
 	log.Println("Success")
