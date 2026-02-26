@@ -9,9 +9,11 @@ import (
 )
 
 func TestTimestamp_Start(t *testing.T) {
+	min := 0.00000001
+	max := 0.00001
 	timestamp := timestamp.NewTimestamp().Start()
-	time.Sleep(1 * time.Second)
+	time.Sleep(1 * time.Microsecond)
 	timestamp.End()
-	assert.True(t, timestamp.GetTime() >= 1.0)
-	assert.True(t, timestamp.GetTime() < 2.0)
+	assert.True(t, timestamp.GetTime() >= min)
+	assert.True(t, timestamp.GetTime() < max)
 }
