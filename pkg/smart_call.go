@@ -15,25 +15,19 @@ type SmartCall struct {
 	LoadPageFast bool
 }
 
-type responseSuccessGpt struct {
-	SmartCall struct {
-		Title       string `json:"main_header"`
-		Paragraph   string `json:"main_paragraph"`
-		Description string `json:"meta_description"`
-	} `json:"chatgpt"`
-	Url        string  `json:"url"`
-	Timestamp  float64 `json:"ts"`
-	Scone      float32 `json:"scone"`
-	StatusCode int     `json:"status_code"`
+type smartCallContent struct {
+	Title       string `json:"main_header"`
+	Paragraph   string `json:"main_paragraph"`
+	Description string `json:"meta_description"`
 }
 
-type responseErroGpt struct {
-	Erro       string      `json:"erro"`
-	SmartCall  interface{} `json:"chatgpt"`
-	Url        string      `json:"url"`
-	Timestamp  float64     `json:"ts"`
-	Scone      float32     `json:"scone"`
-	StatusCode int         `json:"status_code"`
+type responseSmartCallGpt struct {
+	Erro       string            `json:"erro,omitempty"`
+	SmartCall  *smartCallContent `json:"chatgpt"`
+	Url        string            `json:"url"`
+	Timestamp  float64           `json:"ts"`
+	Scone      float32           `json:"scone"`
+	StatusCode int               `json:"status_code"`
 }
 
 func NewSmartCall(url string, loadPageFast bool) SmartCall {
@@ -43,13 +37,13 @@ func NewSmartCall(url string, loadPageFast bool) SmartCall {
 	}
 }
 
-func (c *SmartCall) Call() (interface{}, error) {
+func (c *SmartCall) Call() (responseSmartCallGpt, error) {
 	ts := timestamp.NewTimestamp().Start()
 
 	if c.Url == "" {
 		err := errors.New("url is empty")
 		ts.End()
-		responseErro := responseErroGpt{
+		responseErro := responseSmartCallGpt{
 			Erro:       err.Error(),
 			SmartCall:  nil,
 			Url:        c.Url,
@@ -82,7 +76,7 @@ func (c *SmartCall) Call() (interface{}, error) {
 			err = errors.New("timeout error")
 		}
 		ts.End()
-		responseErro := responseErroGpt{
+		responseErro := responseSmartCallGpt{
 			Erro:       err.Error(),
 			SmartCall:  nil,
 			Url:        c.Url,
@@ -101,15 +95,17 @@ func (c *SmartCall) Call() (interface{}, error) {
 	score.Call()
 
 	ts.End()
-	responseSuccess := responseSuccessGpt{
+	responseSuccess := responseSmartCallGpt{
+		SmartCall: &smartCallContent{
+			Title:       information.TitleWebSite,
+			Paragraph:   information.MostRelevantText,
+			Description: information.MetaDescription,
+		},
 		Url:        c.Url,
 		Timestamp:  ts.GetTime(),
 		Scone:      score.GetScore(),
 		StatusCode: page.StatusCode,
 	}
-	responseSuccess.SmartCall.Title = information.TitleWebSite
-	responseSuccess.SmartCall.Paragraph = information.MostRelevantText
-	responseSuccess.SmartCall.Description = information.MetaDescription
 
 	return responseSuccess, nil
 }
