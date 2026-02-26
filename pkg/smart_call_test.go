@@ -2,9 +2,10 @@ package pkg
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TestSmartCall_Call is a test function for the Call method of the SmartCall struct.
@@ -40,9 +41,10 @@ func TestSmartCall_Call(t *testing.T) {
 	response, err := smartCall.Call()
 
 	assert.Nil(t, err)
-	assert.Equal(t, "Titulo do site", response.(responseSuccessGpt).SmartCall.Title)
-	assert.Equal(t, "Titulo", response.(responseSuccessGpt).SmartCall.Paragraph)
-	assert.Equal(t, "Meta Description", response.(responseSuccessGpt).SmartCall.Description)
+	assert.NotNil(t, response.SmartCall)
+	assert.Equal(t, "Titulo do site", response.SmartCall.Title)
+	assert.Equal(t, "Titulo", response.SmartCall.Paragraph)
+	assert.Equal(t, "Meta Description", response.SmartCall.Description)
 }
 
 // TestSmartCall_Call_EmptyUrl tests the Call method of the SmartCall struct when the URL is empty.
@@ -53,8 +55,8 @@ func TestSmartCall_Call_EmptyUrl(t *testing.T) {
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "url is empty", err.Error())
-	assert.Equal(t, "", response.(responseErroGpt).Url)
-	assert.Equal(t, 500, response.(responseErroGpt).StatusCode)
+	assert.Equal(t, "", response.Url)
+	assert.Equal(t, 500, response.StatusCode)
 }
 
 // TestSmartCall_Call_InvalidUrl tests the Call method of the SmartCall struct when the URL is invalid.
@@ -65,30 +67,64 @@ func TestSmartCall_Call_InvalidUrl(t *testing.T) {
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "url is invalid", err.Error())
-	assert.Equal(t, "invalid-url", response.(responseErroGpt).Url)
-	assert.Equal(t, 500, response.(responseErroGpt).StatusCode)
+	assert.Equal(t, "invalid-url", response.Url)
+	assert.Equal(t, 500, response.StatusCode)
 }
 
 // TestSmartCall_Call_ValidUrl tests the Call method of the SmartCall struct with a valid URL.
 func TestSmartCall_Call_ValidUrl(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://www.valid-url.com",
+		httpmock.NewStringResponder(200, `
+	<!DOCTYPE html>
+	<head>
+		<title>Valid URL</title>
+		<meta name="description" content="This is a valid URL for testing.">
+	</head>
+	<body>
+		<h1>Valid URL Test</h1>
+		<p>This is a paragraph for the valid URL test.</p>
+	</body>
+	<html>
+	`))
+
 	smartCall := NewSmartCall("https://www.valid-url.com", true)
 	response, err := smartCall.Call()
 
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	assert.Equal(t, "https://www.valid-url.com", response.(responseSuccessGpt).Url)
-	assert.Equal(t, 200, response.(responseSuccessGpt).StatusCode)
+	assert.Equal(t, "https://www.valid-url.com", response.Url)
+	assert.Equal(t, 200, response.StatusCode)
 }
 
 // TestSmartCall_Call_LoadPageFast tests the Call method of the SmartCall struct with LoadPageFast set to true.
 func TestSmartCall_Call_LoadPageFast(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://www.fast-url.com",
+		httpmock.NewStringResponder(200, `
+	<!DOCTYPE html>
+	<head>
+		<title>Fast URL</title>
+		<meta name="description" content="This is a fast URL for testing.">
+	</head>
+	<body>
+		<h1>Fast URL Test</h1>
+		<p>This is a paragraph for the fast URL test.</p>
+	</body>
+	<html>
+	`))
+
 	smartCall := NewSmartCall("https://www.fast-url.com", true)
 	response, err := smartCall.Call()
 
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	assert.Equal(t, "https://www.fast-url.com", response.(responseSuccessGpt).Url)
-	assert.Equal(t, 200, response.(responseSuccessGpt).StatusCode)
+	assert.Equal(t, "https://www.fast-url.com", response.Url)
+	assert.Equal(t, 200, response.StatusCode)
 	assert.True(t, smartCall.LoadPageFast) // Ensure LoadPageFast is true
 }
 
@@ -97,16 +133,17 @@ func TestSmartCall_Call_Timeout(t *testing.T) {
 	httpmock.Activate()
 
 	defer httpmock.DeactivateAndReset()
-	httpmock.NewErrorResponder(errors.New("Client.Timeout exceeded while awaiting headers"))
+	httpmock.RegisterResponder("GET", "https://www.timeout-url.com",
+		httpmock.NewStringResponder(404, "Not Found"))
 
 	smartCall := NewSmartCall("https://www.timeout-url.com", true)
 	response, err := smartCall.Call()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "Error to send request -> Get \"https://www.timeout-url.com\": no responder found", err.Error())
-	assert.Equal(t, "https://www.timeout-url.com", response.(responseErroGpt).Url)
-	assert.Equal(t, 404, response.(responseErroGpt).StatusCode)
-	assert.Nil(t, response.(responseErroGpt).SmartCall)
+	assert.Equal(t, "found error in the page status code -> 404", err.Error())
+	assert.Equal(t, "https://www.timeout-url.com", response.Url)
+	assert.Equal(t, 404, response.StatusCode)
+	assert.Nil(t, response.SmartCall)
 }
 
 // TestSmartCall_Call_Error tests the Call method of the SmartCall struct when an error occurs during the call.
@@ -122,7 +159,7 @@ func TestSmartCall_Call_Error(t *testing.T) {
 
 	assert.NotNil(t, err)
 	assert.Equal(t, "Error to send request -> Get \"https://www.error-url.com\": Network error", err.Error())
-	assert.Equal(t, "https://www.error-url.com", response.(responseErroGpt).Url)
-	assert.Equal(t, 404, response.(responseErroGpt).StatusCode)
-	assert.Nil(t, response.(responseErroGpt).SmartCall)
+	assert.Equal(t, "https://www.error-url.com", response.Url)
+	assert.Equal(t, 404, response.StatusCode)
+	assert.Nil(t, response.SmartCall)
 }
