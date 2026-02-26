@@ -37,7 +37,12 @@ func RouteSmartCall(w http.ResponseWriter, r *http.Request) {
 
 	response, err := smartCall.Call()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		statusCode := response.StatusCode
+		if statusCode < http.StatusBadRequest || statusCode > http.StatusNetworkAuthenticationRequired {
+			statusCode = http.StatusInternalServerError
+		}
+
+		w.WriteHeader(statusCode)
 		json.NewEncoder(w).Encode(response)
 		return
 	}
