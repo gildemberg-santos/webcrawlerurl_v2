@@ -1,7 +1,3 @@
-Segue abaixo uma versão aprimorada e complementada da documentação do sistema gRPC, com ênfase nos conceitos, arquitetura, vantagens, desvantagens e melhores práticas de utilização:
-
----
-
 # Documentação do Sistema gRPC
 
 Esta documentação apresenta de forma detalhada a arquitetura, implementação e as principais características do uso do gRPC em sistemas distribuídos, destacando seus conceitos fundamentais, vantagens e desvantagens, além de recomendações e exemplos práticos para integração e desenvolvimento.
