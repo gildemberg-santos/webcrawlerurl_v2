@@ -15,13 +15,13 @@ stop:
 run:
 	@clear
 	@echo "\n  Service Online <Prod> ... \n"
-	@go build -o ./bin/cmd ./cmd/main.go
+	@go build -o ./bin/cmd ./cmd/serve/main.go
 	@./bin/cmd
 
 dev:
 	@clear
 	@echo "\n  Service Online <Dev> ...  \n"
-	@go run ./cmd/main.go
+	@go run ./cmd/serve/main.go
 
 test:
 	@clear
@@ -33,4 +33,4 @@ build:
 	@clear
 	@echo "\n  Building ...  \n"
 	@rm -rf ./bin
-	@go build -o ./bin/cmd ./cmd/main.go
+	@go build -o ./bin/cmd ./cmd/serve/main.go

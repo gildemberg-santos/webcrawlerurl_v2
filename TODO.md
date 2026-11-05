@@ -12,6 +12,6 @@
 * [x] Criar mecanismo para extrair todas as urls do feed
 * [x] Ler todos as urls de diferentes idiomas de um sitemap
 * [x] Ler imagens do google shopping
-* [ ] Implementar testes automatizados
+* [x] Implementar testes automatizados
 * [ ] Documentar o código
 * [ ] Implementar suporte ao gRPC
